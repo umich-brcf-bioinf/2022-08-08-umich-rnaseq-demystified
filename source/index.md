@@ -21,8 +21,8 @@ body, td {
 |  9:00 | [Introductions and Startup](Module00_Introduction.html) |
 |  9:20 | **Sequence QC:** |
 |       | &nbsp;&nbsp;&nbsp;&nbsp;[Warming Up](Module01_Warming_Up.html) |
-|       | &nbsp;&nbsp;&nbsp;&nbsp;[Quality Control (FASTQs)](Module02_QC.html) |
-|       | &nbsp;&nbsp;&nbsp;&nbsp;[Trimming and MultiQC](Module02optional_Cutadapt_MoreQC.html) |
+|       | &nbsp;&nbsp;&nbsp;&nbsp;[Quality Control (FASTQs)](Module02a_QC.html) |
+|       | &nbsp;&nbsp;&nbsp;&nbsp;[Trimming and MultiQC](Module02b_Cutadapt_MoreQC.html) |
 | 11:00 | Break |
 | 11:15 | **Alignment:** |
 |       | &nbsp;&nbsp;&nbsp;&nbsp;[Reference genomes](Module03_Reference_Genomes.html) |
@@ -33,8 +33,8 @@ body, td {
 | :---  | :---- |
 |  9:00 | Review |
 |  9:10 | **Quantification:** |
-|       | &nbsp;&nbsp;&nbsp;&nbsp;[Count matrix / Alignment QC](Module05_MultiQC_and_Count_Matrix.html) |
-|       | &nbsp;&nbsp;&nbsp;&nbsp;[Additional details and exercise](Module05optional_Additional_Details.html) |
+|       | &nbsp;&nbsp;&nbsp;&nbsp;[Count matrix / Alignment QC](Module05a_MultiQC_and_Count_Matrix.html) |
+|       | &nbsp;&nbsp;&nbsp;&nbsp;[Additional details and exercise](Module05b_Additional_Details.html) |
 | 11:00 | Break |
 | 11:15 | **Groups and Modeling:** |
 |       | &nbsp;&nbsp;&nbsp;&nbsp;[Intro to DESeq2](Module06_DEAnalysisSetup.html) |
