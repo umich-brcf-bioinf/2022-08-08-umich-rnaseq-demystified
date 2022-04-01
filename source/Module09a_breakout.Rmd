@@ -1,0 +1,161 @@
+---
+title: "Day 3 - Module 09 Heatmap"
+author: "UM Bioinformatics Core"
+date: "`r Sys.Date()`"
+output:
+        html_document:
+            includes:
+                in_header: header.html
+            theme: paper
+            toc: true
+            toc_depth: 4
+            toc_float: true
+            number_sections: true
+            fig_caption: true
+            markdown: GFM
+            code_download: true
+---
+<style type="text/css">
+body{ /* Normal  */
+      font-size: 14pt;
+  }
+pre {
+  font-size: 12pt
+}
+code.r{
+  font-size: 12pt;
+}
+</style>
+
+<!--- Allow the page to be wider --->
+<style>
+    body .main-container {
+        max-width: 1200px;
+    }
+</style>
+
+<br>
+
+# [Breakout Exercise 1] - Heatmap of top genes
+
+<br>
+
+
+```{r Modules, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
+library(DESeq2)
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+library(matrixStats)
+library(ggrepel)
+library(pheatmap)
+library(RColorBrewer)
+load("rdata/RunningData.RData")
+```
+
+
+**15 Minutes**
+
+<br>
+
+It can be useful to visualize to visualize how our samples organize along with the expression pattern of individual genes. We will create a heatmap of the top most variable genes using the `pheatmap` function.
+
+<br>
+
+### Instructions:
+
+<br>
+
+- One group member should share their screen in the breakout room. If nobody volunteers, a helper may randomly select someone.
+- The group members should discuss the exercise and work together to find a solution.
+- If there is time after a solution is found, allow all members to complete the exercise.
+
+<br>
+
+- First, create a object named `topVarGenes` that stores the top **50** most variable genes from our rlog normalized data (note that each row of `rld` corresponds to a gene).
+- Work from the inside to the outside when stringing together commands and test out each part to ensure the commands you enter are having the expected behavior.
+
+> Hint:
+> 
+> The command `rowVars(assay(rld))` will return the row variance values, the command `base::order` will return an index of the input re-arranged into accending or decending order, and the `head` command or index referencing can be used to select the firstor last part of several data types. 
+
+
+<br>
+
+<details>
+    <summary>*Click for solution*</summary>
+    Helpers - it may be helpful to guide learners through testing the steps needed to select the top 50 most variable genes. The below example is one possible solution.
+```{r TestSampleHeatmap}
+topVarGenes = rowVars(assay(rld))
+head(topVarGenes)
+
+orderedVars = order(topVarGenes)
+head(orderedVars)
+
+sortedVars = sort(topVarGenes)
+head(sortedVars)
+tail(sortedVars)
+
+?order
+orderedVars = order(topVarGenes, decreasing = TRUE)
+head(topVarGenes[orderedVars])
+
+orderedMat = assay(rld)[orderedVars, ]
+head(orderedMat)
+
+# 
+orderedMat = orderedMat[1:50, ]
+
+## Alternatively
+orderedMat = head(orderedMat, 50)
+
+```
+</details>
+
+<br>
+
+
+- Next, use `pheatmap` to plot the selected `topVarGenes` from `rld`. If you have time, try to scale by row to enhance any clusters of genes with similar expression across samples.  
+
+<br> 
+
+> Hint:
+>
+> We can use `assay(rld)` to access the matrix of normalized data and we can use bracket notation ([rows,]) and the list of rows stored in `topVarGene` to only provide data for the 50 genes of interest.
+> 
+
+<br>
+
+<details>
+    <summary>*Click for solution*</summary>
+```{r TestPheatmap}
+# plot with no arguments
+pheatmap(orderedMat)
+
+# plots with row scaled and assigned to 'p' to make writing to file easier
+p <- pheatmap(assay(rld)[topVarGenes,], scale = "row")
+```
+</details>
+
+<br>
+
+*Note, as mentioned in this [Biostars post](https://support.bioconductor.org/p/130336/), scaling by row in `pheatmap` will automatically scale the data to Z-scores.*
+
+<br>
+
+Finally, to **output** the plot to file, use the `pdf()` function:
+```{r ExerciseOutput}
+pdf(file = paste0(plotPath, 'Top_heatmap_rlog_', Comparison, '.pdf'), onefile = TRUE)
+p
+dev.off()
+```
+
+
+
+  
+```{r WriteOut.RData, eval=FALSE, echo=FALSE, message=FALSE, warning=FALSE}
+#Hidden code block to write out data for knitting
+save.image(file = "rdata/RunningData.RData")
+```
+
+

@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="UM Bioinformatics Core" />
+
+
+<title>Day 1 - Breakout 01</title>
+
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link rel="shortcut icon" href="favicon-16x16.png" />
+<!--
+Favicon from
+https://twemoji.twitter.com/
+https://favicon.io/emoji-favicons/dna/
+-->
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">RNA-Seq Demystified</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="Module00_Introduction.html">Intro</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Sequence QC
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Module01_Warming_Up.html">Warming up</a>
+    </li>
+    <li>
+      <a href="Module02_QC.html">Quality Control</a>
+    </li>
+    <li>
+      <a href="Module02optional_Cutadapt_MoreQC.html">Optional: Cutadapt/MoreQC</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Alignment
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Module03_Reference_Genomes.html">Reference Genomes</a>
+    </li>
+    <li>
+      <a href="Module04_Alignment.html">Alignment/Quantification (STAR/RSEM)</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Quantification
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Module05_MultiQC_and_Count_Matrix.html">Count matrix / Alignment QC</a>
+    </li>
+    <li>
+      <a href="Module05optional_Additional_Details.html">Optional: Additional details</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Groups/Model
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Module06_DEAnalysisSetup.html">Introduction to DESeq2</a>
+    </li>
+    <li>
+      <a href="Module07_DESeq2Init.html">DESeq2 Initialization</a>
+    </li>
+    <li>
+      <a href="Module08_DESeq2DE.html">Count Normalizations and DESeq2 model fitting</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Expression plots
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Module09_SampleQCViz.html">Sample Visualizations for QC</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Diff Expression
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Module10_DEComparisons.html">Comparisons</a>
+    </li>
+    <li>
+      <a href="Module11_DEVisualizations.html">DE Visiualization and Annotation</a>
+    </li>
+    <li>
+      <a href="Module11X_BonusContent.html">Bonus content</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="Module99_Wrap_up.html">Wrap up</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Day 1 - Breakout 01</h1>
+<h4 class="author">UM Bioinformatics Core</h4>
+
+</div>
+
+
+<style type="text/css">
+body{ /* Normal  */
+      font-size: 14pt;
+  }
+pre {
+  font-size: 12pt
+}
+</style>
+<p><br></p>
+<div id="cutadapt-all-samples-exercise-breakout" class="section level2">
+<h2>Cutadapt All Samples Exercise (Breakout)</h2>
+<p><br></p>
+<p><strong>15 Minutes</strong></p>
+<p><br></p>
+<p>Now that we’ve learned the basics of running Cutadapt, we need to trim all the rest of our samples. If you remember from the Computational Foundations course, we learned about using bash variables. Let’s try an exercise where we use a bash variable to trim each one of our FASTQ files.</p>
+<p><br></p>
+<div id="instructions" class="section level3">
+<h3>Instructions:</h3>
+<p><br></p>
+<ul>
+<li>One group member should share their screen in the breakout room. If nobody volunteers, a helper may randomly select someone.</li>
+<li>The group members should discuss the exercise and work together to find a solution.</li>
+<li>After a solution is found, allow time for all members to complete the exercise.</li>
+</ul>
+<p><br></p>
+<ul>
+<li>Review Cutadapt’s help page and choose the proper arguments for our Cutadapt command(s).</li>
+<li>Use a bash variable along with Cutadapt to trim all remaining FASTQ files.</li>
+<li>Confirm that we have all of our expected output files.</li>
+</ul>
+<p><br></p>
+<blockquote>
+<p>Hint: Using a bash variable allows us to quickly change some arguments in a repeated command, e.g. :</p>
+<pre><code>noun=&quot;World&quot;
+echo &quot;Hello, $noun!&quot;
+noun=&quot;Class&quot;
+echo &quot;Hello, $noun!&quot;</code></pre>
+</blockquote>
+<p><br></p>
+</div>
+<div id="solution---cutadapt-all-samples-exercise" class="section level3">
+<h3>Solution - Cutadapt All Samples Exercise</h3>
+<p><br></p>
+<p>One solution is to define a bash variable for the sample, use that variable in a Cutadapt command, and then redefine the variable before repeating the Cutadapt command for each change.</p>
+<pre><code># Define a variable $SAMPLE
+SAMPLE=sample_02
+# Create a command using the variable $SAMPLE
+cutadapt -a AGATCGGAAGAG -A AGATCGGAAGAG -o out_trimmed/${SAMPLE}_R1.trimmed.fastq.gz -p out_trimmed/${SAMPLE}_R2.trimmed.fastq.gz ../reads/${SAMPLE}_R1.fastq.gz ../reads/${SAMPLE}_R2.fastq.gz
+
+# Redefine the variable and run the command for each additional sample
+SAMPLE=sample_03
+cutadapt -a AGATCGGAAGAG -A AGATCGGAAGAG -o out_trimmed/${SAMPLE}_R1.trimmed.fastq.gz -p out_trimmed/${SAMPLE}_R2.trimmed.fastq.gz ../reads/${SAMPLE}_R1.fastq.gz ../reads/${SAMPLE}_R2.fastq.gz
+
+SAMPLE=sample_04
+cutadapt -a AGATCGGAAGAG -A AGATCGGAAGAG -o out_trimmed/${SAMPLE}_R1.trimmed.fastq.gz -p out_trimmed/${SAMPLE}_R2.trimmed.fastq.gz ../reads/${SAMPLE}_R1.fastq.gz ../reads/${SAMPLE}_R2.fastq.gz</code></pre>
+<p><br></p>
+<p>Another solution is to create a for-loop with our bash variable and Cutadapt command. E.g.</p>
+<pre><code>for SAMPLE in sample_02 sample_03 sample_04
+    do
+    cutadapt -a AGATCGGAAGAG -A AGATCGGAAGAG \
+    -o out_trimmed/${SAMPLE}_R1.trimmed.fastq.gz -p out_trimmed/${SAMPLE}_R2.trimmed.fastq.gz \
+    ../reads/${SAMPLE}_R1.fastq.gz ../reads/${SAMPLE}_R2.fastq.gz
+done</code></pre>
+<p><br></p>
+<blockquote>
+<p>Helper Hint: If suggesting a for-loop approach, it can be helpful to build up a “dry-run” command as a test case, to get learners to be more cognizant of what their code will do. Echoing filenames first might be a good suggestion.</p>
+</blockquote>
+<p><br></p>
+</div>
+</div>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiRGF5IDEgLSBCcmVha291dCAwMSIKYXV0aG9yOiAiVU0gQmlvaW5mb3JtYXRpY3MgQ29yZSIKb3V0cHV0OgogICAgICAgIGh0bWxfZG9jdW1lbnQ6CiAgICAgICAgICAgIGluY2x1ZGVzOgogICAgICAgICAgICAgICAgaW5faGVhZGVyOiBoZWFkZXIuaHRtbAogICAgICAgICAgICB0aGVtZTogcGFwZXIKICAgICAgICAgICAgZmlnX2NhcHRpb246IHRydWUKICAgICAgICAgICAgbWFya2Rvd246IEdGTQogICAgICAgICAgICBjb2RlX2Rvd25sb2FkOiB0cnVlCi0tLQo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgpib2R5eyAvKiBOb3JtYWwgICovCiAgICAgIGZvbnQtc2l6ZTogMTRwdDsKICB9CnByZSB7CiAgZm9udC1zaXplOiAxMnB0Cn0KPC9zdHlsZT4KCjxicj4KCiMjIEN1dGFkYXB0IEFsbCBTYW1wbGVzIEV4ZXJjaXNlIChCcmVha291dCkKCjxicj4KCioqMTUgTWludXRlcyoqCgo8YnI+CgpOb3cgdGhhdCB3ZSd2ZSBsZWFybmVkIHRoZSBiYXNpY3Mgb2YgcnVubmluZyBDdXRhZGFwdCwgd2UgbmVlZCB0byB0cmltIGFsbCB0aGUgcmVzdCBvZiBvdXIgc2FtcGxlcy4gSWYgeW91IHJlbWVtYmVyIGZyb20gdGhlIENvbXB1dGF0aW9uYWwgRm91bmRhdGlvbnMgY291cnNlLCB3ZSBsZWFybmVkIGFib3V0IHVzaW5nIGJhc2ggdmFyaWFibGVzLiBMZXQncyB0cnkgYW4gZXhlcmNpc2Ugd2hlcmUgd2UgdXNlIGEgYmFzaCB2YXJpYWJsZSB0byB0cmltIGVhY2ggb25lIG9mIG91ciBGQVNUUSBmaWxlcy4KCjxicj4KCiMjIyBJbnN0cnVjdGlvbnM6Cgo8YnI+CgotIE9uZSBncm91cCBtZW1iZXIgc2hvdWxkIHNoYXJlIHRoZWlyIHNjcmVlbiBpbiB0aGUgYnJlYWtvdXQgcm9vbS4gSWYgbm9ib2R5IHZvbHVudGVlcnMsIGEgaGVscGVyIG1heSByYW5kb21seSBzZWxlY3Qgc29tZW9uZS4KLSBUaGUgZ3JvdXAgbWVtYmVycyBzaG91bGQgZGlzY3VzcyB0aGUgZXhlcmNpc2UgYW5kIHdvcmsgdG9nZXRoZXIgdG8gZmluZCBhIHNvbHV0aW9uLgotIEFmdGVyIGEgc29sdXRpb24gaXMgZm91bmQsIGFsbG93IHRpbWUgZm9yIGFsbCBtZW1iZXJzIHRvIGNvbXBsZXRlIHRoZSBleGVyY2lzZS4KCjxicj4KCi0gUmV2aWV3IEN1dGFkYXB0J3MgaGVscCBwYWdlIGFuZCBjaG9vc2UgdGhlIHByb3BlciBhcmd1bWVudHMgZm9yIG91ciBDdXRhZGFwdCBjb21tYW5kKHMpLgotIFVzZSBhIGJhc2ggdmFyaWFibGUgYWxvbmcgd2l0aCBDdXRhZGFwdCB0byB0cmltIGFsbCByZW1haW5pbmcgRkFTVFEgZmlsZXMuCi0gQ29uZmlybSB0aGF0IHdlIGhhdmUgYWxsIG9mIG91ciBleHBlY3RlZCBvdXRwdXQgZmlsZXMuCgo8YnI+CgoKPiBIaW50OiBVc2luZyBhIGJhc2ggdmFyaWFibGUgYWxsb3dzIHVzIHRvIHF1aWNrbHkgY2hhbmdlIHNvbWUgYXJndW1lbnRzIGluIGEgcmVwZWF0ZWQgY29tbWFuZCwgZS5nLiA6Cj4KPiB+fn4KPiBub3VuPSJXb3JsZCIKPiBlY2hvICJIZWxsbywgJG5vdW4hIgo+IG5vdW49IkNsYXNzIgo+IGVjaG8gIkhlbGxvLCAkbm91biEiCj4gfn5+Cgo8YnI+CgojIyMgU29sdXRpb24gLSBDdXRhZGFwdCBBbGwgU2FtcGxlcyBFeGVyY2lzZQoKPGJyPgoKT25lIHNvbHV0aW9uIGlzIHRvIGRlZmluZSBhIGJhc2ggdmFyaWFibGUgZm9yIHRoZSBzYW1wbGUsIHVzZSB0aGF0IHZhcmlhYmxlIGluIGEgQ3V0YWRhcHQgY29tbWFuZCwgYW5kIHRoZW4gcmVkZWZpbmUgdGhlIHZhcmlhYmxlIGJlZm9yZSByZXBlYXRpbmcgdGhlIEN1dGFkYXB0IGNvbW1hbmQgZm9yIGVhY2ggY2hhbmdlLgoKICAgICMgRGVmaW5lIGEgdmFyaWFibGUgJFNBTVBMRQogICAgU0FNUExFPXNhbXBsZV8wMgogICAgIyBDcmVhdGUgYSBjb21tYW5kIHVzaW5nIHRoZSB2YXJpYWJsZSAkU0FNUExFCiAgICBjdXRhZGFwdCAtYSBBR0FUQ0dHQUFHQUcgLUEgQUdBVENHR0FBR0FHIC1vIG91dF90cmltbWVkLyR7U0FNUExFfV9SMS50cmltbWVkLmZhc3RxLmd6IC1wIG91dF90cmltbWVkLyR7U0FNUExFfV9SMi50cmltbWVkLmZhc3RxLmd6IC4uL3JlYWRzLyR7U0FNUExFfV9SMS5mYXN0cS5neiAuLi9yZWFkcy8ke1NBTVBMRX1fUjIuZmFzdHEuZ3oKCiAgICAjIFJlZGVmaW5lIHRoZSB2YXJpYWJsZSBhbmQgcnVuIHRoZSBjb21tYW5kIGZvciBlYWNoIGFkZGl0aW9uYWwgc2FtcGxlCiAgICBTQU1QTEU9c2FtcGxlXzAzCiAgICBjdXRhZGFwdCAtYSBBR0FUQ0dHQUFHQUcgLUEgQUdBVENHR0FBR0FHIC1vIG91dF90cmltbWVkLyR7U0FNUExFfV9SMS50cmltbWVkLmZhc3RxLmd6IC1wIG91dF90cmltbWVkLyR7U0FNUExFfV9SMi50cmltbWVkLmZhc3RxLmd6IC4uL3JlYWRzLyR7U0FNUExFfV9SMS5mYXN0cS5neiAuLi9yZWFkcy8ke1NBTVBMRX1fUjIuZmFzdHEuZ3oKCiAgICBTQU1QTEU9c2FtcGxlXzA0CiAgICBjdXRhZGFwdCAtYSBBR0FUQ0dHQUFHQUcgLUEgQUdBVENHR0FBR0FHIC1vIG91dF90cmltbWVkLyR7U0FNUExFfV9SMS50cmltbWVkLmZhc3RxLmd6IC1wIG91dF90cmltbWVkLyR7U0FNUExFfV9SMi50cmltbWVkLmZhc3RxLmd6IC4uL3JlYWRzLyR7U0FNUExFfV9SMS5mYXN0cS5neiAuLi9yZWFkcy8ke1NBTVBMRX1fUjIuZmFzdHEuZ3oKCjxicj4KCkFub3RoZXIgc29sdXRpb24gaXMgdG8gY3JlYXRlIGEgZm9yLWxvb3Agd2l0aCBvdXIgYmFzaCB2YXJpYWJsZSBhbmQgQ3V0YWRhcHQgY29tbWFuZC4gRS5nLgoKICAgIGZvciBTQU1QTEUgaW4gc2FtcGxlXzAyIHNhbXBsZV8wMyBzYW1wbGVfMDQKICAgICAgICBkbwogICAgICAgIGN1dGFkYXB0IC1hIEFHQVRDR0dBQUdBRyAtQSBBR0FUQ0dHQUFHQUcgXAogICAgICAgIC1vIG91dF90cmltbWVkLyR7U0FNUExFfV9SMS50cmltbWVkLmZhc3RxLmd6IC1wIG91dF90cmltbWVkLyR7U0FNUExFfV9SMi50cmltbWVkLmZhc3RxLmd6IFwKICAgICAgICAuLi9yZWFkcy8ke1NBTVBMRX1fUjEuZmFzdHEuZ3ogLi4vcmVhZHMvJHtTQU1QTEV9X1IyLmZhc3RxLmd6CiAgICBkb25lCgo8YnI+Cgo+IEhlbHBlciBIaW50OiBJZiBzdWdnZXN0aW5nIGEgZm9yLWxvb3AgYXBwcm9hY2gsIGl0IGNhbiBiZSBoZWxwZnVsIHRvIGJ1aWxkIHVwIGEgImRyeS1ydW4iIGNvbW1hbmQgYXMgYSB0ZXN0IGNhc2UsIHRvIGdldCBsZWFybmVycyB0byBiZSBtb3JlIGNvZ25pemFudCBvZiB3aGF0IHRoZWlyIGNvZGUgd2lsbCBkby4gRWNob2luZyBmaWxlbmFtZXMgZmlyc3QgbWlnaHQgYmUgYSBnb29kIHN1Z2dlc3Rpb24uIAoKPGJyPgo=</div>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("Module02b_breakout01_sol.md");
+});
+</script>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

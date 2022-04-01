@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="UM Bioinformatics Core" />
+
+<meta name="date" content="2022-03-15" />
+
+<title>Day 3 - Module 09 Heatmap</title>
+
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link rel="shortcut icon" href="favicon-16x16.png" />
+<!--
+Favicon from
+https://twemoji.twitter.com/
+https://favicon.io/emoji-favicons/dna/
+-->
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">RNA-Seq Demystified</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="Module00_Introduction.html">Intro</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Sequence QC
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Module01_Warming_Up.html">Warming up</a>
+    </li>
+    <li>
+      <a href="Module02_QC.html">Quality Control</a>
+    </li>
+    <li>
+      <a href="Module02optional_Cutadapt_MoreQC.html">Optional: Cutadapt/MoreQC</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Alignment
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Module03_Reference_Genomes.html">Reference Genomes</a>
+    </li>
+    <li>
+      <a href="Module04_Alignment.html">Alignment/Quantification (STAR/RSEM)</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Quantification
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Module05_MultiQC_and_Count_Matrix.html">Count matrix / Alignment QC</a>
+    </li>
+    <li>
+      <a href="Module05optional_Additional_Details.html">Optional: Additional details</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Groups/Model
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Module06_DEAnalysisSetup.html">Introduction to DESeq2</a>
+    </li>
+    <li>
+      <a href="Module07_DESeq2Init.html">DESeq2 Initialization</a>
+    </li>
+    <li>
+      <a href="Module08_DESeq2DE.html">Count Normalizations and DESeq2 model fitting</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Expression plots
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Module09_SampleQCViz.html">Sample Visualizations for QC</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Diff Expression
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Module10_DEComparisons.html">Comparisons</a>
+    </li>
+    <li>
+      <a href="Module11_DEVisualizations.html">DE Visiualization and Annotation</a>
+    </li>
+    <li>
+      <a href="Module11X_BonusContent.html">Bonus content</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="Module99_Wrap_up.html">Wrap up</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Day 3 - Module 09 Heatmap</h1>
+<h4 class="author">UM Bioinformatics Core</h4>
+<h4 class="date">2022-03-15</h4>
+
+</div>
+
+
+<style type="text/css">
+body{ /* Normal  */
+      font-size: 14pt;
+  }
+pre {
+  font-size: 12pt
+}
+code.r{
+  font-size: 12pt;
+}
+</style>
+<!--- Allow the page to be wider --->
+<style>
+    body .main-container {
+        max-width: 1200px;
+    }
+</style>
+<p><br></p>
+<div id="breakout-exercise-1---heatmap-of-top-genes" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> [Breakout Exercise 1] - Heatmap of top genes</h1>
+<p><br></p>
+<p><strong>15 Minutes</strong></p>
+<p><br></p>
+<p>It can be useful to visualize to visualize how our samples organize along with the expression pattern of individual genes. We will create a heatmap of the top most variable genes using the <code>pheatmap</code> function.</p>
+<p><br></p>
+<div id="instructions" class="section level3" number="1.0.1">
+<h3><span class="header-section-number">1.0.1</span> Instructions:</h3>
+<p><br></p>
+<ul>
+<li>One group member should share their screen in the breakout room. If nobody volunteers, a helper may randomly select someone.</li>
+<li>The group members should discuss the exercise and work together to find a solution.</li>
+<li>If there is time after a solution is found, allow all members to complete the exercise.</li>
+</ul>
+<p><br></p>
+<ul>
+<li>First, create a object named <code>topVarGenes</code> that stores the top <strong>50</strong> most variable genes from our rlog normalized data (note that each row of <code>rld</code> corresponds to a gene).</li>
+<li>Work from the inside to the outside when stringing together commands and test out each part to ensure the commands you enter are having the expected behavior.</li>
+</ul>
+<blockquote>
+<p>Hint:</p>
+<p>The command <code>rowVars(assay(rld))</code> will return the row variance values, the command <code>base::order</code> will return an index of the input re-arranged into accending or decending order, and the <code>head</code> command or index referencing can be used to select the firstor last part of several data types.</p>
+</blockquote>
+<p><br></p>
+<details>
+<summary>
+<em>Click for solution</em>
+</summary>
+<p>Helpers - it may be helpful to guide learners through testing the steps needed to select the top 50 most variable genes. The below example is one possible solution.</p>
+<pre class="r"><code>topVarGenes = rowVars(assay(rld))
+head(topVarGenes)</code></pre>
+<pre><code>## [1] 0.008608561 1.734191622 0.037923016 0.114943172 0.019207105 0.149559602</code></pre>
+<pre class="r"><code>orderedVars = order(topVarGenes)
+head(orderedVars)</code></pre>
+<pre><code>## [1] 16161 18665 18695 18933 19009 19034</code></pre>
+<pre class="r"><code>sortedVars = sort(topVarGenes)
+head(sortedVars)</code></pre>
+<pre><code>## [1] 0.0005250999 0.0008457552 0.0008457552 0.0008457552 0.0008457552 0.0008457552</code></pre>
+<pre class="r"><code>tail(sortedVars)</code></pre>
+<pre><code>## [1] 11.10653 14.23099 14.42485 14.67978 15.49938 15.74445</code></pre>
+<pre class="r"><code>?order
+orderedVars = order(topVarGenes, decreasing = TRUE)
+head(topVarGenes[orderedVars])</code></pre>
+<pre><code>## [1] 15.74445 15.49938 14.67978 14.42485 14.23099 11.10653</code></pre>
+<pre class="r"><code>orderedMat = assay(rld)[orderedVars, ]
+head(orderedMat)</code></pre>
+<pre><code>##                    Sample_116498 Sample_116499 Sample_116500 Sample_116501 Sample_116502
+## ENSMUSG00000069917      7.386969      7.592002      7.421841      7.658291      9.096951
+## ENSMUSG00000052305      7.545034      7.866700      7.553335      7.999982      9.158207
+## ENSMUSG00000073940      5.660694      5.948358      5.642725      6.041644      6.784668
+## ENSMUSG00000006574      5.924567      6.076577      6.030227      5.926847      7.300111
+## ENSMUSG00000069919      6.208442      6.407137      6.469322      6.382475      7.472736
+## ENSMUSG00000032496      4.325376      4.451341      4.396189      4.708752      5.339877
+##                    Sample_116503 Sample_116504 Sample_116505 Sample_116506 Sample_116507
+## ENSMUSG00000069917      8.744320      16.24134      17.75598      17.41340     10.595285
+## ENSMUSG00000052305      8.866311      16.38642      17.87966      17.49616     10.639776
+## ENSMUSG00000073940      6.828258      14.15300      15.68239      15.25716      8.527179
+## ENSMUSG00000006574      6.957638      14.03874      15.81059      15.51719      8.937274
+## ENSMUSG00000069919      7.135661      14.57034      15.92302      15.70450      9.120502
+## ENSMUSG00000032496      4.540770      11.33823      12.53432      12.74284      6.293183
+##                    Sample_116508 Sample_116509
+## ENSMUSG00000069917      9.845426     11.396878
+## ENSMUSG00000052305     10.043313     11.651572
+## ENSMUSG00000073940      8.288975      9.536873
+## ENSMUSG00000006574      8.833479     10.522213
+## ENSMUSG00000069919      8.615545     10.586671
+## ENSMUSG00000032496      5.519366      8.619501</code></pre>
+<pre class="r"><code># 
+orderedMat = orderedMat[1:50, ]
+
+## Alternatively
+orderedMat = head(orderedMat, 50)</code></pre>
+</details>
+<p><br></p>
+<ul>
+<li>Next, use <code>pheatmap</code> to plot the selected <code>topVarGenes</code> from <code>rld</code>. If you have time, try to scale by row to enhance any clusters of genes with similar expression across samples.</li>
+</ul>
+<p><br></p>
+<blockquote>
+<p>Hint:</p>
+<p>We can use <code>assay(rld)</code> to access the matrix of normalized data and we can use bracket notation ([rows,]) and the list of rows stored in <code>topVarGene</code> to only provide data for the 50 genes of interest.</p>
+</blockquote>
+<p><br></p>
+<details>
+<summary>
+<em>Click for solution</em>
+</summary>
+<pre class="r"><code># plot with no arguments
+pheatmap(orderedMat)</code></pre>
+<p><img src="Module09a_breakout_files/figure-html/TestPheatmap-1.png" width="672" /></p>
+<pre class="r"><code># plots with row scaled and assigned to &#39;p&#39; to make writing to file easier
+p &lt;- pheatmap(assay(rld)[topVarGenes,], scale = &quot;row&quot;)</code></pre>
+<img src="Module09a_breakout_files/figure-html/TestPheatmap-2.png" width="672" />
+</details>
+<p><br></p>
+<p><em>Note, as mentioned in this <a href="https://support.bioconductor.org/p/130336/">Biostars post</a>, scaling by row in <code>pheatmap</code> will automatically scale the data to Z-scores.</em></p>
+<p><br></p>
+<p>Finally, to <strong>output</strong> the plot to file, use the <code>pdf()</code> function:</p>
+<pre class="r"><code>pdf(file = paste0(plotPath, &#39;Top_heatmap_rlog_&#39;, Comparison, &#39;.pdf&#39;), onefile = TRUE)
+p
+dev.off()</code></pre>
+<pre><code>## quartz_off_screen 
+##                 2</code></pre>
+</div>
+</div>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiRGF5IDMgLSBNb2R1bGUgMDkgSGVhdG1hcCIKYXV0aG9yOiAiVU0gQmlvaW5mb3JtYXRpY3MgQ29yZSIKZGF0ZTogImByIFN5cy5EYXRlKClgIgpvdXRwdXQ6CiAgICAgICAgaHRtbF9kb2N1bWVudDoKICAgICAgICAgICAgaW5jbHVkZXM6CiAgICAgICAgICAgICAgICBpbl9oZWFkZXI6IGhlYWRlci5odG1sCiAgICAgICAgICAgIHRoZW1lOiBwYXBlcgogICAgICAgICAgICB0b2M6IHRydWUKICAgICAgICAgICAgdG9jX2RlcHRoOiA0CiAgICAgICAgICAgIHRvY19mbG9hdDogdHJ1ZQogICAgICAgICAgICBudW1iZXJfc2VjdGlvbnM6IHRydWUKICAgICAgICAgICAgZmlnX2NhcHRpb246IHRydWUKICAgICAgICAgICAgbWFya2Rvd246IEdGTQogICAgICAgICAgICBjb2RlX2Rvd25sb2FkOiB0cnVlCi0tLQo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgpib2R5eyAvKiBOb3JtYWwgICovCiAgICAgIGZvbnQtc2l6ZTogMTRwdDsKICB9CnByZSB7CiAgZm9udC1zaXplOiAxMnB0Cn0KY29kZS5yewogIGZvbnQtc2l6ZTogMTJwdDsKfQo8L3N0eWxlPgoKPCEtLS0gQWxsb3cgdGhlIHBhZ2UgdG8gYmUgd2lkZXIgLS0tPgo8c3R5bGU+CiAgICBib2R5IC5tYWluLWNvbnRhaW5lciB7CiAgICAgICAgbWF4LXdpZHRoOiAxMjAwcHg7CiAgICB9Cjwvc3R5bGU+Cgo8YnI+CgojIFtCcmVha291dCBFeGVyY2lzZSAxXSAtIEhlYXRtYXAgb2YgdG9wIGdlbmVzCgo8YnI+CgoKYGBge3IgTW9kdWxlcywgZXZhbD1UUlVFLCBlY2hvPUZBTFNFLCBtZXNzYWdlPUZBTFNFLCB3YXJuaW5nPUZBTFNFfQpsaWJyYXJ5KERFU2VxMikKbGlicmFyeShnZ3Bsb3QyKQpsaWJyYXJ5KHRpZHlyKQpsaWJyYXJ5KGRwbHlyKQpsaWJyYXJ5KG1hdHJpeFN0YXRzKQpsaWJyYXJ5KGdncmVwZWwpCmxpYnJhcnkocGhlYXRtYXApCmxpYnJhcnkoUkNvbG9yQnJld2VyKQpsb2FkKCJyZGF0YS9SdW5uaW5nRGF0YS5SRGF0YSIpCmBgYAoKCioqMTUgTWludXRlcyoqCgo8YnI+CgpJdCBjYW4gYmUgdXNlZnVsIHRvIHZpc3VhbGl6ZSB0byB2aXN1YWxpemUgaG93IG91ciBzYW1wbGVzIG9yZ2FuaXplIGFsb25nIHdpdGggdGhlIGV4cHJlc3Npb24gcGF0dGVybiBvZiBpbmRpdmlkdWFsIGdlbmVzLiBXZSB3aWxsIGNyZWF0ZSBhIGhlYXRtYXAgb2YgdGhlIHRvcCBtb3N0IHZhcmlhYmxlIGdlbmVzIHVzaW5nIHRoZSBgcGhlYXRtYXBgIGZ1bmN0aW9uLgoKPGJyPgoKIyMjIEluc3RydWN0aW9uczoKCjxicj4KCi0gT25lIGdyb3VwIG1lbWJlciBzaG91bGQgc2hhcmUgdGhlaXIgc2NyZWVuIGluIHRoZSBicmVha291dCByb29tLiBJZiBub2JvZHkgdm9sdW50ZWVycywgYSBoZWxwZXIgbWF5IHJhbmRvbWx5IHNlbGVjdCBzb21lb25lLgotIFRoZSBncm91cCBtZW1iZXJzIHNob3VsZCBkaXNjdXNzIHRoZSBleGVyY2lzZSBhbmQgd29yayB0b2dldGhlciB0byBmaW5kIGEgc29sdXRpb24uCi0gSWYgdGhlcmUgaXMgdGltZSBhZnRlciBhIHNvbHV0aW9uIGlzIGZvdW5kLCBhbGxvdyBhbGwgbWVtYmVycyB0byBjb21wbGV0ZSB0aGUgZXhlcmNpc2UuCgo8YnI+CgotIEZpcnN0LCBjcmVhdGUgYSBvYmplY3QgbmFtZWQgYHRvcFZhckdlbmVzYCB0aGF0IHN0b3JlcyB0aGUgdG9wICoqNTAqKiBtb3N0IHZhcmlhYmxlIGdlbmVzIGZyb20gb3VyIHJsb2cgbm9ybWFsaXplZCBkYXRhIChub3RlIHRoYXQgZWFjaCByb3cgb2YgYHJsZGAgY29ycmVzcG9uZHMgdG8gYSBnZW5lKS4KLSBXb3JrIGZyb20gdGhlIGluc2lkZSB0byB0aGUgb3V0c2lkZSB3aGVuIHN0cmluZ2luZyB0b2dldGhlciBjb21tYW5kcyBhbmQgdGVzdCBvdXQgZWFjaCBwYXJ0IHRvIGVuc3VyZSB0aGUgY29tbWFuZHMgeW91IGVudGVyIGFyZSBoYXZpbmcgdGhlIGV4cGVjdGVkIGJlaGF2aW9yLgoKPiBIaW50Ogo+IAo+IFRoZSBjb21tYW5kIGByb3dWYXJzKGFzc2F5KHJsZCkpYCB3aWxsIHJldHVybiB0aGUgcm93IHZhcmlhbmNlIHZhbHVlcywgdGhlIGNvbW1hbmQgYGJhc2U6Om9yZGVyYCB3aWxsIHJldHVybiBhbiBpbmRleCBvZiB0aGUgaW5wdXQgcmUtYXJyYW5nZWQgaW50byBhY2NlbmRpbmcgb3IgZGVjZW5kaW5nIG9yZGVyLCBhbmQgdGhlIGBoZWFkYCBjb21tYW5kIG9yIGluZGV4IHJlZmVyZW5jaW5nIGNhbiBiZSB1c2VkIHRvIHNlbGVjdCB0aGUgZmlyc3RvciBsYXN0IHBhcnQgb2Ygc2V2ZXJhbCBkYXRhIHR5cGVzLiAKCgo8YnI+Cgo8ZGV0YWlscz4KICAgIDxzdW1tYXJ5PipDbGljayBmb3Igc29sdXRpb24qPC9zdW1tYXJ5PgogICAgSGVscGVycyAtIGl0IG1heSBiZSBoZWxwZnVsIHRvIGd1aWRlIGxlYXJuZXJzIHRocm91Z2ggdGVzdGluZyB0aGUgc3RlcHMgbmVlZGVkIHRvIHNlbGVjdCB0aGUgdG9wIDUwIG1vc3QgdmFyaWFibGUgZ2VuZXMuIFRoZSBiZWxvdyBleGFtcGxlIGlzIG9uZSBwb3NzaWJsZSBzb2x1dGlvbi4KYGBge3IgVGVzdFNhbXBsZUhlYXRtYXB9CnRvcFZhckdlbmVzID0gcm93VmFycyhhc3NheShybGQpKQpoZWFkKHRvcFZhckdlbmVzKQoKb3JkZXJlZFZhcnMgPSBvcmRlcih0b3BWYXJHZW5lcykKaGVhZChvcmRlcmVkVmFycykKCnNvcnRlZFZhcnMgPSBzb3J0KHRvcFZhckdlbmVzKQpoZWFkKHNvcnRlZFZhcnMpCnRhaWwoc29ydGVkVmFycykKCj9vcmRlcgpvcmRlcmVkVmFycyA9IG9yZGVyKHRvcFZhckdlbmVzLCBkZWNyZWFzaW5nID0gVFJVRSkKaGVhZCh0b3BWYXJHZW5lc1tvcmRlcmVkVmFyc10pCgpvcmRlcmVkTWF0ID0gYXNzYXkocmxkKVtvcmRlcmVkVmFycywgXQpoZWFkKG9yZGVyZWRNYXQpCgojIApvcmRlcmVkTWF0ID0gb3JkZXJlZE1hdFsxOjUwLCBdCgojIyBBbHRlcm5hdGl2ZWx5Cm9yZGVyZWRNYXQgPSBoZWFkKG9yZGVyZWRNYXQsIDUwKQoKYGBgCjwvZGV0YWlscz4KCjxicj4KCgotIE5leHQsIHVzZSBgcGhlYXRtYXBgIHRvIHBsb3QgdGhlIHNlbGVjdGVkIGB0b3BWYXJHZW5lc2AgZnJvbSBgcmxkYC4gSWYgeW91IGhhdmUgdGltZSwgdHJ5IHRvIHNjYWxlIGJ5IHJvdyB0byBlbmhhbmNlIGFueSBjbHVzdGVycyBvZiBnZW5lcyB3aXRoIHNpbWlsYXIgZXhwcmVzc2lvbiBhY3Jvc3Mgc2FtcGxlcy4gIAoKPGJyPiAKCj4gSGludDoKPgo+IFdlIGNhbiB1c2UgYGFzc2F5KHJsZClgIHRvIGFjY2VzcyB0aGUgbWF0cml4IG9mIG5vcm1hbGl6ZWQgZGF0YSBhbmQgd2UgY2FuIHVzZSBicmFja2V0IG5vdGF0aW9uIChbcm93cyxdKSBhbmQgdGhlIGxpc3Qgb2Ygcm93cyBzdG9yZWQgaW4gYHRvcFZhckdlbmVgIHRvIG9ubHkgcHJvdmlkZSBkYXRhIGZvciB0aGUgNTAgZ2VuZXMgb2YgaW50ZXJlc3QuCj4gCgo8YnI+Cgo8ZGV0YWlscz4KICAgIDxzdW1tYXJ5PipDbGljayBmb3Igc29sdXRpb24qPC9zdW1tYXJ5PgpgYGB7ciBUZXN0UGhlYXRtYXB9CiMgcGxvdCB3aXRoIG5vIGFyZ3VtZW50cwpwaGVhdG1hcChvcmRlcmVkTWF0KQoKIyBwbG90cyB3aXRoIHJvdyBzY2FsZWQgYW5kIGFzc2lnbmVkIHRvICdwJyB0byBtYWtlIHdyaXRpbmcgdG8gZmlsZSBlYXNpZXIKcCA8LSBwaGVhdG1hcChhc3NheShybGQpW3RvcFZhckdlbmVzLF0sIHNjYWxlID0gInJvdyIpCmBgYAo8L2RldGFpbHM+Cgo8YnI+CgoqTm90ZSwgYXMgbWVudGlvbmVkIGluIHRoaXMgW0Jpb3N0YXJzIHBvc3RdKGh0dHBzOi8vc3VwcG9ydC5iaW9jb25kdWN0b3Iub3JnL3AvMTMwMzM2LyksIHNjYWxpbmcgYnkgcm93IGluIGBwaGVhdG1hcGAgd2lsbCBhdXRvbWF0aWNhbGx5IHNjYWxlIHRoZSBkYXRhIHRvIFotc2NvcmVzLioKCjxicj4KCkZpbmFsbHksIHRvICoqb3V0cHV0KiogdGhlIHBsb3QgdG8gZmlsZSwgdXNlIHRoZSBgcGRmKClgIGZ1bmN0aW9uOgpgYGB7ciBFeGVyY2lzZU91dHB1dH0KcGRmKGZpbGUgPSBwYXN0ZTAocGxvdFBhdGgsICdUb3BfaGVhdG1hcF9ybG9nXycsIENvbXBhcmlzb24sICcucGRmJyksIG9uZWZpbGUgPSBUUlVFKQpwCmRldi5vZmYoKQpgYGAKCgoKICAKYGBge3IgV3JpdGVPdXQuUkRhdGEsIGV2YWw9RkFMU0UsIGVjaG89RkFMU0UsIG1lc3NhZ2U9RkFMU0UsIHdhcm5pbmc9RkFMU0V9CiNIaWRkZW4gY29kZSBibG9jayB0byB3cml0ZSBvdXQgZGF0YSBmb3Iga25pdHRpbmcKc2F2ZS5pbWFnZShmaWxlID0gInJkYXRhL1J1bm5pbmdEYXRhLlJEYXRhIikKYGBgCgoK</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("Module09a_breakout.Rmd");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

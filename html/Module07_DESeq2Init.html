@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="UM Bioinformatics Core" />
+
+<meta name="date" content="2022-03-14" />
+
+<title>Day 2 - Module 07: DESeq2 Initialization</title>
+
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link rel="shortcut icon" href="favicon-16x16.png" />
+<!--
+Favicon from
+https://twemoji.twitter.com/
+https://favicon.io/emoji-favicons/dna/
+-->
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">RNA-Seq Demystified</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="Module00_Introduction.html">Intro</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Sequence QC
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Module01_Warming_Up.html">Warming up</a>
+    </li>
+    <li>
+      <a href="Module02_QC.html">Quality Control</a>
+    </li>
+    <li>
+      <a href="Module02optional_Cutadapt_MoreQC.html">Optional: Cutadapt/MoreQC</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Alignment
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Module03_Reference_Genomes.html">Reference Genomes</a>
+    </li>
+    <li>
+      <a href="Module04_Alignment.html">Alignment/Quantification (STAR/RSEM)</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Quantification
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Module05_MultiQC_and_Count_Matrix.html">Count matrix / Alignment QC</a>
+    </li>
+    <li>
+      <a href="Module05optional_Additional_Details.html">Optional: Additional details</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Groups/Model
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Module06_DEAnalysisSetup.html">Introduction to DESeq2</a>
+    </li>
+    <li>
+      <a href="Module07_DESeq2Init.html">DESeq2 Initialization</a>
+    </li>
+    <li>
+      <a href="Module08_DESeq2DE.html">Count Normalizations and DESeq2 model fitting</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Expression plots
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Module09_SampleQCViz.html">Sample Visualizations for QC</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Diff Expression
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Module10_DEComparisons.html">Comparisons</a>
+    </li>
+    <li>
+      <a href="Module11_DEVisualizations.html">DE Visiualization and Annotation</a>
+    </li>
+    <li>
+      <a href="Module11X_BonusContent.html">Bonus content</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="Module99_Wrap_up.html">Wrap up</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Day 2 - Module 07: DESeq2 Initialization</h1>
+<h4 class="author">UM Bioinformatics Core</h4>
+<h4 class="date">2022-03-14</h4>
+
+</div>
+
+
+<style type="text/css">
+body{ /* Normal  */
+      font-size: 14pt;
+  }
+pre {
+  font-size: 12pt
+}
+code.r{
+  font-size: 12pt;
+}
+</style>
+<!--- Allow the page to be wider --->
+<style>
+    body .main-container {
+        max-width: 1200px;
+    }
+</style>
+<blockquote>
+<h1 id="objectives">Objectives:</h1>
+<ul>
+<li>‘Unblind’ our sample IDs</li>
+<li>Understand possible confounding factors</li>
+<li>Understand the impact of batches or additional covariates</li>
+<li>Filter count table</li>
+</ul>
+</blockquote>
+<div id="differential-expression-workflow" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Differential Expression Workflow</h1>
+<p>Here we will proceed setting up the inputs needed to initialize DESeq2 before testing for differential expression.</p>
+<p><img src="images/wayfinder/wayfinder-04.png" style="width:75.0%" /></p>
+<hr />
+</div>
+<div id="deseq2-objects" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> DESeq2 objects</h1>
+<p>Bioconductor software packages often define and use custom classes within R to store data in a way that better fits expectations around biological data, such as illustrated below from <a href="https://www.nature.com/articles/nmeth.3252">Huber et al. 2015</a>.</p>
+<p><img src="images/SummarizedExperiment.jpg" /></p>
+<p>These custom data structures have pre-specified data slots, which hold specific types/classes of data and therefore can be more easily accessed by functions from the same package.</p>
+<p>To create the DESeqDataSet we need two tables:</p>
+<ol style="list-style-type: decimal">
+<li><p>a count matrix (which we already loaded)</p></li>
+<li><p>a table that assigns the condition labels for each sample (which we will generate below).</p></li>
+</ol>
+</div>
+<div id="sample-information" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Sample Information</h1>
+<p>For this representative dataset, we have somewhat limited information from <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE144588">public records</a>, but we know these samples were isolated from either wild-type or knock-out T-cells harvested from control mice or isolated from previously transplanted mice.</p>
+<div id="generate-sample-table" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Generate Sample Table</h2>
+<p>Our next step will be to describe the samples within our R session, so that we make the proper comparisons with DESeq2. The first step is to check the sample names from the count table.</p>
+<pre class="r"><code>colnames(CountTable)</code></pre>
+<pre><code>##  [1] &quot;Sample_116498&quot; &quot;Sample_116499&quot; &quot;Sample_116500&quot; &quot;Sample_116501&quot; &quot;Sample_116502&quot; &quot;Sample_116503&quot;
+##  [7] &quot;Sample_116504&quot; &quot;Sample_116505&quot; &quot;Sample_116506&quot; &quot;Sample_116507&quot; &quot;Sample_116508&quot; &quot;Sample_116509&quot;</code></pre>
+<p>When we looked at our <code>CountTable</code>, our samples are blinded, e.g. the sample names don’t correspond to any of the expected treatment groups. So we will need to specify which sample IDs connect to which experimental conditions.</p>
+<p>Since there are a large number of samples (and to increase the reproduciblity of our code), we would generate a sample information table in excel and exported it as a ‘.csv’ file so that it is in a ‘plain text’ format that can be easily loaded into our R session.</p>
+<details>
+<summary>
+<em>Click for sample naming conventions</em>
+</summary>
+<p>A critical aspect of creating a sample sheet in excel is to avoid using spaces or characters that have special uses in R, such as dashes or parentheses. Simple sample group names are best. If you are unfamilar with ‘.csv’ files or how to generate them, there are <a href="https://www.wikihow.com/Create-a-CSV-File">tutorials</a> available to guide you through the process.</p>
+</details>
+<p>We’ll load our ‘pre-made’ sample information sheet, <code>SampleInfo_trimmed.csv</code>, to unblind our samples.</p>
+<pre class="r"><code>MetaInfo &lt;- read.table(&quot;data/SampleInfo_trimmed.csv&quot;, 
+                       sep = &quot;,&quot;, 
+                       header = TRUE, 
+                       row.names = 1)</code></pre>
+<pre class="r"><code>head(MetaInfo)</code></pre>
+<pre><code>##               Gtype      Tx   Gtype.Tx
+## Sample_116498    wt control wt.control
+## Sample_116499    wt control wt.control
+## Sample_116500    wt control wt.control
+## Sample_116501    ko control ko.control
+## Sample_116502    ko control ko.control
+## Sample_116503    ko control ko.control</code></pre>
+<p><strong>Checkpoint</strong>: <em>If you have loaded <code>MetaInfo</code>, please indicate with the green ‘check’ button. Otherwise, please use the red ‘x’ button to have the command repeated</em></p>
+<p>How are the treatment groups encoded in the table we just loaded?</p>
+<pre class="r"><code>unique(MetaInfo$Gtype.Tx)</code></pre>
+<pre><code>## [1] &quot;wt.control&quot; &quot;ko.control&quot; &quot;wt.Tx&quot;      &quot;ko.Tx&quot;</code></pre>
+<p>Next, we’ll format our table so that we have the appropriate data type (a ordered <a href="https://swcarpentry.github.io/r-novice-inflammation/12-supp-factors/">factor</a>) for DESeq2 to recognize our treatment groups and appropriately compare samples.</p>
+<pre class="r"><code>MetaInfo$Gtype.Tx &lt;- factor(MetaInfo$Gtype.Tx, 
+                            levels = c( &quot;wt.Tx&quot;, &quot;ko.Tx&quot;, &quot;ko.control&quot;, &quot;wt.control&quot; ))
+
+unique(MetaInfo$Gtype.Tx)</code></pre>
+<pre><code>## [1] wt.control ko.control wt.Tx      ko.Tx     
+## Levels: wt.Tx ko.Tx ko.control wt.control</code></pre>
+<p>Notice that we set the levels in a particular order. This is important for setting the ‘Control’ group as the denominator in our comparisons when we setup our DESeq2 model. The group name should be last if there are only two groups &amp; first if there are only three groups to generate default pair-wise comparisons.</p>
+<p>Before we proceed, we need to make sure that the sample labels (column names) in the count table match the sample information table (row names), including the order.</p>
+<p>If the sample labels don’t match, then we will see an error and need to correct the labels prior to proceeding. Checking the sample information table is extremely important to ensure that the correct samples are grouped together for comparisons.</p>
+<pre class="r"><code>all(colnames(data) == rownames(MetaInfo))</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<p>This line of code checks if both the identity and order match between our <code>data</code> table and our <code>MetaInfo</code>.</p>
+<p><strong>Checkpoint</strong>: <em>If you your sample info check returns <code>TRUE</code>, please indicate with the green ‘yes’ button. Otherwise, please use the red ‘x’ button to have the command repeated</em></p>
+</div>
+</div>
+<div id="creating-deseq2-object" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Creating DESeq2 object</h1>
+<p>To create the DESeqDataSet we will need the count matrix, the “MetaInfo” sample data table, and we will also need a <strong>design formula</strong> to specify our model.</p>
+<div id="making-model-choices" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> Making model choices</h2>
+<p>The design formula specified informs many of the DESeq2 functions how to treat the samples in the analysis, specifically which column in the samaple metadata table contains the experimental design.</p>
+<p>In this case, we aren’t aware of any <a href="https://methods-sagepub-com.proxy.lib.umich.edu/reference/encyc-of-research-design/n85.xml"><strong>covariates</strong></a> that should be considered in our comparisons. However, if there are additional attributes of the samples that may impact the DE comparisons, like sex, date of collection, or patient of origin, these should be added as <a href="https://support.bioconductor.org/p/75309/">additional columns</a> in the sample information table and <a href="https://support.bioconductor.org/p/98700/">added to a design formula</a>.</p>
+<details>
+<summary>
+<em>Click for Note</em>
+</summary>
+More complex questions, including determining if a fold-change due to treatment is different across groups, such as patient samples, “interaction terms” can be included in the design formula, such as outlined in <a href="https://support.bioconductor.org/p/98628/">this support thread</a>.
+</details>
+<p>The design formula specifies the column(s) in the metadata table and how they should be used in the analysis. For our dataset we only have one column we are interested in, that is <code>Gtype.Tx</code>. This column has three factor levels, which tells DESeq2 that for each gene we want to evaluate gene expression change with respect to these different levels.</p>
+<pre class="r"><code>## Create DESeq object, line by line
+dds &lt;- DESeqDataSetFromMatrix(countData = CountTable,
+                              colData = MetaInfo,
+                              design = ~ Gtype.Tx)</code></pre>
+<pre><code>## converting counts to integer mode</code></pre>
+<p><strong>Checkpoint</strong>: <em>If you see <code>dds</code> in your environment panel, please indicate with the green ‘check’ button. Otherwise, please use use the red ‘x’ button in your zoom reaction panel to have this step repeated. You can use the red ‘x’ to be put in a breakout room for help</em></p>
+<details>
+<summary>
+<em>Click for how to model batch effects with DESeq2</em>
+</summary>
+<p>Differences between samples can also be due to technical reasons, such as collection on different days or different sequencing runs. Differences between samples that are not due to biological factors as called <strong>batch effects</strong>. We can include batch effects in our design model in the same way as covariates, as long as the technical groups do not overlap, or <strong>confound</strong>, the biological treatment groups.<br />
+Let’s try add some additional meta-data information where we have counfounding batch effects and create another DESeq2 object.</p>
+<pre class="r"><code>#MetaInfo
+MetaInfo$batch &lt;- factor(c(rep(c(&quot;Day1&quot;), 3),
+                       rep(c(&quot;Day2&quot;), 3),
+                       rep(c(&quot;Day3&quot;), 3),
+                       rep(c(&quot;Day4&quot;), 3)),
+                     levels = c(&quot;Day1&quot;, &quot;Day2&quot;, &quot;Day3&quot;, &quot;Day4&quot;))
+
+dds_batch &lt;- DESeqDataSetFromMatrix(countData = CountTable,
+                      colData = MetaInfo,
+                      design = ~ batch + Gtype.Tx)</code></pre>
+Notice that if you run the above command, the error indicates that variables in the design formula “are linear combinations” which means that batch and condition are correlated and the function is unable to fill in a required ‘slot’ in the DESeq2 object. So if batches are <strong>not balanced</strong> by including both case and controls (like in the patient covariate example) then we cannot control for those technical effects through statistical modeling.
+</details>
+<hr />
+</div>
+</div>
+<div id="pre-filtering" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Pre-filtering</h1>
+<p>While not necessary, <a href="http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#pre-filtering">pre-filtering</a> the count table helps to not only reduce the size of the DESeq2 object, but also gives you a sense of how many genes were reasonably measured at the sequencing depth generated for your samples.</p>
+<p>Here we will filter out any genes that have less than 10 counts across any of the samples. This is a fairly standard level of filtering, but can filter data less/more depending on quality control metrics from alignments and sequencing depth or total number of samples.</p>
+<pre class="r"><code>keep &lt;- rowSums(counts(dds)) &gt;= 10
+dds &lt;- dds[keep,]</code></pre>
+<p>Notice how the <code>dds</code> object now has less elements after filtering, so there were quite a number of genes that were not measured in our experiment.</p>
+<p><strong>Checkpoint</strong>: <em>Questions?</em></p>
+<div id="optional-exercise-adding-covariates-to-sample-information" class="section level4" number="5.0.0.1">
+<h4><span class="header-section-number">5.0.0.1</span> [Optional exercise]: Adding covariates to sample information</h4>
+<p>You can test out manually adding a covariate to our <code>MetaInfo</code> data table and then create a new DESeq2 object.</p>
+<details>
+<summary>
+<em>Click for how to add a covariate to sample information</em>
+</summary>
+<pre class="r"><code>head(MetaInfo)
+MetaInfo$patient &lt;- factor(rep(c(&quot;P1&quot;, &quot;P2&quot;, &quot;P3&quot;), 4), levels = c(&quot;P1&quot;, &quot;P2&quot;, &quot;P3&quot;))
+head(MetaInfo)</code></pre>
+<p>Notice how we avoid starting with a number our patient covariate labels since R doesn’t like that.</p>
+<pre class="r"><code>dds_patient &lt;- DESeqDataSetFromMatrix(countData = CountTable,
+                          colData = MetaInfo,
+                          design = ~ patient + Gtype.Tx)</code></pre>
+Now we have specified for DESeq2 that we want to test for the effect of the condition (the last factor) while controlling for the effect of the patient origin (the first factor).
+</details>
+</div>
+</div>
+<div id="summary" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> Summary</h1>
+<p>In this section, we:</p>
+<ul>
+<li>Loaded the necessary input files into our R session<br />
+</li>
+<li>Discussed model design for DESeq2<br />
+</li>
+<li>Initialized a DESeq2 data set<br />
+</li>
+<li>Filtered our count data</li>
+</ul>
+<p>Now that we’ve created our DESeq2 objects, including specifying what model is appropriate for our data, and filtered our data, we can proceed with assessing the impact of the experimental conditions on gene expression across our samples.</p>
+<hr />
+</div>
+<div id="sources" class="section level1" number="7">
+<h1><span class="header-section-number">7</span> Sources</h1>
+<div id="training-resources-used-to-develop-materials" class="section level2" number="7.1">
+<h2><span class="header-section-number">7.1</span> Training resources used to develop materials</h2>
+<ul>
+<li>HBC DGE setup: <a href="https://hbctraining.github.io/DGE_workshop/lessons/01_DGE_setup_and_overview.html" class="uri">https://hbctraining.github.io/DGE_workshop/lessons/01_DGE_setup_and_overview.html</a></li>
+<li>HBC Count Normalization: <a href="https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html" class="uri">https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html</a></li>
+<li>DESeq2 standard vignette: <a href="http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html" class="uri">http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html</a></li>
+<li>DESeq2 beginners vignette: <a href="https://bioc.ism.ac.jp/packages/2.14/bioc/vignettes/DESeq2/inst/doc/beginner.pdf" class="uri">https://bioc.ism.ac.jp/packages/2.14/bioc/vignettes/DESeq2/inst/doc/beginner.pdf</a></li>
+<li>Bioconductor RNA-seq Workflows: <a href="https://www.bioconductor.org/help/course-materials/2015/LearnBioconductorFeb2015/B02.1_RNASeq.html" class="uri">https://www.bioconductor.org/help/course-materials/2015/LearnBioconductorFeb2015/B02.1_RNASeq.html</a></li>
+<li>CCDL Gastric cancer training materials: <a href="https://alexslemonade.github.io/training-modules/RNA-seq/03-gastric_cancer_exploratory.nb.html" class="uri">https://alexslemonade.github.io/training-modules/RNA-seq/03-gastric_cancer_exploratory.nb.html</a></li>
+<li>CCDL Neuroblastoma training materials: <a href="https://alexslemonade.github.io/training-modules/RNA-seq/05-nb_cell_line_DESeq2.nb.html" class="uri">https://alexslemonade.github.io/training-modules/RNA-seq/05-nb_cell_line_DESeq2.nb.html</a></li>
+</ul>
+<hr />
+<p>These materials have been adapted and extended from materials listed above. These are open access materials distributed under the terms of the <a href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.</p>
+</div>
+</div>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiRGF5IDIgLSBNb2R1bGUgMDc6IERFU2VxMiBJbml0aWFsaXphdGlvbiIKYXV0aG9yOiAiVU0gQmlvaW5mb3JtYXRpY3MgQ29yZSIKZGF0ZTogImByIFN5cy5EYXRlKClgIgpvdXRwdXQ6CiAgICAgICAgaHRtbF9kb2N1bWVudDoKICAgICAgICAgICAgaW5jbHVkZXM6CiAgICAgICAgICAgICAgICBpbl9oZWFkZXI6IGhlYWRlci5odG1sCiAgICAgICAgICAgIHRoZW1lOiBwYXBlcgogICAgICAgICAgICB0b2M6IHRydWUKICAgICAgICAgICAgdG9jX2RlcHRoOiA0CiAgICAgICAgICAgIHRvY19mbG9hdDogdHJ1ZQogICAgICAgICAgICBudW1iZXJfc2VjdGlvbnM6IHRydWUKICAgICAgICAgICAgZmlnX2NhcHRpb246IHRydWUKICAgICAgICAgICAgbWFya2Rvd246IEdGTQogICAgICAgICAgICBjb2RlX2Rvd25sb2FkOiB0cnVlCi0tLQo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgpib2R5eyAvKiBOb3JtYWwgICovCiAgICAgIGZvbnQtc2l6ZTogMTRwdDsKICB9CnByZSB7CiAgZm9udC1zaXplOiAxMnB0Cn0KY29kZS5yewogIGZvbnQtc2l6ZTogMTJwdDsKfQo8L3N0eWxlPgoKPCEtLS0gQWxsb3cgdGhlIHBhZ2UgdG8gYmUgd2lkZXIgLS0tPgo8c3R5bGU+CiAgICBib2R5IC5tYWluLWNvbnRhaW5lciB7CiAgICAgICAgbWF4LXdpZHRoOiAxMjAwcHg7CiAgICB9Cjwvc3R5bGU+Cgo+ICMgT2JqZWN0aXZlczogICAgCj4gKiAnVW5ibGluZCcgb3VyIHNhbXBsZSBJRHMKPiAqIFVuZGVyc3RhbmQgcG9zc2libGUgY29uZm91bmRpbmcgZmFjdG9ycwo+ICogVW5kZXJzdGFuZCB0aGUgaW1wYWN0IG9mIGJhdGNoZXMgb3IgYWRkaXRpb25hbCBjb3ZhcmlhdGVzCj4gKiBGaWx0ZXIgY291bnQgdGFibGUKCmBgYHtyIExvYWRSdW5uaW5nRGF0YSwgZXZhbD1UUlVFLCBlY2hvPUZBTFNFLCBtZXNzYWdlPUZBTFNFLCB3YXJuaW5nPUZBTFNFfQpsaWJyYXJ5KERFU2VxMikKbG9hZCgicmRhdGEvUnVubmluZ0RhdGEuUkRhdGEiKQpgYGAKCgojIERpZmZlcmVudGlhbCBFeHByZXNzaW9uIFdvcmtmbG93CgpIZXJlIHdlIHdpbGwgcHJvY2VlZCBzZXR0aW5nIHVwIHRoZSBpbnB1dHMgbmVlZGVkIHRvIGluaXRpYWxpemUgREVTZXEyIGJlZm9yZSB0ZXN0aW5nIGZvciBkaWZmZXJlbnRpYWwgZXhwcmVzc2lvbi4KCiFbXSguL2ltYWdlcy93YXlmaW5kZXIvd2F5ZmluZGVyLTA0LnBuZyl7d2lkdGg9NzUlfQoKLS0tCgojIERFU2VxMiBvYmplY3RzCgpCaW9jb25kdWN0b3Igc29mdHdhcmUgcGFja2FnZXMgb2Z0ZW4gZGVmaW5lIGFuZCB1c2UgY3VzdG9tIGNsYXNzZXMgd2l0aGluIFIgdG8gc3RvcmUgZGF0YSBpbiBhIHdheSB0aGF0IGJldHRlciBmaXRzIGV4cGVjdGF0aW9ucyBhcm91bmQgYmlvbG9naWNhbCBkYXRhLCBzdWNoIGFzIGlsbHVzdHJhdGVkIGJlbG93IGZyb20gW0h1YmVyIGV0IGFsLiAyMDE1XShodHRwczovL3d3dy5uYXR1cmUuY29tL2FydGljbGVzL25tZXRoLjMyNTIpLgoKIVtdKC4vaW1hZ2VzL1N1bW1hcml6ZWRFeHBlcmltZW50LmpwZykKClRoZXNlIGN1c3RvbSBkYXRhIHN0cnVjdHVyZXMgaGF2ZSBwcmUtc3BlY2lmaWVkIGRhdGEgc2xvdHMsIHdoaWNoIGhvbGQgc3BlY2lmaWMgdHlwZXMvY2xhc3NlcyBvZiBkYXRhIGFuZCB0aGVyZWZvcmUgY2FuIGJlIG1vcmUgZWFzaWx5IGFjY2Vzc2VkIGJ5IGZ1bmN0aW9ucyBmcm9tIHRoZSBzYW1lIHBhY2thZ2UuCgpUbyBjcmVhdGUgdGhlIERFU2VxRGF0YVNldCB3ZSBuZWVkIHR3byB0YWJsZXM6CgoxLiBhIGNvdW50IG1hdHJpeCAod2hpY2ggd2UgYWxyZWFkeSBsb2FkZWQpCgoxLiBhIHRhYmxlIHRoYXQgYXNzaWducyB0aGUgY29uZGl0aW9uIGxhYmVscyBmb3IgZWFjaCBzYW1wbGUgKHdoaWNoIHdlIHdpbGwgZ2VuZXJhdGUgYmVsb3cpLgoKCiMgU2FtcGxlIEluZm9ybWF0aW9uCgpGb3IgdGhpcyByZXByZXNlbnRhdGl2ZSBkYXRhc2V0LCB3ZSBoYXZlIHNvbWV3aGF0IGxpbWl0ZWQgaW5mb3JtYXRpb24gZnJvbSBbcHVibGljIHJlY29yZHNdKGh0dHBzOi8vd3d3Lm5jYmkubmxtLm5paC5nb3YvZ2VvL3F1ZXJ5L2FjYy5jZ2k/YWNjPUdTRTE0NDU4OCksIGJ1dCB3ZSBrbm93IHRoZXNlIHNhbXBsZXMgd2VyZSBpc29sYXRlZCBmcm9tIGVpdGhlciB3aWxkLXR5cGUgb3Iga25vY2stb3V0IFQtY2VsbHMgaGFydmVzdGVkIGZyb20gY29udHJvbCBtaWNlIG9yIGlzb2xhdGVkIGZyb20gcHJldmlvdXNseSB0cmFuc3BsYW50ZWQgbWljZS4KCiMjIEdlbmVyYXRlIFNhbXBsZSBUYWJsZQoKT3VyIG5leHQgc3RlcCB3aWxsIGJlIHRvIGRlc2NyaWJlIHRoZSBzYW1wbGVzIHdpdGhpbiBvdXIgUiBzZXNzaW9uLCBzbyB0aGF0IHdlIG1ha2UgdGhlIHByb3BlciBjb21wYXJpc29ucyB3aXRoIERFU2VxMi4gVGhlIGZpcnN0IHN0ZXAgaXMgdG8gY2hlY2sgdGhlIHNhbXBsZSBuYW1lcyBmcm9tIHRoZSBjb3VudCB0YWJsZS4KYGBge3IgQ29sdW1uTmFtZXN9CmNvbG5hbWVzKENvdW50VGFibGUpCmBgYAoKV2hlbiB3ZSBsb29rZWQgYXQgb3VyIGBDb3VudFRhYmxlYCwgb3VyIHNhbXBsZXMgYXJlIGJsaW5kZWQsIGUuZy4gdGhlIHNhbXBsZSBuYW1lcyBkb24ndCBjb3JyZXNwb25kIHRvIGFueSBvZiB0aGUgZXhwZWN0ZWQgdHJlYXRtZW50IGdyb3Vwcy4gU28gd2Ugd2lsbCBuZWVkIHRvIHNwZWNpZnkgd2hpY2ggc2FtcGxlIElEcyBjb25uZWN0IHRvIHdoaWNoIGV4cGVyaW1lbnRhbCBjb25kaXRpb25zLgoKU2luY2UgdGhlcmUgYXJlIGEgbGFyZ2UgbnVtYmVyIG9mIHNhbXBsZXMgKGFuZCB0byBpbmNyZWFzZSB0aGUgcmVwcm9kdWNpYmxpdHkgb2Ygb3VyIGNvZGUpLCB3ZSB3b3VsZCBnZW5lcmF0ZSBhIHNhbXBsZSBpbmZvcm1hdGlvbiB0YWJsZSBpbiBleGNlbCBhbmQgZXhwb3J0ZWQgaXQgYXMgYSAnLmNzdicgZmlsZSBzbyB0aGF0IGl0IGlzIGluIGEgJ3BsYWluIHRleHQnIGZvcm1hdCB0aGF0IGNhbiBiZSBlYXNpbHkgbG9hZGVkIGludG8gb3VyIFIgc2Vzc2lvbi4KCgo8ZGV0YWlscz4KICAgIDxzdW1tYXJ5PipDbGljayBmb3Igc2FtcGxlIG5hbWluZyBjb252ZW50aW9ucyo8L3N1bW1hcnk+CiAgICBBIGNyaXRpY2FsIGFzcGVjdCBvZiBjcmVhdGluZyBhIHNhbXBsZSBzaGVldCBpbiBleGNlbCBpcyB0byBhdm9pZCB1c2luZyBzcGFjZXMgb3IgY2hhcmFjdGVycyB0aGF0IGhhdmUgc3BlY2lhbCB1c2VzIGluIFIsIHN1Y2ggYXMgZGFzaGVzIG9yIHBhcmVudGhlc2VzLiBTaW1wbGUgc2FtcGxlIGdyb3VwIG5hbWVzIGFyZSBiZXN0LgogICAgSWYgeW91IGFyZSB1bmZhbWlsYXIgd2l0aCAnLmNzdicgZmlsZXMgb3IgaG93IHRvIGdlbmVyYXRlIHRoZW0sIHRoZXJlIGFyZSBbdHV0b3JpYWxzXShodHRwczovL3d3dy53aWtpaG93LmNvbS9DcmVhdGUtYS1DU1YtRmlsZSkgYXZhaWxhYmxlIHRvIGd1aWRlIHlvdSB0aHJvdWdoIHRoZSBwcm9jZXNzLgoKPC9kZXRhaWxzPgoKV2UnbGwgbG9hZCBvdXIgJ3ByZS1tYWRlJyBzYW1wbGUgaW5mb3JtYXRpb24gc2hlZXQsIGBTYW1wbGVJbmZvX3RyaW1tZWQuY3N2YCwgdG8gdW5ibGluZCBvdXIgc2FtcGxlcy4KYGBge3IgU2FtcGxlSW5mbzEsIGV2YWw9VFJVRSwgZWNobz1GQUxTRX0KTWV0YUluZm8gPC0gcmVhZC50YWJsZSgiLi4vZGF0YS9TYW1wbGVJbmZvX3RyaW1tZWQuY3N2Iiwgc2VwID0gIiwiLCBoZWFkZXIgPSBUUlVFLCByb3cubmFtZXMgPSAxKQpgYGAKYGBge3IgU2FtcGxlSW5mbzIsIGV2YWw9RkFMU0V9Ck1ldGFJbmZvIDwtIHJlYWQudGFibGUoImRhdGEvU2FtcGxlSW5mb190cmltbWVkLmNzdiIsIAogICAgICAgICAgICAgICAgICAgICAgIHNlcCA9ICIsIiwgCiAgICAgICAgICAgICAgICAgICAgICAgaGVhZGVyID0gVFJVRSwgCiAgICAgICAgICAgICAgICAgICAgICAgcm93Lm5hbWVzID0gMSkKYGBgCmBgYHtyIENoZWNrU2FtcGxlSW5mb30KaGVhZChNZXRhSW5mbykKYGBgCgoqKkNoZWNrcG9pbnQqKjogKklmIHlvdSBoYXZlIGxvYWRlZCBgTWV0YUluZm9gLCBwbGVhc2UgaW5kaWNhdGUgd2l0aCB0aGUgZ3JlZW4gJ2NoZWNrJyBidXR0b24uIE90aGVyd2lzZSwgcGxlYXNlIHVzZSB0aGUgcmVkICd4JyBidXR0b24gdG8gaGF2ZSB0aGUgY29tbWFuZCByZXBlYXRlZCoKCgpIb3cgYXJlIHRoZSB0cmVhdG1lbnQgZ3JvdXBzIGVuY29kZWQgaW4gdGhlIHRhYmxlIHdlIGp1c3QgbG9hZGVkPwpgYGB7ciBUcmVhdG1lbnRHcm91cFRhYmxlfQp1bmlxdWUoTWV0YUluZm8kR3R5cGUuVHgpCmBgYAoKCk5leHQsIHdlJ2xsIGZvcm1hdCBvdXIgdGFibGUgc28gdGhhdCB3ZSBoYXZlIHRoZSBhcHByb3ByaWF0ZSBkYXRhIHR5cGUgKGEgb3JkZXJlZCBbZmFjdG9yXShodHRwczovL3N3Y2FycGVudHJ5LmdpdGh1Yi5pby9yLW5vdmljZS1pbmZsYW1tYXRpb24vMTItc3VwcC1mYWN0b3JzLykpIGZvciBERVNlcTIgdG8gcmVjb2duaXplIG91ciB0cmVhdG1lbnQgZ3JvdXBzIGFuZCBhcHByb3ByaWF0ZWx5IGNvbXBhcmUgc2FtcGxlcy4KYGBge3IgU2FtcGxlSW5mb0ZhY3Rvcn0KCk1ldGFJbmZvJEd0eXBlLlR4IDwtIGZhY3RvcihNZXRhSW5mbyRHdHlwZS5UeCwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBsZXZlbHMgPSBjKCAid3QuVHgiLCAia28uVHgiLCAia28uY29udHJvbCIsICJ3dC5jb250cm9sIiApKQoKdW5pcXVlKE1ldGFJbmZvJEd0eXBlLlR4KQpgYGAKTm90aWNlIHRoYXQgd2Ugc2V0IHRoZSBsZXZlbHMgaW4gYSBwYXJ0aWN1bGFyIG9yZGVyLiBUaGlzIGlzIGltcG9ydGFudCBmb3Igc2V0dGluZyB0aGUgJ0NvbnRyb2wnIGdyb3VwIGFzIHRoZSBkZW5vbWluYXRvciBpbiBvdXIgY29tcGFyaXNvbnMgd2hlbiB3ZSBzZXR1cCBvdXIgREVTZXEyIG1vZGVsLiBUaGUgZ3JvdXAgbmFtZSBzaG91bGQgYmUgbGFzdCBpZiB0aGVyZSBhcmUgb25seSB0d28gZ3JvdXBzICYgZmlyc3QgaWYgdGhlcmUgYXJlIG9ubHkgdGhyZWUgZ3JvdXBzIHRvIGdlbmVyYXRlIGRlZmF1bHQgcGFpci13aXNlIGNvbXBhcmlzb25zLgoKQmVmb3JlIHdlIHByb2NlZWQsIHdlIG5lZWQgdG8gbWFrZSBzdXJlIHRoYXQgdGhlIHNhbXBsZSBsYWJlbHMgKGNvbHVtbiBuYW1lcykgaW4gdGhlIGNvdW50IHRhYmxlIG1hdGNoIHRoZSBzYW1wbGUgaW5mb3JtYXRpb24gdGFibGUgKHJvdyBuYW1lcyksIGluY2x1ZGluZyB0aGUgb3JkZXIuCgpJZiB0aGUgc2FtcGxlIGxhYmVscyBkb24ndCBtYXRjaCwgdGhlbiB3ZSB3aWxsIHNlZSBhbiBlcnJvciBhbmQgbmVlZCB0byBjb3JyZWN0IHRoZSBsYWJlbHMgcHJpb3IgdG8gcHJvY2VlZGluZy4gQ2hlY2tpbmcgdGhlIHNhbXBsZSBpbmZvcm1hdGlvbiB0YWJsZSBpcyBleHRyZW1lbHkgaW1wb3J0YW50IHRvIGVuc3VyZSB0aGF0IHRoZSBjb3JyZWN0IHNhbXBsZXMgYXJlIGdyb3VwZWQgdG9nZXRoZXIgZm9yIGNvbXBhcmlzb25zLgoKYGBge3IgQ2hlY2tTYW1wbGVJbmZvc30KYWxsKGNvbG5hbWVzKGRhdGEpID09IHJvd25hbWVzKE1ldGFJbmZvKSkKYGBgClRoaXMgbGluZSBvZiBjb2RlIGNoZWNrcyBpZiBib3RoIHRoZSBpZGVudGl0eSBhbmQgb3JkZXIgbWF0Y2ggYmV0d2VlbiBvdXIgYGRhdGFgIHRhYmxlIGFuZCBvdXIgYE1ldGFJbmZvYC4KCioqQ2hlY2twb2ludCoqOiAqSWYgeW91IHlvdXIgc2FtcGxlIGluZm8gY2hlY2sgcmV0dXJucyBgVFJVRWAsIHBsZWFzZSBpbmRpY2F0ZSB3aXRoIHRoZSBncmVlbiAneWVzJyBidXR0b24uIE90aGVyd2lzZSwgcGxlYXNlIHVzZSB0aGUgcmVkICd4JyBidXR0b24gdG8gaGF2ZSB0aGUgY29tbWFuZCByZXBlYXRlZCoKCiMgQ3JlYXRpbmcgREVTZXEyIG9iamVjdAoKVG8gY3JlYXRlIHRoZSBERVNlcURhdGFTZXQgd2Ugd2lsbCBuZWVkIHRoZSBjb3VudCBtYXRyaXgsIHRoZSAiTWV0YUluZm8iIHNhbXBsZSBkYXRhIHRhYmxlLCBhbmQgd2Ugd2lsbCBhbHNvIG5lZWQgYSAqKmRlc2lnbiBmb3JtdWxhKiogdG8gc3BlY2lmeSBvdXIgbW9kZWwuCgojIyBNYWtpbmcgbW9kZWwgY2hvaWNlcwoKVGhlIGRlc2lnbiBmb3JtdWxhIHNwZWNpZmllZCBpbmZvcm1zIG1hbnkgb2YgdGhlIERFU2VxMiBmdW5jdGlvbnMgaG93IHRvIHRyZWF0IHRoZSBzYW1wbGVzIGluIHRoZSBhbmFseXNpcywgc3BlY2lmaWNhbGx5IHdoaWNoIGNvbHVtbiBpbiB0aGUgc2FtYXBsZSBtZXRhZGF0YSB0YWJsZSBjb250YWlucyB0aGUgZXhwZXJpbWVudGFsIGRlc2lnbi4KCkluIHRoaXMgY2FzZSwgd2UgYXJlbid0IGF3YXJlIG9mIGFueSBbKipjb3ZhcmlhdGVzKipdKGh0dHBzOi8vbWV0aG9kcy1zYWdlcHViLWNvbS5wcm94eS5saWIudW1pY2guZWR1L3JlZmVyZW5jZS9lbmN5Yy1vZi1yZXNlYXJjaC1kZXNpZ24vbjg1LnhtbCkgdGhhdCBzaG91bGQgYmUgY29uc2lkZXJlZCBpbiBvdXIgY29tcGFyaXNvbnMuIEhvd2V2ZXIsIGlmIHRoZXJlIGFyZSBhZGRpdGlvbmFsIGF0dHJpYnV0ZXMgb2YgdGhlIHNhbXBsZXMgdGhhdCBtYXkgaW1wYWN0IHRoZSBERSBjb21wYXJpc29ucywgbGlrZSBzZXgsIGRhdGUgb2YgY29sbGVjdGlvbiwgb3IgcGF0aWVudCBvZiBvcmlnaW4sIHRoZXNlIHNob3VsZCBiZSBhZGRlZCBhcyBbYWRkaXRpb25hbCBjb2x1bW5zXShodHRwczovL3N1cHBvcnQuYmlvY29uZHVjdG9yLm9yZy9wLzc1MzA5LykgaW4gdGhlIHNhbXBsZSBpbmZvcm1hdGlvbiB0YWJsZSBhbmQgW2FkZGVkIHRvIGEgZGVzaWduIGZvcm11bGFdKGh0dHBzOi8vc3VwcG9ydC5iaW9jb25kdWN0b3Iub3JnL3AvOTg3MDAvKS4KCgo8ZGV0YWlscz4KICAgIDxzdW1tYXJ5PipDbGljayBmb3IgTm90ZSo8L3N1bW1hcnk+CiAgICBNb3JlIGNvbXBsZXggcXVlc3Rpb25zLCBpbmNsdWRpbmcgZGV0ZXJtaW5pbmcgaWYgYSBmb2xkLWNoYW5nZSBkdWUgdG8gdHJlYXRtZW50IGlzIGRpZmZlcmVudCBhY3Jvc3MgZ3JvdXBzLCBzdWNoIGFzIHBhdGllbnQgc2FtcGxlcywgImludGVyYWN0aW9uIHRlcm1zIiBjYW4gYmUgaW5jbHVkZWQgaW4gdGhlIGRlc2lnbiBmb3JtdWxhLCBzdWNoIGFzIG91dGxpbmVkIGluIFt0aGlzIHN1cHBvcnQgdGhyZWFkXShodHRwczovL3N1cHBvcnQuYmlvY29uZHVjdG9yLm9yZy9wLzk4NjI4LykuCjwvZGV0YWlscz4KClRoZSBkZXNpZ24gZm9ybXVsYSBzcGVjaWZpZXMgdGhlIGNvbHVtbihzKSBpbiB0aGUgbWV0YWRhdGEgdGFibGUgYW5kIGhvdyB0aGV5IHNob3VsZCBiZSB1c2VkIGluIHRoZSBhbmFseXNpcy4gRm9yIG91ciBkYXRhc2V0IHdlIG9ubHkgaGF2ZSBvbmUgY29sdW1uIHdlIGFyZSBpbnRlcmVzdGVkIGluLCB0aGF0IGlzIGBHdHlwZS5UeGAuIFRoaXMgY29sdW1uIGhhcyB0aHJlZSBmYWN0b3IgbGV2ZWxzLCB3aGljaCB0ZWxscyBERVNlcTIgdGhhdCBmb3IgZWFjaCBnZW5lIHdlIHdhbnQgdG8gZXZhbHVhdGUgZ2VuZSBleHByZXNzaW9uIGNoYW5nZSB3aXRoIHJlc3BlY3QgdG8gdGhlc2UgZGlmZmVyZW50IGxldmVscy4KCmBgYHtyIERFU2VxMk9iamVjdH0KIyMgQ3JlYXRlIERFU2VxIG9iamVjdCwgbGluZSBieSBsaW5lCmRkcyA8LSBERVNlcURhdGFTZXRGcm9tTWF0cml4KGNvdW50RGF0YSA9IENvdW50VGFibGUsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbERhdGEgPSBNZXRhSW5mbywKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZGVzaWduID0gfiBHdHlwZS5UeCkKYGBgCgoqKkNoZWNrcG9pbnQqKjogKklmIHlvdSBzZWUgYGRkc2AgaW4geW91ciBlbnZpcm9ubWVudCBwYW5lbCwgcGxlYXNlIGluZGljYXRlIHdpdGggdGhlIGdyZWVuICdjaGVjaycgYnV0dG9uLiBPdGhlcndpc2UsIHBsZWFzZSB1c2UgIHVzZSB0aGUgcmVkICd4JyBidXR0b24gaW4geW91ciB6b29tIHJlYWN0aW9uIHBhbmVsIHRvIGhhdmUgdGhpcyBzdGVwIHJlcGVhdGVkLiBZb3UgY2FuIHVzZSB0aGUgcmVkICd4JyB0byBiZSBwdXQgaW4gYSBicmVha291dCByb29tIGZvciBoZWxwKgoKCjxkZXRhaWxzPgogICAgPHN1bW1hcnk+KkNsaWNrIGZvciBob3cgdG8gbW9kZWwgYmF0Y2ggZWZmZWN0cyB3aXRoIERFU2VxMio8L3N1bW1hcnk+CiAgICBEaWZmZXJlbmNlcyBiZXR3ZWVuIHNhbXBsZXMgY2FuIGFsc28gYmUgZHVlIHRvIHRlY2huaWNhbCByZWFzb25zLCBzdWNoIGFzIGNvbGxlY3Rpb24gb24gZGlmZmVyZW50IGRheXMgb3IgZGlmZmVyZW50IHNlcXVlbmNpbmcgcnVucy4gRGlmZmVyZW5jZXMgYmV0d2VlbiBzYW1wbGVzIHRoYXQgYXJlIG5vdCBkdWUgdG8gYmlvbG9naWNhbCBmYWN0b3JzIGFzIGNhbGxlZCAqKmJhdGNoIGVmZmVjdHMqKi4gV2UgY2FuIGluY2x1ZGUgYmF0Y2ggZWZmZWN0cyBpbiBvdXIgZGVzaWduIG1vZGVsIGluIHRoZSBzYW1lIHdheSBhcyBjb3ZhcmlhdGVzLCBhcyBsb25nIGFzIHRoZSB0ZWNobmljYWwgZ3JvdXBzIGRvIG5vdCBvdmVybGFwLCBvciAqKmNvbmZvdW5kKiosIHRoZSBiaW9sb2dpY2FsIHRyZWF0bWVudCBncm91cHMuICAKICAgIExldCdzIHRyeSBhZGQgc29tZSBhZGRpdGlvbmFsIG1ldGEtZGF0YSBpbmZvcm1hdGlvbiB3aGVyZSB3ZSBoYXZlIGNvdW5mb3VuZGluZyBiYXRjaCBlZmZlY3RzIGFuZCBjcmVhdGUgYW5vdGhlciBERVNlcTIgb2JqZWN0LgpgYGB7ciBDb25mb3VuZGVycywgZXZhbD1GQUxTRX0KI01ldGFJbmZvCk1ldGFJbmZvJGJhdGNoIDwtIGZhY3RvcihjKHJlcChjKCJEYXkxIiksIDMpLAogICAgICAgICAgICAgICAgICAgICAgIHJlcChjKCJEYXkyIiksIDMpLAogICAgICAgICAgICAgICAgICAgICAgIHJlcChjKCJEYXkzIiksIDMpLAogICAgICAgICAgICAgICAgICAgICAgIHJlcChjKCJEYXk0IiksIDMpKSwKICAgICAgICAgICAgICAgICAgICAgbGV2ZWxzID0gYygiRGF5MSIsICJEYXkyIiwgIkRheTMiLCAiRGF5NCIpKQoKZGRzX2JhdGNoIDwtIERFU2VxRGF0YVNldEZyb21NYXRyaXgoY291bnREYXRhID0gQ291bnRUYWJsZSwKICAgICAgICAgICAgICAgICAgICAgIGNvbERhdGEgPSBNZXRhSW5mbywKICAgICAgICAgICAgICAgICAgICAgIGRlc2lnbiA9IH4gYmF0Y2ggKyBHdHlwZS5UeCkKYGBgCiAgICBOb3RpY2UgdGhhdCBpZiB5b3UgcnVuIHRoZSBhYm92ZSBjb21tYW5kLCB0aGUgZXJyb3IgaW5kaWNhdGVzIHRoYXQgdmFyaWFibGVzIGluIHRoZSBkZXNpZ24gZm9ybXVsYSAiYXJlIGxpbmVhciBjb21iaW5hdGlvbnMiIHdoaWNoIG1lYW5zIHRoYXQgYmF0Y2ggYW5kIGNvbmRpdGlvbiBhcmUgY29ycmVsYXRlZCBhbmQgdGhlIGZ1bmN0aW9uIGlzIHVuYWJsZSB0byBmaWxsIGluIGEgcmVxdWlyZWQgJ3Nsb3QnIGluIHRoZSBERVNlcTIgb2JqZWN0LgogICAgU28gaWYgYmF0Y2hlcyBhcmUgKipub3QgYmFsYW5jZWQqKiBieSBpbmNsdWRpbmcgYm90aCBjYXNlIGFuZCBjb250cm9scyAobGlrZSBpbiB0aGUgcGF0aWVudCBjb3ZhcmlhdGUgZXhhbXBsZSkgdGhlbiB3ZSBjYW5ub3QgY29udHJvbCBmb3IgdGhvc2UgdGVjaG5pY2FsIGVmZmVjdHMgdGhyb3VnaCBzdGF0aXN0aWNhbCBtb2RlbGluZy4KPC9kZXRhaWxzPgoKLS0tCgoKIyBQcmUtZmlsdGVyaW5nCgpXaGlsZSBub3QgbmVjZXNzYXJ5LCBbcHJlLWZpbHRlcmluZ10oaHR0cDovL2Jpb2NvbmR1Y3Rvci5vcmcvcGFja2FnZXMvZGV2ZWwvYmlvYy92aWduZXR0ZXMvREVTZXEyL2luc3QvZG9jL0RFU2VxMi5odG1sI3ByZS1maWx0ZXJpbmcpIHRoZSBjb3VudCB0YWJsZSBoZWxwcyB0byBub3Qgb25seSByZWR1Y2UgdGhlIHNpemUgb2YgdGhlIERFU2VxMiBvYmplY3QsIGJ1dCBhbHNvIGdpdmVzIHlvdSBhIHNlbnNlIG9mIGhvdyBtYW55IGdlbmVzIHdlcmUgcmVhc29uYWJseSBtZWFzdXJlZCBhdCB0aGUgc2VxdWVuY2luZyBkZXB0aCBnZW5lcmF0ZWQgZm9yIHlvdXIgc2FtcGxlcy4KCkhlcmUgd2Ugd2lsbCBmaWx0ZXIgb3V0IGFueSBnZW5lcyB0aGF0IGhhdmUgbGVzcyB0aGFuIDEwIGNvdW50cyBhY3Jvc3MgYW55IG9mIHRoZSBzYW1wbGVzLiBUaGlzIGlzIGEgZmFpcmx5IHN0YW5kYXJkIGxldmVsIG9mIGZpbHRlcmluZywgYnV0IGNhbiBmaWx0ZXIgZGF0YSBsZXNzL21vcmUgZGVwZW5kaW5nIG9uIHF1YWxpdHkgY29udHJvbCBtZXRyaWNzIGZyb20gYWxpZ25tZW50cyBhbmQgc2VxdWVuY2luZyBkZXB0aCBvciB0b3RhbCBudW1iZXIgb2Ygc2FtcGxlcy4KYGBge3IgUHJlRmlsdGVyfQprZWVwIDwtIHJvd1N1bXMoY291bnRzKGRkcykpID49IDEwCmRkcyA8LSBkZHNba2VlcCxdCmBgYApOb3RpY2UgaG93IHRoZSBgZGRzYCBvYmplY3Qgbm93IGhhcyBsZXNzIGVsZW1lbnRzIGFmdGVyIGZpbHRlcmluZywgc28gdGhlcmUgd2VyZSBxdWl0ZSBhIG51bWJlciBvZiBnZW5lcyB0aGF0IHdlcmUgbm90IG1lYXN1cmVkIGluIG91ciBleHBlcmltZW50LgoKKipDaGVja3BvaW50Kio6ICpRdWVzdGlvbnM/KgoKCiMjIyMgW09wdGlvbmFsIGV4ZXJjaXNlXTogQWRkaW5nIGNvdmFyaWF0ZXMgdG8gc2FtcGxlIGluZm9ybWF0aW9uCgpZb3UgY2FuIHRlc3Qgb3V0IG1hbnVhbGx5IGFkZGluZyBhIGNvdmFyaWF0ZSB0byBvdXIgYE1ldGFJbmZvYCBkYXRhIHRhYmxlIGFuZCB0aGVuIGNyZWF0ZSBhIG5ldyBERVNlcTIgb2JqZWN0LgoKPGRldGFpbHM+CiAgICA8c3VtbWFyeT4qQ2xpY2sgZm9yIGhvdyB0byBhZGQgYSBjb3ZhcmlhdGUgdG8gc2FtcGxlIGluZm9ybWF0aW9uKjwvc3VtbWFyeT4KYGBge3IgQ292YXJpYXRlcywgZXZhbD1GQUxTRX0KaGVhZChNZXRhSW5mbykKTWV0YUluZm8kcGF0aWVudCA8LSBmYWN0b3IocmVwKGMoIlAxIiwgIlAyIiwgIlAzIiksIDQpLCBsZXZlbHMgPSBjKCJQMSIsICJQMiIsICJQMyIpKQpoZWFkKE1ldGFJbmZvKQpgYGAKICAgIE5vdGljZSBob3cgd2UgYXZvaWQgc3RhcnRpbmcgd2l0aCBhIG51bWJlciBvdXIgcGF0aWVudCBjb3ZhcmlhdGUgbGFiZWxzIHNpbmNlIFIgZG9lc24ndCBsaWtlIHRoYXQuCgpgYGB7ciBDb3ZhcmlhdGVERVNlcTJPYmplY3QsIGV2YWw9RkFMU0V9CmRkc19wYXRpZW50IDwtIERFU2VxRGF0YVNldEZyb21NYXRyaXgoY291bnREYXRhID0gQ291bnRUYWJsZSwKICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xEYXRhID0gTWV0YUluZm8sCiAgICAgICAgICAgICAgICAgICAgICAgICAgZGVzaWduID0gfiBwYXRpZW50ICsgR3R5cGUuVHgpCmBgYAogICAgTm93IHdlIGhhdmUgc3BlY2lmaWVkIGZvciBERVNlcTIgdGhhdCB3ZSB3YW50IHRvIHRlc3QgZm9yIHRoZSBlZmZlY3Qgb2YgdGhlIGNvbmRpdGlvbiAodGhlIGxhc3QgZmFjdG9yKSB3aGlsZSBjb250cm9sbGluZyBmb3IgdGhlIGVmZmVjdCBvZiB0aGUgcGF0aWVudCBvcmlnaW4gKHRoZSBmaXJzdCBmYWN0b3IpLgo8L2RldGFpbHM+CgoKCiMgU3VtbWFyeQoKSW4gdGhpcyBzZWN0aW9uLCB3ZToKCiogTG9hZGVkIHRoZSBuZWNlc3NhcnkgaW5wdXQgZmlsZXMgaW50byBvdXIgUiBzZXNzaW9uICAgIAoqIERpc2N1c3NlZCBtb2RlbCBkZXNpZ24gZm9yIERFU2VxMiAgICAKKiBJbml0aWFsaXplZCBhIERFU2VxMiBkYXRhIHNldCAgICAgCiogRmlsdGVyZWQgb3VyIGNvdW50IGRhdGEgICAgIAoKCk5vdyB0aGF0IHdlJ3ZlIGNyZWF0ZWQgb3VyIERFU2VxMiBvYmplY3RzLCBpbmNsdWRpbmcgc3BlY2lmeWluZyB3aGF0IG1vZGVsIGlzIGFwcHJvcHJpYXRlIGZvciBvdXIgZGF0YSwgYW5kIGZpbHRlcmVkIG91ciBkYXRhLCB3ZSBjYW4gcHJvY2VlZCB3aXRoIGFzc2Vzc2luZyB0aGUgaW1wYWN0IG9mIHRoZSBleHBlcmltZW50YWwgY29uZGl0aW9ucyBvbiBnZW5lIGV4cHJlc3Npb24gYWNyb3NzIG91ciBzYW1wbGVzLgoKCgoKLS0tCgojIFNvdXJjZXMKIyMgVHJhaW5pbmcgcmVzb3VyY2VzIHVzZWQgdG8gZGV2ZWxvcCBtYXRlcmlhbHMKKiBIQkMgREdFIHNldHVwOiBodHRwczovL2hiY3RyYWluaW5nLmdpdGh1Yi5pby9ER0Vfd29ya3Nob3AvbGVzc29ucy8wMV9ER0Vfc2V0dXBfYW5kX292ZXJ2aWV3Lmh0bWwKKiBIQkMgQ291bnQgTm9ybWFsaXphdGlvbjogaHR0cHM6Ly9oYmN0cmFpbmluZy5naXRodWIuaW8vREdFX3dvcmtzaG9wL2xlc3NvbnMvMDJfREdFX2NvdW50X25vcm1hbGl6YXRpb24uaHRtbAoqIERFU2VxMiBzdGFuZGFyZCB2aWduZXR0ZTogaHR0cDovL2Jpb2NvbmR1Y3Rvci5vcmcvcGFja2FnZXMvZGV2ZWwvYmlvYy92aWduZXR0ZXMvREVTZXEyL2luc3QvZG9jL0RFU2VxMi5odG1sCiogREVTZXEyIGJlZ2lubmVycyB2aWduZXR0ZTogaHR0cHM6Ly9iaW9jLmlzbS5hYy5qcC9wYWNrYWdlcy8yLjE0L2Jpb2MvdmlnbmV0dGVzL0RFU2VxMi9pbnN0L2RvYy9iZWdpbm5lci5wZGYKKiBCaW9jb25kdWN0b3IgUk5BLXNlcSBXb3JrZmxvd3M6IGh0dHBzOi8vd3d3LmJpb2NvbmR1Y3Rvci5vcmcvaGVscC9jb3Vyc2UtbWF0ZXJpYWxzLzIwMTUvTGVhcm5CaW9jb25kdWN0b3JGZWIyMDE1L0IwMi4xX1JOQVNlcS5odG1sCiogQ0NETCBHYXN0cmljIGNhbmNlciB0cmFpbmluZyBtYXRlcmlhbHM6IGh0dHBzOi8vYWxleHNsZW1vbmFkZS5naXRodWIuaW8vdHJhaW5pbmctbW9kdWxlcy9STkEtc2VxLzAzLWdhc3RyaWNfY2FuY2VyX2V4cGxvcmF0b3J5Lm5iLmh0bWwKKiBDQ0RMIE5ldXJvYmxhc3RvbWEgdHJhaW5pbmcgbWF0ZXJpYWxzOiBodHRwczovL2FsZXhzbGVtb25hZGUuZ2l0aHViLmlvL3RyYWluaW5nLW1vZHVsZXMvUk5BLXNlcS8wNS1uYl9jZWxsX2xpbmVfREVTZXEyLm5iLmh0bWwKCgoKYGBge3IgV3JpdGVPdXQuUkRhdGEsIGV2YWw9VFJVRSwgZWNobz1GQUxTRSwgbWVzc2FnZT1GQUxTRSwgd2FybmluZz1GQUxTRX0KI0hpZGRlbiBjb2RlIGJsb2NrIHRvIHdyaXRlIG91dCBkYXRhIGZvciBrbml0dGluZwoKc2F2ZS5pbWFnZShmaWxlID0gInJkYXRhL1J1bm5pbmdEYXRhLlJEYXRhIikKCmBgYAoKLS0tCgpUaGVzZSBtYXRlcmlhbHMgaGF2ZSBiZWVuIGFkYXB0ZWQgYW5kIGV4dGVuZGVkIGZyb20gbWF0ZXJpYWxzIGxpc3RlZCBhYm92ZS4gVGhlc2UgYXJlIG9wZW4gYWNjZXNzIG1hdGVyaWFscyBkaXN0cmlidXRlZCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIFtDcmVhdGl2ZSBDb21tb25zIEF0dHJpYnV0aW9uIGxpY2Vuc2UgKENDIEJZIDQuMCldKGh0dHA6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LzQuMC8pLCB3aGljaCBwZXJtaXRzIHVucmVzdHJpY3RlZCB1c2UsIGRpc3RyaWJ1dGlvbiwgYW5kIHJlcHJvZHVjdGlvbiBpbiBhbnkgbWVkaXVtLCBwcm92aWRlZCB0aGUgb3JpZ2luYWwgYXV0aG9yIGFuZCBzb3VyY2UgYXJlIGNyZWRpdGVkLgo=</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("Module07_DESeq2Init.Rmd");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

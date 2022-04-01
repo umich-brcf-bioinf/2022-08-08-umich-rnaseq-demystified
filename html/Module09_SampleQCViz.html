@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="UM Bioinformatics Core" />
+
+<meta name="date" content="2022-03-15" />
+
+<title>Day 3 - Module 09: Sample Visualizations for Quality Control</title>
+
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link rel="shortcut icon" href="favicon-16x16.png" />
+<!--
+Favicon from
+https://twemoji.twitter.com/
+https://favicon.io/emoji-favicons/dna/
+-->
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">RNA-Seq Demystified</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="Module00_Introduction.html">Intro</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Sequence QC
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Module01_Warming_Up.html">Warming up</a>
+    </li>
+    <li>
+      <a href="Module02_QC.html">Quality Control</a>
+    </li>
+    <li>
+      <a href="Module02optional_Cutadapt_MoreQC.html">Optional: Cutadapt/MoreQC</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Alignment
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Module03_Reference_Genomes.html">Reference Genomes</a>
+    </li>
+    <li>
+      <a href="Module04_Alignment.html">Alignment/Quantification (STAR/RSEM)</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Quantification
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Module05_MultiQC_and_Count_Matrix.html">Count matrix / Alignment QC</a>
+    </li>
+    <li>
+      <a href="Module05optional_Additional_Details.html">Optional: Additional details</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Groups/Model
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Module06_DEAnalysisSetup.html">Introduction to DESeq2</a>
+    </li>
+    <li>
+      <a href="Module07_DESeq2Init.html">DESeq2 Initialization</a>
+    </li>
+    <li>
+      <a href="Module08_DESeq2DE.html">Count Normalizations and DESeq2 model fitting</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Expression plots
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Module09_SampleQCViz.html">Sample Visualizations for QC</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Diff Expression
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Module10_DEComparisons.html">Comparisons</a>
+    </li>
+    <li>
+      <a href="Module11_DEVisualizations.html">DE Visiualization and Annotation</a>
+    </li>
+    <li>
+      <a href="Module11X_BonusContent.html">Bonus content</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="Module99_Wrap_up.html">Wrap up</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Day 3 - Module 09: Sample Visualizations for Quality Control</h1>
+<h4 class="author">UM Bioinformatics Core</h4>
+<h4 class="date">2022-03-15</h4>
+
+</div>
+
+
+<style type="text/css">
+body{ /* Normal  */
+      font-size: 14pt;
+  }
+pre {
+  font-size: 12pt
+}
+code.r{
+  font-size: 12pt;
+}
+</style>
+<!--- Allow the page to be wider --->
+<style>
+    body .main-container {
+        max-width: 1200px;
+    }
+</style>
+<blockquote>
+<h1 id="objectives">Objectives:</h1>
+<ul>
+<li>Generate common QC visualizations<br />
+</li>
+<li>Understand how to interpret QC visualizations<br />
+</li>
+<li>Understand when to revise the model used in the DESeq2 initialization<br />
+</li>
+<li>Understand the pitfalls of post-hoc analysis<br />
+</li>
+<li>Describe the causes and implications of batch effect or other QC issues in an RNA-Seq experiment</li>
+</ul>
+</blockquote>
+<div id="differential-expression-workflow" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Differential Expression Workflow</h1>
+<p>Prior to testing for differential expression between our comparisons of interest, we’ll first generate plots that will assess how well our samples match up with our expectations (based on their treatment groups) and what we might expect to see from our differential expression comparisons.</p>
+<p><img src="images/wayfinder/wayfinder-05.png" style="width:75.0%" /></p>
+<hr />
+</div>
+<div id="sample-visualizatons-for-quality-control" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Sample Visualizatons for Quality Control</h1>
+<p>On Monday, we discussed aspects of quality control assessment at the sequencing data level. Today we will outline sample-level and gene-level quality control assessments to determine what we should expect for our differential expression comparisons.</p>
+<p>To do this, we will first assess the similarity of our samples by using principal component analysis (PCA). This will allow us to determine how well patterns in the data fits our expectations from the experiments design and possible sources of variation.</p>
+<p>Other common visualizations that we generate for our analyses include expression heatmaps, sample correlation heatmaps, and boxplots of raw and/or normalized counts, the code for which (due to time restrictions) can be found as bonus content through the materials for today and in the bonus content module.</p>
+<div id="principle-component-analysis-pca-plots" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> Principle Component Analysis (PCA) Plots</h2>
+<p>A common and very useful plot for evaluating how well our samples cluster by treatment groups are Principle Component Analysis (PCA) plots. PCA is used to emphasize variation and bring out patterns in large datasets by using dimensionality redution.</p>
+<p>This image from <a href="https://blog.bioturing.com/2018/06/14/principal-component-analysis-explained-simply/">a helpful step by step explaination of PCA</a> helps to illustrate the principle component projections for two genes measured in approximately 60 mouse samples. Generally, this process is repeated and after each gene’s contribution to a principle component or weight is determined, the expression and weight are summed across genes for each sample to calculate a value for each principle component.</p>
+<p><img src="images/Blog_pca_6b.png" /></p>
+<blockquote>
+<p><strong>Note</strong>: A more detailed overview of the PCA procedure is outlined in <a href="https://hbctraining.github.io/DGE_workshop/lessons/principal_component_analysis.html">a Harvard Chan Bioinformatic Core training module</a> and is based on a more thorough description presented in a <a href="https://www.youtube.com/watch?v=_UVHneBUBW0">StatQuest’s video</a>. Additionally, this <a href="https://towardsdatascience.com/principal-component-analysis-3c39fbf5cb9d">TowardsDataScience blog post</a> goes through the math behind PCAs.</p>
+</blockquote>
+<div id="interpreting-pca-plots" class="section level3" number="2.1.1">
+<h3><span class="header-section-number">2.1.1</span> Interpreting PCA plots</h3>
+<p>For most bulk RNA-seq experiments, we expect the majority of the total variance to be explained by the first two or three principle components.</p>
+<p><img src="images/PCAplot_Fancy_rlog_ko.Tx.png" style="width:75.0%" /></p>
+<p>In this plot, which is similar to what we’ll generate below for our data, where principle component 1 (PC1) explains ~80% of the variance in our data while principle component 2 (PC2) explains ~12% of the variance, which fits that expections.</p>
+<p><em>[Question]: How might we interpret the variance explained by each principle component in the context of the labeled sample points?</em></p>
+<p>For more information, this <a href="https://blog.bioturing.com/2018/06/14/principal-component-analysis-explained-simply/">helpful overview of PCA basics</a> walks through both the generation and interpretation of PCA plots.</p>
+</div>
+<div id="evaluating-batch-effects-or-confounders" class="section level3" number="2.1.2">
+<h3><span class="header-section-number">2.1.2</span> Evaluating batch effects or confounders</h3>
+<p>PCA plots are also useful for evaluating the impact of factors other than the experimental treatment or group.</p>
+<p>At times, batch effects can be quite obvious, such as this example from the <a href="http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html">DESeq2 vignette</a>, where samples within each treatment group look staggered into two subgroups.</p>
+<p><img src="images/PCA1_DESeq2Vignette.png" /></p>
+<p>If we color only by sequencing run type (paired-end vs. single-end), we see that PC2 (29% of variance) is primarily explained by this technical covariate.</p>
+<p><img src="images/PCA2_DESeq2Vignette.png" /></p>
+<p>However, the samples are clearly seperated by experimental condition on PC1 <strong>and</strong> since we have non-confounded batches, if we saw this pattern in our data we could incorporate the technical covariate into our model design, such as outlined in the <a href="http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#multi-factor-designs">DESeq2 vignette</a>.</p>
+<details>
+<summary>
+<em>Click for complex design discussion</em>
+</summary>
+In experiments with more complex designs, such as when there are interesecting/multiple treatment conditions, it can be less clear what covariants are influencing expression, such as illustrated from <a href="http://www.molmine.com/magma/global_analysis/batch_effect.html">this documenation for a microarray analysis tool</a>. From the PCA labeled by experimental treatment, we see that samples from the treatment group do not cluster together and that there is high variance across all treatment groups. <img src="images/batch_ex1b.jpg" /> However, when the plot is color coded by the technical batches of probe labeling, we see that the patterns in the data are better explained by batch than the experimental conditions. <img src="images/batch_ex1c.jpg" />
+</details>
+</div>
+</div>
+<div id="plot-setup" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> Plot Setup</h2>
+<p>We’ve already loaded the libraries we need for this module. We’ll follow best practices and create new a subdirectory to organize our output figures, as well as a variable to store a descriptor of the dataset we are looking at so we can more easily recycle our plotting functions.</p>
+<pre class="r"><code>plotPath = &#39;./DE_outputs/figures/&#39;
+dir.create(plotPath, showWarnings = FALSE)
+Comparison &lt;- &quot;Gtype.Tx&quot; # descriptor for the dataset we are looking at</code></pre>
+</div>
+<div id="pca-plot-initialization" class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span> PCA Plot initialization</h2>
+<p>Below, we will plot the rlog normalized data and generate the PCA projections for the top 500 using the <code>plotPCA</code> function from DESeq2, specifying <code>Gtype.Tx</code> as the condition of interest, and view the simple plot generated by the function.</p>
+<pre class="r"><code>p.all &lt;- plotPCA(rld, intgroup = c(&#39;Gtype.Tx&#39;), ntop = 500)
+p.all</code></pre>
+<p><img src="Module09_SampleQCViz_files/figure-html/PCArlog3-1.png" width="672" /></p>
+<p>We also see that samples in both <code>control</code> groups are fairly tightly grouped, while samples within each <code>Tx</code> group do not cluster as tightly.</p>
+<p><em>[Question]: What can we take away from this PCA plot? Does it look like there are batch effects? Would we expect more DE genes for comparisons between ko.control and wt.control samples OR wt.Tx and ko.Tx samples?</em></p>
+<p>Next, we’ll save this plot to file.</p>
+<pre class="r"><code>pdf(file = paste0(plotPath, &#39;PCAplot_rlog_&#39;, Comparison, &#39;.pdf&#39;), onefile = TRUE)
+p.all
+dev.off()</code></pre>
+<pre><code>## quartz_off_screen 
+##                 2</code></pre>
+<p><strong>Checkpoint</strong>: <em>If generated and saved the <code>p.all</code> PCA plot, please indicate with the green ‘check’ button. Otherwise, please use use the red ‘x’ button in your zoom reaction panel to have this step repeated.</em></p>
+</div>
+<div id="breakout-exercise-1---imagine-a-heatmap" class="section level2" number="2.4">
+<h2><span class="header-section-number">2.4</span> [Breakout Exercise 1] - Imagine a heatmap</h2>
+<p>It can be useful to visualize to visualize how our samples organize along with the expression pattern of individual genes. We will create a heatmap of the top most variable genes using the <code>pheatmap</code> function.</p>
+<p>Before the exercise, let’s look at the help page using the <code>?</code> symbol.</p>
+<pre class="r"><code>?pheatmap</code></pre>
+<p>If we scroll down to the examples, we can test some of them out:</p>
+<pre class="r"><code># copied from the pheatmap documentation
+test = matrix(rnorm(200), 20, 10)
+test[1:10, seq(1, 10, 2)] = test[1:10, seq(1, 10, 2)] + 3
+test[11:20, seq(2, 10, 2)] = test[11:20, seq(2, 10, 2)] + 2
+test[15:20, seq(2, 10, 2)] = test[15:20, seq(2, 10, 2)] + 4
+colnames(test) = paste(&quot;Test&quot;, 1:10, sep = &quot;&quot;)
+rownames(test) = paste(&quot;Gene&quot;, 1:20, sep = &quot;&quot;)
+
+
+pheatmap(test)</code></pre>
+<p><img src="Module09_SampleQCViz_files/figure-html/testpheat-1.png" width="672" /></p>
+<p>Now that we’ve gotten a sense of what <code>pheatmap</code> can generate, let’ navigate to our first <a href="https://umich-brcf-bioinf.github.io/2022-03-14-umich-rnaseq-demystified/html/Module09a_breakout.html">breakout exercise</a> <br> <br></p>
+</div>
+<div id="transferring-our-plot-to-our-local-computer" class="section level2" number="2.5">
+<h2><span class="header-section-number">2.5</span> Transferring our plot to our local computer</h2>
+<p>Rstudio server allows us to download files through the interactive file panel on the right side. If we navigate into the plot subfolder and select the <code>PCAplot_rlog_Gtype.Tx.pdf</code> or the file, we can then click the blue gear symbol labeled <code>More</code> and select <code>Export...</code>. We should see a prompt regarding the name of the file and if we click <code>Download</code> the file should show up in your local “Downloads” folder.</p>
+<div id="optional---scree-plot-example" class="section level3" number="2.5.1">
+<h3><span class="header-section-number">2.5.1</span> Optional - Scree Plot example</h3>
+<details>
+<summary>
+<em>Bonus: Click for example code for generating a ScreePlot</em>
+</summary>
+<p>A screeplot is a way to visualize the variance explained by all principle components. To generate a scree plot, the PCA results need to be used independently of plotting, such as described by <a href="https://statquest.org/pca-clearly-explained/">this statquest post</a> and replicated below.</p>
+<pre class="r"><code># generate PCA loadings
+pca &lt;- prcomp(t(assay(rld)), scale=TRUE)
+
+## get the scree information
+pca.var &lt;- pca$sdev^2
+scree &lt;- pca.var/sum(pca.var)
+p &lt;- barplot((scree[1:10]*100), main=&quot;Scree Plot&quot;, xlab=&quot;Principal Component&quot;, ylab=&quot;Percent Variation&quot;)</code></pre>
+<p><img src="Module09_SampleQCViz_files/figure-html/ScreePlot-1.png" width="672" /></p>
+<pre class="r"><code>print(p)</code></pre>
+<pre><code>##       [,1]
+##  [1,]  0.7
+##  [2,]  1.9
+##  [3,]  3.1
+##  [4,]  4.3
+##  [5,]  5.5
+##  [6,]  6.7
+##  [7,]  7.9
+##  [8,]  9.1
+##  [9,] 10.3
+## [10,] 11.5</code></pre>
+We can see that the majority (~65%) of the variance across our samples is explained by the first three principle components, giving us some additional confidence regarding the quality of our data. In these scree plot examples from BioTuring, the plot on the left fits what we would expect for a dataset with high signal from the experimental treatment, where the majority of the variance is explained by the first few principle components. The plot on the right illustrates a scenario where the variance is distributed across many components, which could be due to low signal from the experimental treatment, complex experimental design, or confounding factors. image: <img src="images/proportion-of-variance-blog-horz.jpg" />
+</details>
+<p><br></p>
+</div>
+</div>
+</div>
+<div id="summary" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Summary</h1>
+<p>In this section, we:</p>
+<ul>
+<li>Discussed variance within treatment groups<br />
+</li>
+<li>Discussed technical artifacts, including batches</li>
+<li>Learned to generate PCA plots</li>
+</ul>
+<hr />
+</div>
+<div id="sources-used" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Sources Used</h1>
+<ul>
+<li>HBC QC tutorial: <a href="https://hbctraining.github.io/DGE_workshop/lessons/03_DGE_QC_analysis.html" class="uri">https://hbctraining.github.io/DGE_workshop/lessons/03_DGE_QC_analysis.html</a><br />
+</li>
+<li>Detailed Heatmap tutorial from Galaxy: <a href="https://training.galaxyproject.org/training-material/topics/transcriptomics/tutorials/rna-seq-viz-with-heatmap2/tutorial.html" class="uri">https://training.galaxyproject.org/training-material/topics/transcriptomics/tutorials/rna-seq-viz-with-heatmap2/tutorial.html</a><br />
+</li>
+<li>PCA Overview: <a href="https://blog.bioturing.com/2018/06/14/principal-component-analysis-explained-simply/" class="uri">https://blog.bioturing.com/2018/06/14/principal-component-analysis-explained-simply/</a></li>
+</ul>
+<hr />
+<p>These materials have been adapted and extended from materials listed above. These are open access materials distributed under the terms of the <a href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.</p>
+</div>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiRGF5IDMgLSBNb2R1bGUgMDk6IFNhbXBsZSBWaXN1YWxpemF0aW9ucyBmb3IgUXVhbGl0eSBDb250cm9sIgphdXRob3I6ICJVTSBCaW9pbmZvcm1hdGljcyBDb3JlIgpkYXRlOiAiYHIgU3lzLkRhdGUoKWAiCm91dHB1dDoKICAgICAgICBodG1sX2RvY3VtZW50OgogICAgICAgICAgICBpbmNsdWRlczoKICAgICAgICAgICAgICAgIGluX2hlYWRlcjogaGVhZGVyLmh0bWwKICAgICAgICAgICAgdGhlbWU6IHBhcGVyCiAgICAgICAgICAgIHRvYzogdHJ1ZQogICAgICAgICAgICB0b2NfZGVwdGg6IDQKICAgICAgICAgICAgdG9jX2Zsb2F0OiB0cnVlCiAgICAgICAgICAgIG51bWJlcl9zZWN0aW9uczogdHJ1ZQogICAgICAgICAgICBmaWdfY2FwdGlvbjogdHJ1ZQogICAgICAgICAgICBtYXJrZG93bjogR0ZNCiAgICAgICAgICAgIGNvZGVfZG93bmxvYWQ6IHRydWUKLS0tCjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+CmJvZHl7IC8qIE5vcm1hbCAgKi8KICAgICAgZm9udC1zaXplOiAxNHB0OwogIH0KcHJlIHsKICBmb250LXNpemU6IDEycHQKfQpjb2RlLnJ7CiAgZm9udC1zaXplOiAxMnB0Owp9Cjwvc3R5bGU+Cgo8IS0tLSBBbGxvdyB0aGUgcGFnZSB0byBiZSB3aWRlciAtLS0+CjxzdHlsZT4KICAgIGJvZHkgLm1haW4tY29udGFpbmVyIHsKICAgICAgICBtYXgtd2lkdGg6IDEyMDBweDsKICAgIH0KPC9zdHlsZT4KCj4gIyBPYmplY3RpdmVzOiAgICAgCj4gKiBHZW5lcmF0ZSBjb21tb24gUUMgdmlzdWFsaXphdGlvbnMgICAKPiAqIFVuZGVyc3RhbmQgaG93IHRvIGludGVycHJldCBRQyB2aXN1YWxpemF0aW9ucyAgICAKPiAqIFVuZGVyc3RhbmQgd2hlbiB0byByZXZpc2UgdGhlIG1vZGVsIHVzZWQgaW4gdGhlIERFU2VxMiBpbml0aWFsaXphdGlvbiAgICAKPiAqIFVuZGVyc3RhbmQgdGhlIHBpdGZhbGxzIG9mIHBvc3QtaG9jIGFuYWx5c2lzICAgICAKPiAqIERlc2NyaWJlIHRoZSBjYXVzZXMgYW5kIGltcGxpY2F0aW9ucyBvZiBiYXRjaCBlZmZlY3Qgb3Igb3RoZXIgUUMgaXNzdWVzIGluIGFuIFJOQS1TZXEgZXhwZXJpbWVudCAgICAgCgoKYGBge3IgTW9kdWxlcywgZXZhbD1UUlVFLCBlY2hvPUZBTFNFLCBtZXNzYWdlPUZBTFNFLCB3YXJuaW5nPUZBTFNFfQpsaWJyYXJ5KERFU2VxMikKbGlicmFyeShnZ3Bsb3QyKQpsaWJyYXJ5KHRpZHlyKQpsaWJyYXJ5KGRwbHlyKQpsaWJyYXJ5KG1hdHJpeFN0YXRzKQpsaWJyYXJ5KGdncmVwZWwpCmxpYnJhcnkocGhlYXRtYXApCmxpYnJhcnkoUkNvbG9yQnJld2VyKQpsb2FkKCJyZGF0YS9SdW5uaW5nRGF0YS5SRGF0YSIpCmBgYAoKCiMgRGlmZmVyZW50aWFsIEV4cHJlc3Npb24gV29ya2Zsb3cKClByaW9yIHRvIHRlc3RpbmcgZm9yIGRpZmZlcmVudGlhbCBleHByZXNzaW9uIGJldHdlZW4gb3VyIGNvbXBhcmlzb25zIG9mIGludGVyZXN0LCB3ZSdsbCBmaXJzdCBnZW5lcmF0ZSBwbG90cyB0aGF0IHdpbGwgYXNzZXNzIGhvdyB3ZWxsIG91ciBzYW1wbGVzIG1hdGNoIHVwIHdpdGggb3VyIGV4cGVjdGF0aW9ucyAoYmFzZWQgb24gdGhlaXIgdHJlYXRtZW50IGdyb3VwcykgYW5kIHdoYXQgd2UgbWlnaHQgZXhwZWN0IHRvIHNlZSBmcm9tIG91ciBkaWZmZXJlbnRpYWwgZXhwcmVzc2lvbiBjb21wYXJpc29ucy4KCiFbXSguL2ltYWdlcy93YXlmaW5kZXIvd2F5ZmluZGVyLTA1LnBuZyl7d2lkdGg9NzUlfQoKLS0tCgojIFNhbXBsZSBWaXN1YWxpemF0b25zIGZvciBRdWFsaXR5IENvbnRyb2wgICAgIAoKT24gTW9uZGF5LCB3ZSBkaXNjdXNzZWQgYXNwZWN0cyBvZiBxdWFsaXR5IGNvbnRyb2wgYXNzZXNzbWVudCBhdCB0aGUgc2VxdWVuY2luZyBkYXRhIGxldmVsLiBUb2RheSB3ZSB3aWxsIG91dGxpbmUgc2FtcGxlLWxldmVsIGFuZCBnZW5lLWxldmVsIHF1YWxpdHkgY29udHJvbCBhc3Nlc3NtZW50cyB0byBkZXRlcm1pbmUgd2hhdCB3ZSBzaG91bGQgZXhwZWN0IGZvciBvdXIgZGlmZmVyZW50aWFsIGV4cHJlc3Npb24gY29tcGFyaXNvbnMuCgpUbyBkbyB0aGlzLCB3ZSB3aWxsIGZpcnN0IGFzc2VzcyB0aGUgc2ltaWxhcml0eSBvZiBvdXIgc2FtcGxlcyBieSB1c2luZyBwcmluY2lwYWwgY29tcG9uZW50IGFuYWx5c2lzIChQQ0EpLiBUaGlzIHdpbGwgYWxsb3cgdXMgdG8gZGV0ZXJtaW5lIGhvdyB3ZWxsIHBhdHRlcm5zIGluIHRoZSBkYXRhIGZpdHMgb3VyIGV4cGVjdGF0aW9ucyBmcm9tIHRoZSBleHBlcmltZW50cyBkZXNpZ24gYW5kIHBvc3NpYmxlIHNvdXJjZXMgb2YgdmFyaWF0aW9uLgoKT3RoZXIgY29tbW9uIHZpc3VhbGl6YXRpb25zIHRoYXQgd2UgZ2VuZXJhdGUgZm9yIG91ciBhbmFseXNlcyBpbmNsdWRlIGV4cHJlc3Npb24gaGVhdG1hcHMsIHNhbXBsZSBjb3JyZWxhdGlvbiBoZWF0bWFwcywgYW5kIGJveHBsb3RzIG9mIHJhdyBhbmQvb3Igbm9ybWFsaXplZCBjb3VudHMsIHRoZSBjb2RlIGZvciB3aGljaCAoZHVlIHRvIHRpbWUgcmVzdHJpY3Rpb25zKSBjYW4gYmUgZm91bmQgYXMgYm9udXMgY29udGVudCB0aHJvdWdoIHRoZSBtYXRlcmlhbHMgZm9yIHRvZGF5IGFuZCBpbiB0aGUgYm9udXMgY29udGVudCBtb2R1bGUuCgojIyBQcmluY2lwbGUgQ29tcG9uZW50IEFuYWx5c2lzIChQQ0EpIFBsb3RzCgpBIGNvbW1vbiBhbmQgdmVyeSB1c2VmdWwgcGxvdCBmb3IgZXZhbHVhdGluZyBob3cgd2VsbCBvdXIgc2FtcGxlcyBjbHVzdGVyIGJ5IHRyZWF0bWVudCBncm91cHMgYXJlIFByaW5jaXBsZSBDb21wb25lbnQgQW5hbHlzaXMgKFBDQSkgcGxvdHMuIFBDQSBpcyB1c2VkIHRvIGVtcGhhc2l6ZSB2YXJpYXRpb24gYW5kIGJyaW5nIG91dCBwYXR0ZXJucyBpbiBsYXJnZSBkYXRhc2V0cyBieSB1c2luZyBkaW1lbnNpb25hbGl0eSByZWR1dGlvbi4KClRoaXMgaW1hZ2UgZnJvbQpbYSBoZWxwZnVsIHN0ZXAgYnkgc3RlcCBleHBsYWluYXRpb24gb2YgUENBXShodHRwczovL2Jsb2cuYmlvdHVyaW5nLmNvbS8yMDE4LzA2LzE0L3ByaW5jaXBhbC1jb21wb25lbnQtYW5hbHlzaXMtZXhwbGFpbmVkLXNpbXBseS8pIGhlbHBzIHRvIGlsbHVzdHJhdGUgdGhlIHByaW5jaXBsZSBjb21wb25lbnQgcHJvamVjdGlvbnMgZm9yIHR3byBnZW5lcyBtZWFzdXJlZCBpbiBhcHByb3hpbWF0ZWx5IDYwIG1vdXNlIHNhbXBsZXMuIEdlbmVyYWxseSwgdGhpcyBwcm9jZXNzIGlzIHJlcGVhdGVkIGFuZCBhZnRlciBlYWNoIGdlbmUncyBjb250cmlidXRpb24gdG8gYSBwcmluY2lwbGUgY29tcG9uZW50IG9yIHdlaWdodCBpcyBkZXRlcm1pbmVkLCB0aGUgZXhwcmVzc2lvbiBhbmQgd2VpZ2h0IGFyZSBzdW1tZWQgYWNyb3NzIGdlbmVzIGZvciBlYWNoIHNhbXBsZSB0byBjYWxjdWxhdGUgYSB2YWx1ZSBmb3IgZWFjaCBwcmluY2lwbGUgY29tcG9uZW50LgoKCiFbXSguL2ltYWdlcy9CbG9nX3BjYV82Yi5wbmcpCgo+KipOb3RlKio6IEEgbW9yZSBkZXRhaWxlZCBvdmVydmlldyBvZiB0aGUgUENBIHByb2NlZHVyZSBpcyBvdXRsaW5lZCBpbiBbYSBIYXJ2YXJkIENoYW4gQmlvaW5mb3JtYXRpYyBDb3JlIHRyYWluaW5nIG1vZHVsZV0oaHR0cHM6Ly9oYmN0cmFpbmluZy5naXRodWIuaW8vREdFX3dvcmtzaG9wL2xlc3NvbnMvcHJpbmNpcGFsX2NvbXBvbmVudF9hbmFseXNpcy5odG1sKSBhbmQgaXMgYmFzZWQgb24gYSBtb3JlIHRob3JvdWdoIGRlc2NyaXB0aW9uIHByZXNlbnRlZCBpbiBhIFtTdGF0UXVlc3TigJlzIHZpZGVvXShodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PV9VVkhuZUJVQlcwKS4gQWRkaXRpb25hbGx5LCB0aGlzIFtUb3dhcmRzRGF0YVNjaWVuY2UgYmxvZyBwb3N0XShodHRwczovL3Rvd2FyZHNkYXRhc2NpZW5jZS5jb20vcHJpbmNpcGFsLWNvbXBvbmVudC1hbmFseXNpcy0zYzM5ZmJmNWNiOWQpIGdvZXMgdGhyb3VnaCB0aGUgbWF0aCBiZWhpbmQgUENBcy4KCiMjIyBJbnRlcnByZXRpbmcgUENBIHBsb3RzCgpGb3IgbW9zdCBidWxrIFJOQS1zZXEgZXhwZXJpbWVudHMsIHdlIGV4cGVjdCB0aGUgbWFqb3JpdHkgb2YgdGhlIHRvdGFsIHZhcmlhbmNlIHRvIGJlIGV4cGxhaW5lZCBieSB0aGUgZmlyc3QgdHdvIG9yIHRocmVlIHByaW5jaXBsZSBjb21wb25lbnRzLgoKIVtdKGltYWdlcy9QQ0FwbG90X0ZhbmN5X3Jsb2dfa28uVHgucG5nKXt3aWR0aD03NSV9CgpJbiB0aGlzIHBsb3QsIHdoaWNoIGlzIHNpbWlsYXIgdG8gd2hhdCB3ZSdsbCBnZW5lcmF0ZSBiZWxvdyBmb3Igb3VyIGRhdGEsIHdoZXJlIHByaW5jaXBsZSBjb21wb25lbnQgMSAoUEMxKSBleHBsYWlucyB+ODAlIG9mIHRoZSB2YXJpYW5jZSBpbiBvdXIgZGF0YSB3aGlsZSBwcmluY2lwbGUgY29tcG9uZW50IDIgKFBDMikgZXhwbGFpbnMgfjEyJSBvZiB0aGUgdmFyaWFuY2UsIHdoaWNoIGZpdHMgdGhhdCBleHBlY3Rpb25zLgoKKltRdWVzdGlvbl06IEhvdyBtaWdodCB3ZSBpbnRlcnByZXQgdGhlIHZhcmlhbmNlIGV4cGxhaW5lZCBieSBlYWNoIHByaW5jaXBsZSBjb21wb25lbnQgaW4gdGhlIGNvbnRleHQgb2YgdGhlIGxhYmVsZWQgc2FtcGxlIHBvaW50cz8qCgoKRm9yIG1vcmUgaW5mb3JtYXRpb24sIHRoaXMgW2hlbHBmdWwgb3ZlcnZpZXcgb2YgUENBIGJhc2ljc10oaHR0cHM6Ly9ibG9nLmJpb3R1cmluZy5jb20vMjAxOC8wNi8xNC9wcmluY2lwYWwtY29tcG9uZW50LWFuYWx5c2lzLWV4cGxhaW5lZC1zaW1wbHkvKSB3YWxrcyB0aHJvdWdoIGJvdGggdGhlIGdlbmVyYXRpb24gYW5kIGludGVycHJldGF0aW9uIG9mIFBDQSBwbG90cy4gICAgCgoKIyMjIEV2YWx1YXRpbmcgYmF0Y2ggZWZmZWN0cyBvciBjb25mb3VuZGVycwoKUENBIHBsb3RzIGFyZSBhbHNvIHVzZWZ1bCBmb3IgZXZhbHVhdGluZyB0aGUgaW1wYWN0IG9mIGZhY3RvcnMgb3RoZXIgdGhhbiB0aGUgZXhwZXJpbWVudGFsIHRyZWF0bWVudCBvciBncm91cC4KCkF0IHRpbWVzLCBiYXRjaCBlZmZlY3RzIGNhbiBiZSBxdWl0ZSBvYnZpb3VzLCBzdWNoIGFzIHRoaXMgZXhhbXBsZSBmcm9tIHRoZSBbREVTZXEyIHZpZ25ldHRlXShodHRwOi8vYmlvY29uZHVjdG9yLm9yZy9wYWNrYWdlcy9kZXZlbC9iaW9jL3ZpZ25ldHRlcy9ERVNlcTIvaW5zdC9kb2MvREVTZXEyLmh0bWwpLCB3aGVyZSBzYW1wbGVzIHdpdGhpbiBlYWNoIHRyZWF0bWVudCBncm91cCBsb29rIHN0YWdnZXJlZCBpbnRvIHR3byBzdWJncm91cHMuCgoKIVtdKC4vaW1hZ2VzL1BDQTFfREVTZXEyVmlnbmV0dGUucG5nKQoKSWYgd2UgY29sb3Igb25seSBieSBzZXF1ZW5jaW5nIHJ1biB0eXBlIChwYWlyZWQtZW5kIHZzLiBzaW5nbGUtZW5kKSwgd2Ugc2VlIHRoYXQgUEMyICgyOSUgb2YgdmFyaWFuY2UpIGlzIHByaW1hcmlseSBleHBsYWluZWQgYnkgdGhpcyB0ZWNobmljYWwgY292YXJpYXRlLgoKIVtdKC4vaW1hZ2VzL1BDQTJfREVTZXEyVmlnbmV0dGUucG5nKQoKSG93ZXZlciwgdGhlIHNhbXBsZXMgYXJlIGNsZWFybHkgc2VwZXJhdGVkIGJ5IGV4cGVyaW1lbnRhbCBjb25kaXRpb24gb24gUEMxICoqYW5kKiogc2luY2Ugd2UgaGF2ZSBub24tY29uZm91bmRlZCBiYXRjaGVzLCBpZiB3ZSBzYXcgdGhpcyBwYXR0ZXJuIGluIG91ciBkYXRhIHdlIGNvdWxkIGluY29ycG9yYXRlIHRoZSB0ZWNobmljYWwgY292YXJpYXRlIGludG8gb3VyIG1vZGVsIGRlc2lnbiwgc3VjaCBhcyBvdXRsaW5lZCBpbiB0aGUgW0RFU2VxMiB2aWduZXR0ZV0oaHR0cDovL2Jpb2NvbmR1Y3Rvci5vcmcvcGFja2FnZXMvZGV2ZWwvYmlvYy92aWduZXR0ZXMvREVTZXEyL2luc3QvZG9jL0RFU2VxMi5odG1sI211bHRpLWZhY3Rvci1kZXNpZ25zKS4KCjxkZXRhaWxzPgogICAgPHN1bW1hcnk+KkNsaWNrIGZvciBjb21wbGV4IGRlc2lnbiBkaXNjdXNzaW9uKjwvc3VtbWFyeT4KICAgIEluIGV4cGVyaW1lbnRzIHdpdGggbW9yZSBjb21wbGV4IGRlc2lnbnMsIHN1Y2ggYXMgd2hlbiB0aGVyZSBhcmUgaW50ZXJlc2VjdGluZy9tdWx0aXBsZSB0cmVhdG1lbnQgY29uZGl0aW9ucywgaXQgY2FuIGJlIGxlc3MgY2xlYXIgd2hhdCBjb3ZhcmlhbnRzIGFyZSBpbmZsdWVuY2luZyBleHByZXNzaW9uLCBzdWNoIGFzIGlsbHVzdHJhdGVkIGZyb20gW3RoaXMgZG9jdW1lbmF0aW9uIGZvciBhIG1pY3JvYXJyYXkgYW5hbHlzaXMgdG9vbF0oaHR0cDovL3d3dy5tb2xtaW5lLmNvbS9tYWdtYS9nbG9iYWxfYW5hbHlzaXMvYmF0Y2hfZWZmZWN0Lmh0bWwpLgogICAgRnJvbSB0aGUgUENBIGxhYmVsZWQgYnkgZXhwZXJpbWVudGFsIHRyZWF0bWVudCwgd2Ugc2VlIHRoYXQgc2FtcGxlcyBmcm9tIHRoZSB0cmVhdG1lbnQgZ3JvdXAgZG8gbm90IGNsdXN0ZXIgdG9nZXRoZXIgYW5kIHRoYXQgdGhlcmUgaXMgaGlnaCB2YXJpYW5jZSBhY3Jvc3MgYWxsIHRyZWF0bWVudCBncm91cHMuCiAgICAhW10oLi9pbWFnZXMvYmF0Y2hfZXgxYi5qcGcpCiAgICBIb3dldmVyLCB3aGVuIHRoZSBwbG90IGlzIGNvbG9yIGNvZGVkIGJ5IHRoZSB0ZWNobmljYWwgYmF0Y2hlcyBvZiBwcm9iZSBsYWJlbGluZywgd2Ugc2VlIHRoYXQgdGhlIHBhdHRlcm5zIGluIHRoZSBkYXRhIGFyZSBiZXR0ZXIgZXhwbGFpbmVkIGJ5IGJhdGNoIHRoYW4gdGhlIGV4cGVyaW1lbnRhbCBjb25kaXRpb25zLgogICAgIVtdKC4vaW1hZ2VzL2JhdGNoX2V4MWMuanBnKQo8L2RldGFpbHM+CgoKIyMgUGxvdCBTZXR1cAoKV2UndmUgYWxyZWFkeSBsb2FkZWQgdGhlIGxpYnJhcmllcyB3ZSBuZWVkIGZvciB0aGlzIG1vZHVsZS4gV2UnbGwgZm9sbG93IGJlc3QgcHJhY3RpY2VzIGFuZCBjcmVhdGUgbmV3IGEgc3ViZGlyZWN0b3J5IHRvIG9yZ2FuaXplIG91ciBvdXRwdXQgZmlndXJlcywgYXMgd2VsbCBhcyBhIHZhcmlhYmxlIHRvIHN0b3JlIGEgZGVzY3JpcHRvciBvZiB0aGUgZGF0YXNldCB3ZSBhcmUgbG9va2luZyBhdCBzbyB3ZSBjYW4gbW9yZSBlYXNpbHkgcmVjeWNsZSBvdXIgcGxvdHRpbmcgZnVuY3Rpb25zLgoKYGBge3IgU2V0dXBkaXJlY3Rvcnl9CnBsb3RQYXRoID0gJy4vREVfb3V0cHV0cy9maWd1cmVzLycKZGlyLmNyZWF0ZShwbG90UGF0aCwgc2hvd1dhcm5pbmdzID0gRkFMU0UpCkNvbXBhcmlzb24gPC0gIkd0eXBlLlR4IiAjIGRlc2NyaXB0b3IgZm9yIHRoZSBkYXRhc2V0IHdlIGFyZSBsb29raW5nIGF0CmBgYAoKIyMgUENBIFBsb3QgaW5pdGlhbGl6YXRpb24KCkJlbG93LCB3ZSB3aWxsIHBsb3QgdGhlIHJsb2cgbm9ybWFsaXplZCBkYXRhIGFuZCBnZW5lcmF0ZSB0aGUgUENBIHByb2plY3Rpb25zIGZvciB0aGUgdG9wIDUwMCB1c2luZyB0aGUgYHBsb3RQQ0FgIGZ1bmN0aW9uIGZyb20gREVTZXEyLCBzcGVjaWZ5aW5nIGBHdHlwZS5UeGAgYXMgdGhlIGNvbmRpdGlvbiBvZiBpbnRlcmVzdCwgYW5kIHZpZXcgdGhlIHNpbXBsZSBwbG90IGdlbmVyYXRlZCBieSB0aGUgZnVuY3Rpb24uCgpgYGB7ciBQQ0FybG9nM30KcC5hbGwgPC0gcGxvdFBDQShybGQsIGludGdyb3VwID0gYygnR3R5cGUuVHgnKSwgbnRvcCA9IDUwMCkKcC5hbGwKYGBgCgpXZSBhbHNvIHNlZSB0aGF0IHNhbXBsZXMgaW4gYm90aCBgY29udHJvbGAgZ3JvdXBzIGFyZSBmYWlybHkgdGlnaHRseSBncm91cGVkLCB3aGlsZSBzYW1wbGVzIHdpdGhpbiBlYWNoIGBUeGAgZ3JvdXAgZG8gbm90IGNsdXN0ZXIgYXMgdGlnaHRseS4gCgoqW1F1ZXN0aW9uXTogV2hhdCBjYW4gd2UgdGFrZSBhd2F5IGZyb20gdGhpcyBQQ0EgcGxvdD8gRG9lcyBpdCBsb29rIGxpa2UgdGhlcmUgYXJlIGJhdGNoIGVmZmVjdHM/IFdvdWxkIHdlIGV4cGVjdCBtb3JlIERFIGdlbmVzIGZvciBjb21wYXJpc29ucyBiZXR3ZWVuIGtvLmNvbnRyb2wgYW5kIHd0LmNvbnRyb2wgc2FtcGxlcyBPUiB3dC5UeCBhbmQga28uVHggc2FtcGxlcz8qCgpOZXh0LCB3ZSdsbCBzYXZlIHRoaXMgcGxvdCB0byBmaWxlLgpgYGB7ciBQQ0FybG9nMX0KcGRmKGZpbGUgPSBwYXN0ZTAocGxvdFBhdGgsICdQQ0FwbG90X3Jsb2dfJywgQ29tcGFyaXNvbiwgJy5wZGYnKSwgb25lZmlsZSA9IFRSVUUpCnAuYWxsCmRldi5vZmYoKQpgYGAKCioqQ2hlY2twb2ludCoqOiAqSWYgZ2VuZXJhdGVkIGFuZCBzYXZlZCB0aGUgYHAuYWxsYCBQQ0EgcGxvdCwgcGxlYXNlIGluZGljYXRlIHdpdGggdGhlIGdyZWVuICdjaGVjaycgYnV0dG9uLiBPdGhlcndpc2UsIHBsZWFzZSB1c2UgIHVzZSB0aGUgcmVkICd4JyBidXR0b24gaW4geW91ciB6b29tIHJlYWN0aW9uIHBhbmVsIHRvIGhhdmUgdGhpcyBzdGVwIHJlcGVhdGVkLioKCiMjIFtCcmVha291dCBFeGVyY2lzZSAxXSAtIEltYWdpbmUgYSBoZWF0bWFwCgpJdCBjYW4gYmUgdXNlZnVsIHRvIHZpc3VhbGl6ZSB0byB2aXN1YWxpemUgaG93IG91ciBzYW1wbGVzIG9yZ2FuaXplIGFsb25nIHdpdGggdGhlIGV4cHJlc3Npb24gcGF0dGVybiBvZiBpbmRpdmlkdWFsIGdlbmVzLiBXZSB3aWxsIGNyZWF0ZSBhIGhlYXRtYXAgb2YgdGhlIHRvcCBtb3N0IHZhcmlhYmxlIGdlbmVzIHVzaW5nIHRoZSBgcGhlYXRtYXBgIGZ1bmN0aW9uLgoKQmVmb3JlIHRoZSBleGVyY2lzZSwgbGV0J3MgbG9vayBhdCB0aGUgaGVscCBwYWdlIHVzaW5nIHRoZSBgP2Agc3ltYm9sLgpgYGB7ciBwaGVhdERvYywgZXZhbD1GQUxTRX0KP3BoZWF0bWFwCmBgYAoKSWYgd2Ugc2Nyb2xsIGRvd24gdG8gdGhlIGV4YW1wbGVzLCB3ZSBjYW4gdGVzdCBzb21lIG9mIHRoZW0gb3V0OgpgYGB7ciB0ZXN0cGhlYXR9CiMgY29waWVkIGZyb20gdGhlIHBoZWF0bWFwIGRvY3VtZW50YXRpb24KdGVzdCA9IG1hdHJpeChybm9ybSgyMDApLCAyMCwgMTApCnRlc3RbMToxMCwgc2VxKDEsIDEwLCAyKV0gPSB0ZXN0WzE6MTAsIHNlcSgxLCAxMCwgMildICsgMwp0ZXN0WzExOjIwLCBzZXEoMiwgMTAsIDIpXSA9IHRlc3RbMTE6MjAsIHNlcSgyLCAxMCwgMildICsgMgp0ZXN0WzE1OjIwLCBzZXEoMiwgMTAsIDIpXSA9IHRlc3RbMTU6MjAsIHNlcSgyLCAxMCwgMildICsgNApjb2xuYW1lcyh0ZXN0KSA9IHBhc3RlKCJUZXN0IiwgMToxMCwgc2VwID0gIiIpCnJvd25hbWVzKHRlc3QpID0gcGFzdGUoIkdlbmUiLCAxOjIwLCBzZXAgPSAiIikKCgpwaGVhdG1hcCh0ZXN0KQpgYGAKCk5vdyB0aGF0IHdlJ3ZlIGdvdHRlbiBhIHNlbnNlIG9mIHdoYXQgYHBoZWF0bWFwYCBjYW4gZ2VuZXJhdGUsIGxldCcgbmF2aWdhdGUgdG8gb3VyIGZpcnN0IFticmVha291dCBleGVyY2lzZV0oaHR0cHM6Ly91bWljaC1icmNmLWJpb2luZi5naXRodWIuaW8vMjAyMi0wMy0xNC11bWljaC1ybmFzZXEtZGVteXN0aWZpZWQvaHRtbC9Nb2R1bGUwOWFfYnJlYWtvdXQuaHRtbCkKPGJyPgo8YnI+CgojIyBUcmFuc2ZlcnJpbmcgb3VyIHBsb3QgdG8gb3VyIGxvY2FsIGNvbXB1dGVyCgpSc3R1ZGlvIHNlcnZlciBhbGxvd3MgdXMgdG8gZG93bmxvYWQgZmlsZXMgdGhyb3VnaCB0aGUgaW50ZXJhY3RpdmUgZmlsZSBwYW5lbCBvbiB0aGUgcmlnaHQgc2lkZS4gSWYgd2UgbmF2aWdhdGUgaW50byB0aGUgcGxvdCBzdWJmb2xkZXIgYW5kIHNlbGVjdCB0aGUgYFBDQXBsb3RfcmxvZ19HdHlwZS5UeC5wZGZgIG9yIHRoZSAgZmlsZSwgd2UgY2FuIHRoZW4gY2xpY2sgdGhlIGJsdWUgZ2VhciBzeW1ib2wgbGFiZWxlZCBgTW9yZWAgYW5kIHNlbGVjdCBgRXhwb3J0Li4uYC4gV2Ugc2hvdWxkIHNlZSBhIHByb21wdCByZWdhcmRpbmcgdGhlIG5hbWUgb2YgdGhlIGZpbGUgYW5kIGlmIHdlIGNsaWNrIGBEb3dubG9hZGAgdGhlIGZpbGUgc2hvdWxkIHNob3cgdXAgaW4geW91ciBsb2NhbCAiRG93bmxvYWRzIiBmb2xkZXIuCgojIyMgT3B0aW9uYWwgLSBTY3JlZSBQbG90IGV4YW1wbGUgCgo8ZGV0YWlscz4KICAgIDxzdW1tYXJ5PipCb251czogQ2xpY2sgZm9yIGV4YW1wbGUgY29kZSBmb3IgZ2VuZXJhdGluZyBhIFNjcmVlUGxvdCo8L3N1bW1hcnk+CiAgICAgQSBzY3JlZXBsb3QgaXMgYSB3YXkgdG8gdmlzdWFsaXplIHRoZSB2YXJpYW5jZSBleHBsYWluZWQgYnkgYWxsIHByaW5jaXBsZSBjb21wb25lbnRzLgogICAgIFRvIGdlbmVyYXRlIGEgc2NyZWUgcGxvdCwgdGhlIFBDQSByZXN1bHRzIG5lZWQgdG8gYmUgdXNlZCBpbmRlcGVuZGVudGx5IG9mIHBsb3R0aW5nLCBzdWNoIGFzIGRlc2NyaWJlZCBieSBbdGhpcyBzdGF0cXVlc3QgcG9zdF0oaHR0cHM6Ly9zdGF0cXVlc3Qub3JnL3BjYS1jbGVhcmx5LWV4cGxhaW5lZC8pIGFuZCByZXBsaWNhdGVkIGJlbG93LgpgYGB7ciBTY3JlZVBsb3R9CiMgZ2VuZXJhdGUgUENBIGxvYWRpbmdzCnBjYSA8LSBwcmNvbXAodChhc3NheShybGQpKSwgc2NhbGU9VFJVRSkKCiMjIGdldCB0aGUgc2NyZWUgaW5mb3JtYXRpb24KcGNhLnZhciA8LSBwY2Ekc2Rldl4yCnNjcmVlIDwtIHBjYS52YXIvc3VtKHBjYS52YXIpCnAgPC0gYmFycGxvdCgoc2NyZWVbMToxMF0qMTAwKSwgbWFpbj0iU2NyZWUgUGxvdCIsIHhsYWI9IlByaW5jaXBhbCBDb21wb25lbnQiLCB5bGFiPSJQZXJjZW50IFZhcmlhdGlvbiIpCnByaW50KHApCmBgYAogICAgV2UgY2FuIHNlZSB0aGF0IHRoZSBtYWpvcml0eSAofjY1JSkgb2YgdGhlIHZhcmlhbmNlIGFjcm9zcyBvdXIgc2FtcGxlcyBpcyBleHBsYWluZWQgYnkgdGhlIGZpcnN0IHRocmVlIHByaW5jaXBsZSBjb21wb25lbnRzLCBnaXZpbmcgdXMgc29tZSBhZGRpdGlvbmFsIGNvbmZpZGVuY2UgcmVnYXJkaW5nIHRoZSBxdWFsaXR5IG9mIG91ciBkYXRhLgogICAgSW4gdGhlc2Ugc2NyZWUgcGxvdCBleGFtcGxlcyBmcm9tIEJpb1R1cmluZywgdGhlIHBsb3Qgb24gdGhlIGxlZnQgZml0cyB3aGF0IHdlIHdvdWxkIGV4cGVjdCBmb3IgYSBkYXRhc2V0IHdpdGggaGlnaCBzaWduYWwgZnJvbSB0aGUgZXhwZXJpbWVudGFsIHRyZWF0bWVudCwgd2hlcmUgdGhlIG1ham9yaXR5IG9mIHRoZSB2YXJpYW5jZSBpcyBleHBsYWluZWQgYnkgdGhlIGZpcnN0IGZldyBwcmluY2lwbGUgY29tcG9uZW50cy4gVGhlIHBsb3Qgb24gdGhlIHJpZ2h0IGlsbHVzdHJhdGVzIGEgc2NlbmFyaW8gd2hlcmUgdGhlIHZhcmlhbmNlIGlzIGRpc3RyaWJ1dGVkIGFjcm9zcyBtYW55IGNvbXBvbmVudHMsIHdoaWNoIGNvdWxkIGJlIGR1ZSB0byBsb3cgc2lnbmFsIGZyb20gdGhlIGV4cGVyaW1lbnRhbCB0cmVhdG1lbnQsIGNvbXBsZXggZXhwZXJpbWVudGFsIGRlc2lnbiwgb3IgY29uZm91bmRpbmcgZmFjdG9ycy4KaW1hZ2U6ICFbXSguL2ltYWdlcy9wcm9wb3J0aW9uLW9mLXZhcmlhbmNlLWJsb2ctaG9yei5qcGcpCjwvZGV0YWlscz4KCgo8YnI+CgojIFN1bW1hcnkKCkluIHRoaXMgc2VjdGlvbiwgd2U6ICAgIAoKKiBEaXNjdXNzZWQgdmFyaWFuY2Ugd2l0aGluIHRyZWF0bWVudCBncm91cHMgICAgIAoqIERpc2N1c3NlZCB0ZWNobmljYWwgYXJ0aWZhY3RzLCBpbmNsdWRpbmcgYmF0Y2hlcwoqIExlYXJuZWQgdG8gZ2VuZXJhdGUgUENBIHBsb3RzCgoKCi0tLQoKCiMgU291cmNlcyBVc2VkICAgIAoqIEhCQyBRQyB0dXRvcmlhbDogaHR0cHM6Ly9oYmN0cmFpbmluZy5naXRodWIuaW8vREdFX3dvcmtzaG9wL2xlc3NvbnMvMDNfREdFX1FDX2FuYWx5c2lzLmh0bWwgICAgCiogRGV0YWlsZWQgSGVhdG1hcCB0dXRvcmlhbCBmcm9tIEdhbGF4eTogaHR0cHM6Ly90cmFpbmluZy5nYWxheHlwcm9qZWN0Lm9yZy90cmFpbmluZy1tYXRlcmlhbC90b3BpY3MvdHJhbnNjcmlwdG9taWNzL3R1dG9yaWFscy9ybmEtc2VxLXZpei13aXRoLWhlYXRtYXAyL3R1dG9yaWFsLmh0bWwgICAKKiBQQ0EgT3ZlcnZpZXc6IGh0dHBzOi8vYmxvZy5iaW90dXJpbmcuY29tLzIwMTgvMDYvMTQvcHJpbmNpcGFsLWNvbXBvbmVudC1hbmFseXNpcy1leHBsYWluZWQtc2ltcGx5LyAgICAgCgoKCmBgYHtyIFdyaXRlT3V0LlJEYXRhLCBldmFsPUZBTFNFLCBlY2hvPUZBTFNFLCBtZXNzYWdlPUZBTFNFLCB3YXJuaW5nPUZBTFNFfQojSGlkZGVuIGNvZGUgYmxvY2sgdG8gd3JpdGUgb3V0IGRhdGEgZm9yIGtuaXR0aW5nCnNhdmUuaW1hZ2UoZmlsZSA9ICJyZGF0YS9SdW5uaW5nRGF0YS5SRGF0YSIpCmBgYAoKCgotLS0KCgpUaGVzZSBtYXRlcmlhbHMgaGF2ZSBiZWVuIGFkYXB0ZWQgYW5kIGV4dGVuZGVkIGZyb20gbWF0ZXJpYWxzIGxpc3RlZCBhYm92ZS4gVGhlc2UgYXJlIG9wZW4gYWNjZXNzIG1hdGVyaWFscyBkaXN0cmlidXRlZCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIFtDcmVhdGl2ZSBDb21tb25zIEF0dHJpYnV0aW9uIGxpY2Vuc2UgKENDIEJZIDQuMCldKGh0dHA6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LzQuMC8pLCB3aGljaCBwZXJtaXRzIHVucmVzdHJpY3RlZCB1c2UsIGRpc3RyaWJ1dGlvbiwgYW5kIHJlcHJvZHVjdGlvbiBpbiBhbnkgbWVkaXVtLCBwcm92aWRlZCB0aGUgb3JpZ2luYWwgYXV0aG9yIGFuZCBzb3VyY2UgYXJlIGNyZWRpdGVkLgo=</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("Module09_SampleQCViz.Rmd");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
