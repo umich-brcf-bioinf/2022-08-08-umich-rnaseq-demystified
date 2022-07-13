@@ -57,12 +57,10 @@ Notably, cutadapt's error-tolerant adapter trimming likely contributed greatly t
 Cutadapt's input and output files are simple to understand given its stated purpose. Both input and output are fastq files - the input being the fastq files that need processing, and output being the fastq files after they've been processed. Depending on the parameters, chosen outputs often have shorter read lengths due to trimming processes and fewer total reads due to filtering.
 
 
-    # Given the paired-end input files:
+    # Given the single-end input file:
     reads/sample_01_R1.fastq.gz
-    reads/sample_01_R2.fastq.gz
     # Suitable output filename/paths:
     out_trimmed/sample_01_R1.trimmed.fastq.gz
-    out_trimmed/sample_01_R2.trimmed.fastq.gz
 
 
 As mentioned above, cutadapt has many capabilities. Depending on the parameters given, we can invoke different functionalities. Given our results from the previous QC module, we know that we need to trim adapters from the reads in our fastq files.
@@ -82,7 +80,7 @@ mkdir out_trimmed
 cutadapt --help
 
 # Construct a cutadapt command to trim adapters from paired-end reads
-cutadapt -a AGATCGGAAGAG -A AGATCGGAAGAG -o out_trimmed/sample_01_R1.trimmed.fastq.gz -p out_trimmed/sample_01_R2.trimmed.fastq.gz ../reads/sample_01_R1.fastq.gz ../reads/sample_01_R2.fastq.gz
+cutadapt -a AGATCGGAAGAG -o out_trimmed/sample_01_R1.trimmed.fastq.gz ../reads/sample_01_R1.fastq.gz
 # View the output of cutadapt, (verify presence of output files and peek into the files)
 ```
 

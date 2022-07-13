@@ -160,14 +160,13 @@ Alternatively, we can combine these results into a count matrix. The count matri
 ## RSEM Prepare Reference Exercise:
 
 1. View the help page for rsem-prepare-reference
-2. Create and execute a command that will index our example genome
-3. Examine the output of the rsem
+2. Create a command that will index our example genome, but do not run it
 
 ```
 # View the help file
 rsem-prepare-reference -h
 # Create/execute the prepare-reference command
-rsem-prepare-reference --gtf ../refs/GRCh38.98.chr22reduced.gtf --star --num-threads 1 ../refs/GRCh38.98.chr22reduced.fa ../refs/GRCh38.98.chr22reduced
+#rsem-prepare-reference --gtf ../refs/Homo_sapiens.GRCh38.105.gtf --star --num-threads 1 ../refs/Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa ../refs/index/
 ```
 
 
@@ -180,7 +179,7 @@ rsem-prepare-reference --gtf ../refs/GRCh38.98.chr22reduced.gtf --star --num-thr
 # First create a directory for the aligned results
 mkdir out_rsem
 # Construct an RSEM command to align sample_01 to our reference
-rsem-calculate-expression --star --num-threads 1 --star-gzipped-read-file --star-output-genome-bam --keep-intermediate-files --paired-end out_trimmed/sample_01_R1.trimmed.fastq.gz out_trimmed/sample_01_R2.trimmed.fastq.gz ../refs/GRCh38.98.chr22reduced out_rsem/sample_01
+rsem-calculate-expression --star --num-threads 1 --star-gzipped-read-file --star-output-genome-bam --keep-intermediate-files out_trimmed/sample_01_R1.trimmed.fastq.gz ../refs/GRCh38.98.chr22reduced out_rsem/sample_01
 ```
 <br>
 <br>
