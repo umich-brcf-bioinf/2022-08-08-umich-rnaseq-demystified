@@ -84,13 +84,13 @@ We'll explore the expected outputs from these commands and discuss their content
 
 `rsem-prepare-reference` will use a FASTA file and a GTF as inputs, and it will produce a number of large files which make up the index. RSEM has the flexible capability of supporting multiple different aligners. We'll be using STAR. The output files therefore contain items from the indexing process of STAR and RSEM. These files allow for the fast and efficient search and retrieval of sequence and gene-model information during alignment and quantification. The outputs will look like the following:
 
-    GRCh38.98.chr22reduced.chrlist
-    GRCh38.98.chr22reduced.grp
-    GRCh38.98.chr22reduced.idx.fa
-    GRCh38.98.chr22reduced.n2g.idx.fa
-    GRCh38.98.chr22reduced.seq
-    GRCh38.98.chr22reduced.ti
-    GRCh38.98.chr22reduced.transcripts.fa
+    GRCm38.102.chr19reduced.chrlist
+    GRCm38.102.chr19reduced.grp
+    GRCm38.102.chr19reduced.idx.fa
+    GRCm38.102.chr19reduced.n2g.idx.fa
+    GRCm38.102.chr19reduced.seq
+    GRCm38.102.chr19reduced.ti
+    GRCm38.102.chr19reduced.transcripts.fa
     Genome
     Log.out
     SA
@@ -166,7 +166,7 @@ Alternatively, we can combine these results into a count matrix. The count matri
 # View the help file
 rsem-prepare-reference -h
 # Create/execute the prepare-reference command
-#rsem-prepare-reference --gtf ../refs/Homo_sapiens.GRCh38.105.gtf --star --num-threads 1 ../refs/Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa ../refs/index/
+rsem-prepare-reference --gtf ../refs/GRCm38.102.chr19reduced.gtf --star --num-threads 1 ../refs/GRCm38.102.chr19reduced.fa ../refs/GRCm38.102.chr19reduced
 ```
 
 
@@ -178,8 +178,8 @@ rsem-prepare-reference -h
 ```
 # First create a directory for the aligned results
 mkdir out_rsem
-# Construct an RSEM command to align sample_01 to our reference
-rsem-calculate-expression --star --num-threads 1 --star-gzipped-read-file --star-output-genome-bam --keep-intermediate-files out_trimmed/sample_01_R1.trimmed.fastq.gz ../refs/GRCh38.98.chr22reduced out_rsem/sample_01
+# Construct an RSEM command to align SRR7777895 to our reference
+rsem-calculate-expression --star --num-threads 1 --star-gzipped-read-file --star-output-genome-bam --keep-intermediate-files out_trimmed/SRR7777895_R1.trimmed.fastq.gz ../refs/GRCm38.102.chr19reduced out_rsem/SRR7777895
 ```
 <br>
 <br>

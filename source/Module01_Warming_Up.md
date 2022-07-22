@@ -124,7 +124,7 @@ We recommend using High Performance Compute (HPC) resources if you want to perfo
     module load Bioinformatics
     module load sratoolkit
 
-After the software is available, another important step is to configure it. There is a [helpful page here about configuration](https://github.com/ncbi/sra-tools/wiki/03.-Quick-Toolkit-Configuration). The most important detail will probably to ensure that you set the cache location to somewhere with plentiful storage space.
+After the software is available, another important step is to configure it. There is a [helpful page here about configuration](https://github.com/ncbi/sra-tools/wiki/03.-Quick-Toolkit-Configuration). The most important detail will probably be to ensure that you set the cache location to somewhere with plentiful storage space.
 
 > Note: On Great Lakes, the cache will likely be automatically be set to your home directory. This can be a problem, since user home directories have less than 100GB available. Setting this to the [scratch space](https://arc.umich.edu/scratch-storage/) might be a good option.
 

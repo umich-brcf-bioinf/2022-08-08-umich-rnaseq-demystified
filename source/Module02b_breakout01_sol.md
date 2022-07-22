@@ -68,24 +68,30 @@ Now that we've learned the basics of running Cutadapt, we need to trim all the r
 One solution is to define a bash variable for the sample, use that variable in a Cutadapt command, and then redefine the variable before repeating the Cutadapt command for each change.
 
     # Define a variable $SAMPLE
-    SAMPLE=sample_02
+    SAMPLE=SRR7777896
     # Create a command using the variable $SAMPLE
-    cutadapt -a AGATCGGAAGAG -o out_trimmed/${SAMPLE}_R1.trimmed.fastq.gz ../reads/${SAMPLE}_R1.fastq.gz
+    cutadapt -q 15 -o out_trimmed/${SAMPLE}_R1.trimmed.fastq.gz ../reads/${SAMPLE}_R1.fastq.gz
 
     # Redefine the variable and run the command for each additional sample
-    SAMPLE=sample_03
-    cutadapt -a AGATCGGAAGAG -o out_trimmed/${SAMPLE}_R1.trimmed.fastq.gz ../reads/${SAMPLE}_R1.fastq.gz
+    SAMPLE=SRR7777897
+    cutadapt -q 15 -o out_trimmed/${SAMPLE}_R1.trimmed.fastq.gz ../reads/${SAMPLE}_R1.fastq.gz
 
-    SAMPLE=sample_04
-    cutadapt -a AGATCGGAAGAG -o out_trimmed/${SAMPLE}_R1.trimmed.fastq.gz ../reads/${SAMPLE}_R1.fastq.gz
+    SAMPLE=SRR7777898
+    cutadapt -q 15 -o out_trimmed/${SAMPLE}_R1.trimmed.fastq.gz ../reads/${SAMPLE}_R1.fastq.gz
+
+    SAMPLE=SRR7777899
+    cutadapt -q 15 -o out_trimmed/${SAMPLE}_R1.trimmed.fastq.gz ../reads/${SAMPLE}_R1.fastq.gz
+
+    SAMPLE=SRR7777900
+    cutadapt -q 15 -o out_trimmed/${SAMPLE}_R1.trimmed.fastq.gz ../reads/${SAMPLE}_R1.fastq.gz
 
 <br>
 
 Another solution is to create a for-loop with our bash variable and Cutadapt command. E.g.
 
-    for SAMPLE in sample_02 sample_03 sample_04
+    for SAMPLE in SRR7777896 SRR7777897 SRR7777898 SRR7777899 SRR7777900
         do
-        cutadapt -a AGATCGGAAGAG -o out_trimmed/${SAMPLE}_R1.trimmed.fastq.gz ../reads/${SAMPLE}_R1.fastq.gz
+        cutadapt -q 15 -m 20 -o out_trimmed/${SAMPLE}_R1.trimmed.fastq.gz ../reads/${SAMPLE}_R1.fastq.gz
     done
 
 <br>
