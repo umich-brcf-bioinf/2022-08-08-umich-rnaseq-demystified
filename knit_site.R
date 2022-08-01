@@ -25,32 +25,34 @@ library(rmarkdown)
 render('source/workshop_setup/preworkshop_checklist.md', output_dir='html/workshop_setup/')
 render('source/workshop_setup/setup_instructions.md', output_dir='html/workshop_setup/')
 render('source/workshop_setup/setup_instructions_advanced.md', output_dir='html/workshop_setup/')
+
 render_site('source/index.md')
-
+render_site('source/breakout_exercises.md')
 render_site('source/Module00_Introduction.md')
-
 render_site('source/Module01_Warming_Up.md')
 render_site('source/Module02a_QC.md')
 render_site('source/Module02b_Cutadapt_MoreQC.md')
 render_site('source/Module02b_breakout01_ex.md')
+render_site('source/Module02b_breakout01_sol.md')
 render_site('source/Module03_Reference_Genomes.md')
 render_site('source/Module04_Alignment.md')
 render_site('source/Module04_breakout02_ex.md')
+render_site('source/Module04_breakout02_sol.md')
 render_site('source/Module05a_MultiQC_and_Count_Matrix.md')
 render_site('source/Module05a_breakout03_ex.md')
+render_site('source/Module05a_breakout03_sol.md')
 render_site('source/Module05b_Additional_Details.md')
 render_site('source/Module05b_breakout04_ex.md')
+render_site('source/Module05b_breakout04_sol.md')
 
 render_site('source/Module06_DEAnalysisSetup.Rmd')
 render_site('source/Module07_DESeq2Init.Rmd')
 render_site('source/Module08_DESeq2DE.Rmd')
 render_site('source/Module09_SampleQCViz.Rmd')
+render_site('source/Module09a_breakout.Rmd')
 render_site('source/Module10_DEComparisons.Rmd')
-
-# Error in h(simpleError(msg, call)) : 
-# error in evaluating the argument 'x' in selecting a method for function 'head': object 'res_WT_anno' not found
-#render_site('source/Module11_DEVisualizations.Rmd')
-
+render_site('source/Module11X_BonusContent.Rmd')
+render_site('source/Module11_DEVisualizations.Rmd')
 render_site('source/Module11a_breakout.Rmd')
 
 render_site('source/Module99_Wrap_up.md')

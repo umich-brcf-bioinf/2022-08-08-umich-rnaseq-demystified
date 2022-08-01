@@ -145,6 +145,7 @@ p <- pheatmap(assay(rld)[topVarGenes,], scale = "row")
 
 Finally, to **output** the plot to file, use the `pdf()` function:
 ```{r ExerciseOutput}
+if (!dir.exists(plotPath)) {dir.create(plotPath)}
 pdf(file = paste0(plotPath, 'Top_heatmap_rlog_', Comparison, '.pdf'), onefile = TRUE)
 p
 dev.off()
