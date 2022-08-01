@@ -11,11 +11,11 @@
 
 <meta name="author" content="UM Bioinformatics Core" />
 
-<meta name="date" content="2022-03-14" />
+<meta name="date" content="2022-07-29" />
 
 <title>Day 2 - Module 06: Analysis Setup &amp; Introduction to DESeq2</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -68,6 +68,7 @@ if (window.hljs) {
 
 
 
+
 <style type="text/css">
 #rmd-source-code {
   display: none;
@@ -98,6 +99,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -326,7 +330,7 @@ div.tocify {
 <div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -339,7 +343,7 @@ div.tocify {
   <a href="Module00_Introduction.html">Intro</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Sequence QC
      
     <span class="caret"></span>
@@ -357,7 +361,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Alignment
      
     <span class="caret"></span>
@@ -372,7 +376,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Quantification
      
     <span class="caret"></span>
@@ -389,7 +393,7 @@ div.tocify {
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Groups/Model
      
     <span class="caret"></span>
@@ -407,7 +411,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Expression plots
      
     <span class="caret"></span>
@@ -419,7 +423,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Diff Expression
      
     <span class="caret"></span>
@@ -447,7 +451,7 @@ div.tocify {
 <div id="header">
 
 <div class="btn-group pull-right float-right">
-<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
 <ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
 <li><a id="rmd-download-source" href="#">Download Rmd</a></li>
 </ul>
@@ -455,9 +459,10 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Day 2 - Module 06: Analysis Setup &amp; Introduction to DESeq2</h1>
+<h1 class="title toc-ignore">Day 2 - Module 06: Analysis Setup &amp;
+Introduction to DESeq2</h1>
 <h4 class="author">UM Bioinformatics Core</h4>
-<h4 class="date">2022-03-14</h4>
+<h4 class="date">2022-07-29</h4>
 
 </div>
 
@@ -483,72 +488,133 @@ code.r{
 <h1 id="objectives">Objectives:</h1>
 <ul>
 <li>Overview of reproducible research &amp; analysis setup</li>
-<li>Broad introduction to DESeq2 &amp; why it is widely used for differential expression comparisons</li>
+<li>Broad introduction to DESeq2 &amp; why it is widely used for
+differential expression comparisons</li>
 <li>How to import and review gene count table</li>
 </ul>
 </blockquote>
-<div id="differential-expression-workflow" class="section level1" number="1">
-<h1><span class="header-section-number">1</span> Differential Expression Workflow</h1>
-<p>Today we will proceed through key steps in a differential expression analysis, starting from a count table that’s similar to what you generated in the first half of the workshop and similar to the one of the outputs included in the <a href="https://brcf.medicine.umich.edu/cores/advanced-genomics/data-delivery/">data that the Advanced Genomics Core delivers</a> for RNA-seq libraries.</p>
-<p><img src="images/wayfinder/wayfinder-04.png" style="width:95.0%" /></p>
+<div id="differential-expression-workflow" class="section level1"
+number="1">
+<h1><span class="header-section-number">1</span> Differential Expression
+Workflow</h1>
+<p>Today we will proceed through key steps in a differential expression
+analysis, starting from a count table that’s similar to what you
+generated in the first half of the workshop and similar to the one of
+the outputs included in the <a
+href="https://brcf.medicine.umich.edu/cores/advanced-genomics/data-delivery/">data
+that the Advanced Genomics Core delivers</a> for RNA-seq libraries.</p>
+<p><img src="images/wayfinder/wayfinder-04.png"
+style="width:95.0%" /></p>
 </div>
 <div id="reproducible-research" class="section level1" number="2">
-<h1><span class="header-section-number">2</span> Reproducible Research</h1>
-<p>Today we’ll be exploring some RNA-seq data that is fairly representative of what we see in the core and start with input files similar to the count table you generated in the previous steps and similar to one of the outputs currently being delivered by the Advanced Sequencing Core.</p>
+<h1><span class="header-section-number">2</span> Reproducible
+Research</h1>
+<p>Today we’ll be exploring some RNA-seq data that is fairly
+representative of what we see in the core and start with input files
+similar to the count table you generated in the previous steps and
+similar to one of the outputs currently being delivered by the Advanced
+Sequencing Core.</p>
 <div id="warm-up" class="section level4" number="2.0.0.1">
 <h4><span class="header-section-number">2.0.0.1</span> [Warm-Up]</h4>
-<p>To get started, let’s get a sense of what approaches you already use to compare gene expression:</p>
+<p>To get started, let’s get a sense of what approaches you already use
+to compare gene expression:</p>
 <ul>
-<li>If you’ve run a qPCR assay and enjoyed all the pipetting, put up a green ‘check’. If you’ve run a qPCR assay and needed some time away from the multichannels, put up a red ‘x’ from the reaction panel.<br />
+<li>If you’ve run a qPCR assay and enjoyed all the pipetting, put up a
+green ‘check’. If you’ve run a qPCR assay and needed some time away from
+the multichannels, put up a red ‘x’ from the reaction panel.<br />
 </li>
-<li>If cloning a gene reporter construct (ie: promoter + GFP), worked for you the first time, put up a green check. If you have a freezer box full of cloning attempts, put up a red ‘x’.<br />
+<li>If cloning a gene reporter construct (ie: promoter + GFP), worked
+for you the first time, put up a green check. If you have a freezer box
+full of cloning attempts, put up a red ‘x’.<br />
 </li>
-<li>If you are ready to learn about bioinformatic tools for comparing gene expression, put up a green check. If you have some questions that should be addressed before we get started, use the ‘raise hand’ reaction.</li>
+<li>If you are ready to learn about bioinformatic tools for comparing
+gene expression, put up a green check. If you have some questions that
+should be addressed before we get started, use the ‘raise hand’
+reaction.</li>
 </ul>
 </div>
-<div id="logging-into-the-rstudio-server" class="section level2" number="2.1">
-<h2><span class="header-section-number">2.1</span> Logging into the RStudio server</h2>
-<p>First navigate to server address <code>bfx-workshop01.med.umich.edu</code>, using a web browser. You may see a sign-in prompt screen, similar to shown below:</p>
-<p><br> <img src="images/RStudioLogInPrompt.png" style="width:50.0%" /> <br></p>
-<p>Next, use your unique name and the same password used yesterday to log-in to the server from the command line. You should now see some familiar RStudio panels in your web browser window:</p>
-<p><br> <img src="images/RStudioServerWindow.png" style="width:50.0%" /> <br></p>
+<div id="logging-into-the-rstudio-server" class="section level2"
+number="2.1">
+<h2><span class="header-section-number">2.1</span> Logging into the
+RStudio server</h2>
+<p>First navigate to server address
+<code>bfx-workshop01.med.umich.edu</code>, using a web browser. You may
+see a sign-in prompt screen, similar to shown below:</p>
+<p><br> <img src="images/RStudioLogInPrompt.png"
+style="width:50.0%" /> <br></p>
+<p>Next, use your unique name and the same password used yesterday to
+log-in to the server from the command line. You should now see some
+familiar RStudio panels in your web browser window:</p>
+<p><br> <img src="images/RStudioServerWindow.png"
+style="width:50.0%" /> <br></p>
 </div>
 <div id="creating-our-code-file" class="section level2" number="2.2">
-<h2><span class="header-section-number">2.2</span> Creating our code file</h2>
-<p>First, we’ll create a new code file, using the toolbar at the top of our window and clicking the icon that looks like a <strong>white square with a small green plus symbol</strong>.</p>
-<p>From the drop down menu, select the first option named ‘R Script’.</p>
+<h2><span class="header-section-number">2.2</span> Creating our code
+file</h2>
+<p>First, we’ll create a new code file, using the toolbar at the top of
+our window and clicking the icon that looks like a <strong>white square
+with a small green plus symbol</strong>.</p>
+<p>From the drop down menu, select the first option named ‘R
+Script’.</p>
 <p>A new window should pop up in your console.</p>
-<p><strong>Checkpoint</strong>: <em>Please use the red ‘x’ button in your zoom reaction panel if you would like these steps repeated and the green ‘check’ if you see a new pane with a code file named <code>Untitled1</code></em></p>
+<p><strong>Checkpoint</strong>: <em>Please use the red ‘x’ button in
+your zoom reaction panel if you would like these steps repeated and the
+green ‘check’ if you see a new pane with a code file named
+<code>Untitled1</code></em></p>
 </div>
-<div id="best-practices-for-file-organization" class="section level2" number="2.3">
-<h2><span class="header-section-number">2.3</span> Best practices for file organization</h2>
-<p>As widely discussed including in a <a href="https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1000424">Nobel, 2009</a> review, file organization and data stewardship are an important parts of reproducible research.</p>
-<p>To follow best practices for file organization for bioinformatics/computational projects, we will need to make sure there are separate locations for:</p>
+<div id="best-practices-for-file-organization" class="section level2"
+number="2.3">
+<h2><span class="header-section-number">2.3</span> Best practices for
+file organization</h2>
+<p>As widely discussed including in a <a
+href="https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1000424">Nobel,
+2009</a> review, file organization and data stewardship are an important
+parts of reproducible research.</p>
+<p>To follow best practices for file organization for
+bioinformatics/computational projects, we will need to make sure there
+are separate locations for:</p>
 <ul>
 <li>Raw data</li>
 <li>Code</li>
 <li>Output files</li>
 </ul>
 <p>Such as illustrated in this figure from the Noble review:</p>
-<p><img src="images/Noble2009_dataprojects.png" style="width:75.0%" /></p>
-<p>To organize our files for our analysis today, we’ll first navigate into the <code>RSD_R</code> directory.</p>
+<p><img src="images/Noble2009_dataprojects.png"
+style="width:75.0%" /></p>
+<p>To organize our files for our analysis today, we’ll first navigate
+into the <code>RSD_R</code> directory.</p>
 <p>We can see that there is only one folder, <code>data</code>:</p>
-<p><br> <img src="images/RSD_R_screenshot.png" style="width:50.0%" /> <br></p>
+<p><br> <img src="images/RSD_R_screenshot.png" style="width:50.0%" />
+<br></p>
 <p>However, if we check our working directory, what do we see?</p>
 <pre class="r"><code>getwd()</code></pre>
-<p>Since we aren’t working in <code>RSD_R</code> we will need to set our working directory before creating any new directories.</p>
+<p>Since we aren’t working in <code>RSD_R</code> we will need to set our
+working directory before creating any new directories.</p>
 <pre class="r"><code>setwd(&quot;~/RSD_R&quot;)</code></pre>
-<p>Before moving forward, let’s double check that we’re in the right place.</p>
+<p>Before moving forward, let’s double check that we’re in the right
+place.</p>
 <pre class="r"><code>getwd()</code></pre>
-<p>After we’ve set our working directory, we’ll use the blue floppy disc icon save our ‘Untitled1’ file as “DE_Analysis.R” in the <code>RSD_R</code> directory.</p>
-<p>This new “DE_Analysis.R” will serve as a record of the analysis steps we follow for the remainder of the workshop.</p>
-<p>Then we’ll create a new directory called <code>outputs</code> to use later in our code.</p>
+<p>After we’ve set our working directory, we’ll use the blue floppy disc
+icon save our ‘Untitled1’ file as “DE_Analysis.R” in the
+<code>RSD_R</code> directory.</p>
+<p>This new “DE_Analysis.R” will serve as a record of the analysis steps
+we follow for the remainder of the workshop.</p>
+<p>Then we’ll create a new directory called <code>outputs</code> to use
+later in our code.</p>
 <pre class="r"><code>dir.create(&quot;./DE_outputs&quot;)</code></pre>
-<pre><code>## Warning in dir.create(&quot;./DE_outputs&quot;): &#39;./DE_outputs&#39; already exists</code></pre>
-<p><strong>Checkpoint</strong>: <em>Please use the green ‘check’ if you have saved your code file and see both the <code>data</code> and <code>outputs</code> directories your <code>RSD_R</code> folder and the red ‘x’ if you do not.</em></p>
-<div id="code-execution-shortcut-reminder" class="section level4" number="2.3.0.1">
-<h4><span class="header-section-number">2.3.0.1</span> Code execution shortcut reminder</h4>
-<p><strong>Ctrl-Enter</strong> is a standard shortcut in Rstudio to send the current line (or selected lines) to the console. If you see an <code>&gt;</code>, then R has executed the command. If you see a <code>+</code>, this means that the command is not complete and R is waiting (usually for a <code>)</code>).</p>
+<p><strong>Checkpoint</strong>: <em>Please use the green ‘check’ if you
+have saved your code file and see both the <code>data</code> and
+<code>outputs</code> directories your <code>RSD_R</code> folder and the
+red ‘x’ if you do not.</em></p>
+<div id="code-execution-shortcut-reminder" class="section level4"
+number="2.3.0.1">
+<h4><span class="header-section-number">2.3.0.1</span> Code execution
+shortcut reminder</h4>
+<p><strong>Ctrl-Enter</strong> is a standard shortcut in Rstudio to send
+the current line (or selected lines) to the console. If you see an
+<code>&gt;</code>, then R has executed the command. If you see a
+<code>+</code>, this means that the command is not complete and R is
+waiting (usually for a <code>)</code>).</p>
 <details>
 <summary>
 <em>Click for review of R conventions for object names</em>
@@ -567,9 +633,13 @@ code.r{
 <hr />
 </div>
 </div>
-<div id="check-package-installations" class="section level2" number="2.4">
-<h2><span class="header-section-number">2.4</span> Check package installations</h2>
-<p>Several packages have already been installed on the server, so we can load them into our R session now. To do that we’ll use the <code>library</code> function to load the required packages.</p>
+<div id="check-package-installations" class="section level2"
+number="2.4">
+<h2><span class="header-section-number">2.4</span> Check package
+installations</h2>
+<p>Several packages have already been installed on the server, so we can
+load them into our R session now. To do that we’ll use the
+<code>library</code> function to load the required packages.</p>
 <pre class="r"><code>library(DESeq2)
 library(ggplot2)
 library(tidyr)
@@ -579,54 +649,142 @@ library(ggrepel)
 library(pheatmap)
 library(RColorBrewer)
 library(data.table)</code></pre>
-<p><em>Note: We expect to see some red messages in your console while these packages are loading</em></p>
-<p>R/RStudio has great resources for getting help, including <a href="https://www.rstudio.com/wp-content/uploads/2016/10/r-cheat-sheet-3.pdf">code ‘cheatsheets’</a> and package vignettes, like for <a href="https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html">tidyr</a>.</p>
-<p>Since we loaded the libraries into our R session, we can see documentation out using the <code>?</code> operator.</p>
+<p><em>Note: We expect to see some red messages in your console while
+these packages are loading</em></p>
+<p>R/RStudio has great resources for getting help, including <a
+href="https://www.rstudio.com/wp-content/uploads/2016/10/r-cheat-sheet-3.pdf">code
+‘cheatsheets’</a> and package vignettes, like for <a
+href="https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html">tidyr</a>.</p>
+<p>Since we loaded the libraries into our R session, we can see
+documentation out using the <code>?</code> operator.</p>
 <pre class="r"><code>?`DESeq2-package`</code></pre>
-<p><strong>Checkpoint</strong>: <em>If you see the R documentation for <code>DESeq2</code> pop up in your ‘help’ panel on the right, please indicate with the green ‘check’ button. If not please use the red ‘x’ button.</em></p>
+<p><strong>Checkpoint</strong>: <em>If you see the R documentation for
+<code>DESeq2</code> pop up in your ‘help’ panel on the right, please
+indicate with the green ‘check’ button. If not please use the red ‘x’
+button.</em></p>
 <hr />
 </div>
 </div>
-<div id="tools-for-differential-gene-expression-analysis" class="section level1" number="3">
-<h1><span class="header-section-number">3</span> Tools for Differential Gene Expression analysis</h1>
-<p>As discussed during the webinar, a common application for bulk RNA-seq is to test for differential expression between conditions or treatments, using statistical approaches that are appropriate for biological data.</p>
-<p>While there are several tools that can be used for differential expression comparisons, we will use <a href="https://bioconductor.org/packages/release/bioc/html/DESeq2.html">DESeq2</a> in our analysis today.</p>
-<p>DESeq2 is one of two tools, along with <a href="https://bioconductor.org/packages/release/bioc/html/edgeR.html">EdgeR</a>, considered <a href="https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-14-91">‘best practice’</a> for differential expression. Both tools apply similar methods that account for the distributions we expect to see for RNA-seq and are fairly stringent in calling differentially expressed genes, lowering the risk of investigating genes that were really false positives (e.g. don’t really have different expression between treatment groups and therefore are not relevant to the biological process).</p>
-<p>Additionally, <code>DESeq2</code> also has an <a href="https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html">excellent vignette</a> <em>click link to open</em> from Love, Anders, and Huber, from which our workflow is partially adapted, and is a good resource when analyzing your own data (see also: <a href="https://doi.org/10.1186/s13059-014-0550-8">Love, Anders, and Huber. <em>Genome Biology</em>. 2014.</a>).</p>
+<div id="tools-for-differential-gene-expression-analysis"
+class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Tools for Differential
+Gene Expression analysis</h1>
+<p>As discussed during the webinar, a common application for bulk
+RNA-seq is to test for differential expression between conditions or
+treatments, using statistical approaches that are appropriate for
+biological data.</p>
+<p>While there are several tools that can be used for differential
+expression comparisons, we will use <a
+href="https://bioconductor.org/packages/release/bioc/html/DESeq2.html">DESeq2</a>
+in our analysis today.</p>
+<p>DESeq2 is one of two tools, along with <a
+href="https://bioconductor.org/packages/release/bioc/html/edgeR.html">EdgeR</a>,
+considered <a
+href="https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-14-91">‘best
+practice’</a> for differential expression. Both tools apply similar
+methods that account for the distributions we expect to see for RNA-seq
+and are fairly stringent in calling differentially expressed genes,
+lowering the risk of investigating genes that were really false
+positives (e.g. don’t really have different expression between treatment
+groups and therefore are not relevant to the biological process).</p>
+<p>Additionally, <code>DESeq2</code> also has an <a
+href="https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html">excellent
+vignette</a> <em>click link to open</em> from Love, Anders, and Huber,
+from which our workflow is partially adapted, and is a good resource
+when analyzing your own data (see also: <a
+href="https://doi.org/10.1186/s13059-014-0550-8">Love, Anders, and
+Huber. <em>Genome Biology</em>. 2014.</a>).</p>
 <details>
 <summary>
-<em>Click for additional resources regarding statistical testing and tool comparison for RNA-seq data</em>
+<em>Click for additional resources regarding statistical testing and
+tool comparison for RNA-seq data</em>
 </summary>
-To learn more about statistical testing and what distributions best model the behavior of RNA-seq data, a good resource is this <a href="https://www.youtube.com/watch?v=HK7WKsL3c2w&amp;feature=youtu.be">EdX lecture by Rafael Irizarry</a> or this <a href="https://www.youtube.com/watch?v=C8RNvWu7pAw">lecture by Kasper Hansen</a>. Another helpful guide is this <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0103207">Comparative Study for Differential Expression Analysis by Zhang et al.</a> from 2014.
+To learn more about statistical testing and what distributions best
+model the behavior of RNA-seq data, a good resource is this <a
+href="https://www.youtube.com/watch?v=HK7WKsL3c2w&amp;feature=youtu.be">EdX
+lecture by Rafael Irizarry</a> or this <a
+href="https://www.youtube.com/watch?v=C8RNvWu7pAw">lecture by Kasper
+Hansen</a>. Another helpful guide is this <a
+href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0103207">Comparative
+Study for Differential Expression Analysis by Zhang et al.</a> from
+2014.
 </details>
-<div id="deseq2-assumptions-and-requirements" class="section level2" number="3.1">
-<h2><span class="header-section-number">3.1</span> DESeq2 assumptions and requirements</h2>
-<p>A key assumption of DESeq2 is that for most experiments <em>biological variance is much greater than technical variance</em> (especially if <a href="https://www.txgen.tamu.edu/faq/rna-isolation-best-practices/">best practices</a> for <a href="https://www.biocompare.com/Bench-Tips/128790-Four-Tips-for-Perfecting-RNA-Isolation/">quality RNA isolation</a> are followed, including DNase treatment!).</p>
-<p>Since calculating variance is key to the statistical approach used for DESeq2, if we tried to compare two treatment groups with less than <strong>two</strong> replicates, we would get an error (as shown in <a href="https://support.bioconductor.org/p/89746/">this blog post</a>). Without replicates, there can’t be statistical significance (e.g. p-values), but <em>qualitative</em> approaches are an option, like looking at the top expressed genes after normalization.</p>
-<div id="replicates-in-rna-seq-experiments" class="section level3" number="3.1.1">
-<h3><span class="header-section-number">3.1.1</span> Replicates in RNA-seq experiments</h3>
-<p>A frequent question for RNA-seq projects is “How many replicates do I need?”.</p>
-<p>The general goal of our analyses is to separate the “interesting” biological contributions from the “uninteresting” technical or other contributions that either cannot be or were not controlled in the experimental design. The more sources of variation, such as samples coming from heterogenous tissues or experiments with incomplete knockdowns, the more replicates (&gt;3) are recommended.</p>
+<div id="deseq2-assumptions-and-requirements" class="section level2"
+number="3.1">
+<h2><span class="header-section-number">3.1</span> DESeq2 assumptions
+and requirements</h2>
+<p>A key assumption of DESeq2 is that for most experiments
+<em>biological variance is much greater than technical variance</em>
+(especially if <a
+href="https://www.txgen.tamu.edu/faq/rna-isolation-best-practices/">best
+practices</a> for <a
+href="https://www.biocompare.com/Bench-Tips/128790-Four-Tips-for-Perfecting-RNA-Isolation/">quality
+RNA isolation</a> are followed, including DNase treatment!).</p>
+<p>Since calculating variance is key to the statistical approach used
+for DESeq2, if we tried to compare two treatment groups with less than
+<strong>two</strong> replicates, we would get an error (as shown in <a
+href="https://support.bioconductor.org/p/89746/">this blog post</a>).
+Without replicates, there can’t be statistical significance
+(e.g. p-values), but <em>qualitative</em> approaches are an option, like
+looking at the top expressed genes after normalization.</p>
+<div id="replicates-in-rna-seq-experiments" class="section level3"
+number="3.1.1">
+<h3><span class="header-section-number">3.1.1</span> Replicates in
+RNA-seq experiments</h3>
+<p>A frequent question for RNA-seq projects is “How many replicates do I
+need?”.</p>
+<p>The general goal of our analyses is to separate the “interesting”
+biological contributions from the “uninteresting” technical or other
+contributions that either cannot be or were not controlled in the
+experimental design. The more sources of variation, such as samples
+coming from heterogenous tissues or experiments with incomplete
+knockdowns, the more replicates (&gt;3) are recommended.</p>
 <div class="figure">
 <img src="images/de_variation.png" style="width:75.0%" alt="" />
-<p class="caption">Image of technical, biological, and experimental contributors to gene expression, from HBC training materials</p>
+<p class="caption">Image of technical, biological, and experimental
+contributors to gene expression, from HBC training materials</p>
 </div>
-<p>For a more in depth discussion of experimental design considerations, particularly for the number of replicates, please read <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6096346/">A Beginner’s Guide to Analysis of RNA Sequencing Data</a> and papers like this one by <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3842884/">Hart et al</a> that focus on estimating statistical power for RNA-seq experiments.</p>
-<div id="sequencing-depth-recommendations" class="section level4" number="3.1.1.1">
-<h4><span class="header-section-number">3.1.1.1</span> Sequencing depth recommendations</h4>
-<p>A related experimental design consideration is how much sequencing depth should be generated per sample. This figure shared by Illumina in their technical talks is helpful to understand the relative importance of replicates versus sequencing depth.</p>
+<p>For a more in depth discussion of experimental design considerations,
+particularly for the number of replicates, please read <a
+href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6096346/">A
+Beginner’s Guide to Analysis of RNA Sequencing Data</a> and papers like
+this one by <a
+href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3842884/">Hart et
+al</a> that focus on estimating statistical power for RNA-seq
+experiments.</p>
+<div id="sequencing-depth-recommendations" class="section level4"
+number="3.1.1.1">
+<h4><span class="header-section-number">3.1.1.1</span> Sequencing depth
+recommendations</h4>
+<p>A related experimental design consideration is how much sequencing
+depth should be generated per sample. This figure shared by Illumina in
+their technical talks is helpful to understand the relative importance
+of replicates versus sequencing depth.</p>
 <div class="figure">
 <img src="images/de_replicates_img.png" style="width:75.0%" alt="" />
-<p class="caption">Illumina’s differential expression recovery across replicate number and sequencing depth</p>
+<p class="caption">Illumina’s differential expression recovery across
+replicate number and sequencing depth</p>
 </div>
-<p>Generally, for the human and mouse genomes, the recommendation is 30-40 million reads per sample for polyA library preps to capture both highly expressed (abundant) and more lowly expressed (rarer) transcripts, assuming that ~25,000 protein-coding genes would be measured. However, as the image above shows, sequencing depth has less of an impact than number of replicates in detecting differentially expressed genes (DEGs).</p>
+<p>Generally, for the human and mouse genomes, the recommendation is
+30-40 million reads per sample for polyA library preps to capture both
+highly expressed (abundant) and more lowly expressed (rarer)
+transcripts, assuming that ~25,000 protein-coding genes would be
+measured. However, as the image above shows, sequencing depth has less
+of an impact than number of replicates in detecting differentially
+expressed genes (DEGs).</p>
 </div>
-<div id="exercise-building-a-better-understanding-of-differential-expression-analysis" class="section level4" number="3.1.1.2">
-<h4><span class="header-section-number">3.1.1.2</span> [Exercise]: Building a better understanding of differential expression analysis</h4>
+<div
+id="exercise-building-a-better-understanding-of-differential-expression-analysis"
+class="section level4" number="3.1.1.2">
+<h4><span class="header-section-number">3.1.1.2</span> [Exercise]:
+Building a better understanding of differential expression analysis</h4>
 <ol style="list-style-type: decimal">
-<li>Post a comment below regarding what key question/misconception regarding designing an RNA-seq experiment we were able to address <strong>OR</strong><br />
+<li>Post a comment below regarding what key question/misconception
+regarding designing an RNA-seq experiment we were able to address
+<strong>OR</strong><br />
 </li>
-<li>Post a question that that was NOT addressed but that you hope we will address in the later modules <strong>OR</strong><br />
+<li>Post a question that that was NOT addressed but that you hope we
+will address in the later modules <strong>OR</strong><br />
 </li>
 <li>Add a thumbs up to your favorite comment(s) to upvote it</li>
 </ol>
@@ -634,9 +792,19 @@ To learn more about statistical testing and what distributions best model the be
 </div>
 </div>
 <div id="raw-data-as-input" class="section level3" number="3.1.2">
-<h3><span class="header-section-number">3.1.2</span> Raw data as input</h3>
-<p>Another key assumption for DESeq2 is that the analysis will start with <a href="http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#why-un-normalized-counts">un-normalized counts</a>.</p>
-<p>To begin our analysis, we’ll read in the <strong>raw</strong> count data file, <code>gene_expected_count_trimmed.txt</code> which is similar to what would be generated in the alignment steps yesterday (and what you could receive from AGC). We’ll discuss later a few normalizations that can be helpful for us to understand how much a gene is expressed within or between samples, but normalized data <strong>should not</strong> be used as an input for DESeq2.</p>
+<h3><span class="header-section-number">3.1.2</span> Raw data as
+input</h3>
+<p>Another key assumption for DESeq2 is that the analysis will start
+with <a
+href="http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#why-un-normalized-counts">un-normalized
+counts</a>.</p>
+<p>To begin our analysis, we’ll read in the <strong>raw</strong> count
+data file, <code>gene_expected_count_trimmed.txt</code> which is similar
+to what would be generated in the alignment steps yesterday (and what
+you could receive from AGC). We’ll discuss later a few normalizations
+that can be helpful for us to understand how much a gene is expressed
+within or between samples, but normalized data <strong>should
+not</strong> be used as an input for DESeq2.</p>
 <pre class="r"><code>CountTable &lt;- read.table(&quot;data/gene_expected_count_trimmed.txt&quot;, header = TRUE, row.names = 1)</code></pre>
 <pre class="r"><code>head(CountTable, n=2) # look at the top of the table</code></pre>
 <pre><code>##                    Sample_116498 Sample_116499 Sample_116500 Sample_116501 Sample_116502
@@ -648,11 +816,19 @@ To learn more about statistical testing and what distributions best model the be
 ##                    Sample_116508 Sample_116509
 ## ENSMUSG00000000001          5771          4792
 ## ENSMUSG00000000003             0             0</code></pre>
-<p>Now that the file is read into R, note that we’ve created a data frame that includes ‘gene ids’ in ENSEMBL format as rownames and count data from twelve different samples.</p>
-<div id="exercise-rsem-outputs-versus-deseq2-input-requirements" class="section level4" number="3.1.2.1">
-<h4><span class="header-section-number">3.1.2.1</span> [Exercise]: RSEM outputs versus DESeq2 input requirements</h4>
-<p>If we think back to the RSEM outputs, the ‘expected_counts’ table may include fractions due to how the alignment tool resolves reads that map to multiple locuses). Since DESeq2 requires whole numbers, if we try to use the RSEM ouputs directly, DESeq2 will give us an error.</p>
-<p>First let’s check the count table in a different way, to see if our table includes fractions.</p>
+<p>Now that the file is read into R, note that we’ve created a data
+frame that includes ‘gene ids’ in ENSEMBL format as rownames and count
+data from twelve different samples.</p>
+<div id="exercise-rsem-outputs-versus-deseq2-input-requirements"
+class="section level4" number="3.1.2.1">
+<h4><span class="header-section-number">3.1.2.1</span> [Exercise]: RSEM
+outputs versus DESeq2 input requirements</h4>
+<p>If we think back to the RSEM outputs, the ‘expected_counts’ table may
+include fractions due to how the alignment tool resolves reads that map
+to multiple locuses). Since DESeq2 requires whole numbers, if we try to
+use the RSEM ouputs directly, DESeq2 will give us an error.</p>
+<p>First let’s check the count table in a different way, to see if our
+table includes fractions.</p>
 <pre class="r"><code>tail(CountTable, n=2)</code></pre>
 <pre><code>##                    Sample_116498 Sample_116499 Sample_116500 Sample_116501 Sample_116502
 ## ENSMUSG00000118577        752.33        613.24        417.04        412.63        429.74
@@ -663,8 +839,11 @@ To learn more about statistical testing and what distributions best model the be
 ##                    Sample_116508 Sample_116509
 ## ENSMUSG00000118577        404.31        353.35
 ## ENSMUSG00000118578         11.81          7.74</code></pre>
-<p><em>[Question]: To resolve this discrepancy between the RSEM outputs and expected input for DESeq2, what could we do?</em></p>
-<p>To round down all the columns of our <code>CountTable</code> that include count data (all columns since we set the gene names to be our row names), we can use the <code>round</code>()` function.</p>
+<p><em>[Question]: To resolve this discrepancy between the RSEM outputs
+and expected input for DESeq2, what could we do?</em></p>
+<p>To round down all the columns of our <code>CountTable</code> that
+include count data (all columns since we set the gene names to be our
+row names), we can use the <code>round</code>()` function.</p>
 <pre class="r"><code>CountTable &lt;- round(CountTable)
 tail(CountTable, n=2) # now whole numbers</code></pre>
 <pre><code>##                    Sample_116498 Sample_116499 Sample_116500 Sample_116501 Sample_116502
@@ -676,25 +855,49 @@ tail(CountTable, n=2) # now whole numbers</code></pre>
 ##                    Sample_116508 Sample_116509
 ## ENSMUSG00000118577           404           353
 ## ENSMUSG00000118578            12             8</code></pre>
-<p>An important note is that there are several bonus content sections on the instruction pages, like the two below that we will not be covering in this workshop, but that may have useful context or be helpful when you review this material.</p>
+<p>An important note is that there are several bonus content sections on
+the instruction pages, like the two below that we will not be covering
+in this workshop, but that may have useful context or be helpful when
+you review this material.</p>
 <details>
 <summary>
 <em>Click for alternative DESeq2 input options for RSEM outputs</em>
 </summary>
-<p>The package <code>tximport</code> is another option<a href="https://support.bioconductor.org/p/90672/">recommended the DESeq2 authors</a> to read in the RSEM expected_counts, as this package allows for the average transcript length per gene to be used in the DE analysis and, as <a href="https://support.bioconductor.org/p/88763/">described by the author</a>, the <code>tximport-to-DESeqDataSet</code> constructor function round the non-integer data generated by RSEM to whole numbers.</p>
+<p>The package <code>tximport</code> is another option<a
+href="https://support.bioconductor.org/p/90672/">recommended the DESeq2
+authors</a> to read in the RSEM expected_counts, as this package allows
+for the average transcript length per gene to be used in the DE analysis
+and, as <a href="https://support.bioconductor.org/p/88763/">described by
+the author</a>, the <code>tximport-to-DESeqDataSet</code> constructor
+function round the non-integer data generated by RSEM to whole
+numbers.</p>
 </details>
 <details>
 <summary>
 <em>Click for comparison of RNA-seq data and microarray data</em>
 </summary>
-<p>With <a href="https://www.illumina.com/science/technology/next-generation-sequencing/microarray-rna-seq-comparison.html">higher sensitivity, greater flexiblity, and decreasing cost</a>, sequencing has largely replaced microarray assays for measuring gene expression. A key difference between the platforms is that microarrays measure intensities and are therefore <em>continous</em> data while the count data from sequencing is <em>discrete</em>. A more detailed comparison between microarrays and sequencing technologies/analysis is outlined in <a href="https://online.stat.psu.edu/stat555/node/30/">the online materials for Penn State’s STAT555 course</a></p>
+<p>With <a
+href="https://www.illumina.com/science/technology/next-generation-sequencing/microarray-rna-seq-comparison.html">higher
+sensitivity, greater flexiblity, and decreasing cost</a>, sequencing has
+largely replaced microarray assays for measuring gene expression. A key
+difference between the platforms is that microarrays measure intensities
+and are therefore <em>continous</em> data while the count data from
+sequencing is <em>discrete</em>. A more detailed comparison between
+microarrays and sequencing technologies/analysis is outlined in <a
+href="https://online.stat.psu.edu/stat555/node/30/">the online materials
+for Penn State’s STAT555 course</a></p>
 </details>
 </div>
 </div>
 </div>
 <div id="getting-help" class="section level2" number="3.2">
 <h2><span class="header-section-number">3.2</span> Getting help</h2>
-<p>R/Rstudio has a strong community component so if you are getting an error or wondering how to make a command work or how to perform a specific task, there is likely already a solution out there. Remember that Google is your friend, although it can sometimes be a challenge to figure out <em>what to search for</em>. Key parts of a successful search:</p>
+<p>R/Rstudio has a strong community component so if you are getting an
+error or wondering how to make a command work or how to perform a
+specific task, there is likely already a solution out there. Remember
+that Google is your friend, although it can sometimes be a challenge to
+figure out <em>what to search for</em>. Key parts of a successful
+search:</p>
 <ul>
 <li>Package or command run</li>
 <li><code>R</code> or <code>Bioconductor</code></li>
@@ -703,9 +906,18 @@ tail(CountTable, n=2) # now whole numbers</code></pre>
 </ul>
 <p>How to get session information to aid in a search:</p>
 <pre class="r"><code>sessionInfo()</code></pre>
-<p>Highly recommend using resources like <a href="https://support.bioconductor.org/">Bioconductor Support</a>, <a href="https://www.biostars.org/">Biostars</a>, and <a href="https://stackoverflow.com/questions/tagged/r">Stack Overflow</a>, including threads on specific packages or common bioinformatic tasks.</p>
-<p>I personally use one or more of these resources <strong>every day</strong>.</p>
-<p>10x also has a helpful <a href="https://www.10xgenomics.com/resources/analysis-guides/10-tips-for-biologists-learning-bioinformatics">10 tips for biologists learning bioinformatics</a> included in their resources.</p>
+<p>Highly recommend using resources like <a
+href="https://support.bioconductor.org/">Bioconductor Support</a>, <a
+href="https://www.biostars.org/">Biostars</a>, and <a
+href="https://stackoverflow.com/questions/tagged/r">Stack Overflow</a>,
+including threads on specific packages or common bioinformatic
+tasks.</p>
+<p>I personally use one or more of these resources <strong>every
+day</strong>.</p>
+<p>10x also has a helpful <a
+href="https://www.10xgenomics.com/resources/analysis-guides/10-tips-for-biologists-learning-bioinformatics">10
+tips for biologists learning bioinformatics</a> included in their
+resources.</p>
 </div>
 </div>
 <div id="summary" class="section level1" number="4">
@@ -716,29 +928,53 @@ tail(CountTable, n=2) # now whole numbers</code></pre>
 <li>Learned about DESeq2</li>
 <li>Loaded our raw count tables (input file 1)</li>
 </ul>
-<p>Now that we have our count data processed, we can move on to “unblinding” our data, as the sample names are unique identifiers generated by a sequencing center and not very informative as far as our experimental conditions.</p>
+<p>Now that we have our count data processed, we can move on to
+“unblinding” our data, as the sample names are unique identifiers
+generated by a sequencing center and not very informative as far as our
+experimental conditions.</p>
 <hr />
 </div>
 <div id="sources" class="section level1" number="5">
 <h1><span class="header-section-number">5</span> Sources</h1>
-<div id="training-resources-used-to-develop-materials" class="section level2" number="5.1">
-<h2><span class="header-section-number">5.1</span> Training resources used to develop materials</h2>
+<div id="training-resources-used-to-develop-materials"
+class="section level2" number="5.1">
+<h2><span class="header-section-number">5.1</span> Training resources
+used to develop materials</h2>
 <ul>
-<li>HBC DGE setup: <a href="https://hbctraining.github.io/DGE_workshop/lessons/01_DGE_setup_and_overview.html" class="uri">https://hbctraining.github.io/DGE_workshop/lessons/01_DGE_setup_and_overview.html</a><br />
+<li>HBC DGE setup: <a
+href="https://hbctraining.github.io/DGE_workshop/lessons/01_DGE_setup_and_overview.html"
+class="uri">https://hbctraining.github.io/DGE_workshop/lessons/01_DGE_setup_and_overview.html</a><br />
 </li>
-<li>HBC Count Normalization: <a href="https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html" class="uri">https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html</a><br />
+<li>HBC Count Normalization: <a
+href="https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html"
+class="uri">https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html</a><br />
 </li>
-<li>DESeq2 standard vignette: <a href="http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html" class="uri">http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html</a><br />
+<li>DESeq2 standard vignette: <a
+href="http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html"
+class="uri">http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html</a><br />
 </li>
-<li>DESeq2 beginners vignette: <a href="https://bioc.ism.ac.jp/packages/2.14/bioc/vignettes/DESeq2/inst/doc/beginner.pdf" class="uri">https://bioc.ism.ac.jp/packages/2.14/bioc/vignettes/DESeq2/inst/doc/beginner.pdf</a><br />
+<li>DESeq2 beginners vignette: <a
+href="https://bioc.ism.ac.jp/packages/2.14/bioc/vignettes/DESeq2/inst/doc/beginner.pdf"
+class="uri">https://bioc.ism.ac.jp/packages/2.14/bioc/vignettes/DESeq2/inst/doc/beginner.pdf</a><br />
 </li>
-<li>Bioconductor RNA-seq Workflows: <a href="https://www.bioconductor.org/help/course-materials/2015/LearnBioconductorFeb2015/B02.1_RNASeq.html" class="uri">https://www.bioconductor.org/help/course-materials/2015/LearnBioconductorFeb2015/B02.1_RNASeq.html</a><br />
+<li>Bioconductor RNA-seq Workflows: <a
+href="https://www.bioconductor.org/help/course-materials/2015/LearnBioconductorFeb2015/B02.1_RNASeq.html"
+class="uri">https://www.bioconductor.org/help/course-materials/2015/LearnBioconductorFeb2015/B02.1_RNASeq.html</a><br />
 </li>
-<li>CCDL Gastric cancer training materials: <a href="https://alexslemonade.github.io/training-modules/RNA-seq/03-gastric_cancer_exploratory.nb.html" class="uri">https://alexslemonade.github.io/training-modules/RNA-seq/03-gastric_cancer_exploratory.nb.html</a></li>
-<li>CCDL Neuroblastoma training materials: <a href="https://alexslemonade.github.io/training-modules/RNA-seq/05-nb_cell_line_DESeq2.nb.html" class="uri">https://alexslemonade.github.io/training-modules/RNA-seq/05-nb_cell_line_DESeq2.nb.html</a></li>
+<li>CCDL Gastric cancer training materials: <a
+href="https://alexslemonade.github.io/training-modules/RNA-seq/03-gastric_cancer_exploratory.nb.html"
+class="uri">https://alexslemonade.github.io/training-modules/RNA-seq/03-gastric_cancer_exploratory.nb.html</a></li>
+<li>CCDL Neuroblastoma training materials: <a
+href="https://alexslemonade.github.io/training-modules/RNA-seq/05-nb_cell_line_DESeq2.nb.html"
+class="uri">https://alexslemonade.github.io/training-modules/RNA-seq/05-nb_cell_line_DESeq2.nb.html</a></li>
 </ul>
 <hr />
-<p>These materials have been adapted and extended from materials listed above. These are open access materials distributed under the terms of the <a href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.</p>
+<p>These materials have been adapted and extended from materials listed
+above. These are open access materials distributed under the terms of
+the <a href="http://creativecommons.org/licenses/by/4.0/">Creative
+Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted
+use, distribution, and reproduction in any medium, provided the original
+author and source are credited.</p>
 </div>
 </div>
 

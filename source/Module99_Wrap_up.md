@@ -44,18 +44,23 @@ connect to enable gene expression analysis from bulk RNA-Seq data.
 
 ## Housekeeping
 
-- Please take our optional <a class="external" href="https://forms.gle/mmHP6ve3xbtU2iQy6" target="_blank">post-workshop survey</a> (5-10 minutes) <br />
+- Please take our optional <a class="external" href="https://forms.gle/MicfgHWzBkZyNiy97" target="_blank">post-workshop survey</a> (5-10 minutes)
+  - 10/22 10-12 ET: "Office hours"
 
 - We will email you a link to the final session recordings by next week.
 
-- The website/notes for this workshop and the <a class="external" href="https://umbioinfcoreworkshops.slack.com" target="_blank">UM Bioinformatics Core Workshop Slack channel</a> will be available.
+- The website/notes for this workshop will be available.
+
+- The <a class="external" href="https://umbioinfcoreworkshops.slack.com" target="_blank">UM Bioinformatics Core Workshop Slack channel</a> will be available
+for 90 days.
 
 ---
 
 ## Looking ahead
 
 #### Workshop environment
-- BASH/RStudio workshop compute environment will be available until next Wednesday.
+- BASH/RStudio workshop compute environment will be available until next 10/24.
+  - _Please save all your R scripts now_ so that we can "right-size" the compute environment immediately following today's workshop session.
 - You can download files from the workshop environment from your terminal/command line window as below. 
   (You will need to substitute your actual workshop username and type workshop password when prompted.)
   ```
@@ -109,18 +114,16 @@ connect to enable gene expression analysis from bulk RNA-Seq data.
 ![Sponsors](images/Module00_sponsor_logos.png)
 
 ## About the workshop team
-| ![](images/Module00_headshots/headshot_mbradenb.jpg) | ![](images/Module00_headshots/headshot_trsaari.jpg) | ![](images/Module00_headshots/headshot_damki.jpg) |
-|:-:|:-:|:-:|
-| **Marci** | **Travis** | **Dana** |
+| ![](images/Module00_headshots/headshot_cgates.jpg) | ![](images/Module00_headshots/headshot_mbradenb.jpg) | ![](images/Module00_headshots/headshot_rcavalca.jpg) | ![](images/Module00_headshots/headshot_trsaari.jpg) |
+|:-:|:-:|:-:|:-:|
+| **Chris** | **Marci** | **Raymond** | **Travis** |
+| | | | |
+| ![](images/Module00_headshots/headshot_mccwen.jpg) | ![](images/Module00_headshots/headshot_damki.jpg) | ![](images/Module00_headshots/headshot_mkdohert.jpg) | ![](images/Module00_headshots/headshot_jrhemama.jpg) |
+|  **Crystal** | **Dana** | **Matt**| **Rhema** |
 | | | |
-| ![](images/Module00_headshots/headshot_mflick.jpg) | ![](images/Module00_headshots/headshot_grkenney.jpg) | ![](images/Module00_headshots/headshot_rcavalca.jpg) |
-|  **Matthew** | **Grace**| **Raymond** |
-| ![](images/Module00_headshots/headshot_meese.jpg) | ![](images/Module00_headshots/headshot_ncarruth.jpg) | ![](images/Module00_headshots/headshot_weishwu.jpg) |
-| | | |
-| **Marisa** | **Nick** | **Weisheng** |
-||
-| ![](images/Module00_headshots/headshot_cgates.jpg) |
-| **Chris** |
+| ![](images/Module00_headshots/headshot_dengkw.jpg) | ![](images/Module00_headshots/headshot_weishwu.jpg) |
+|  **Kaiwen** | **Weisheng** |
+<br/>
 
 
 Thank you for participating on our workshop. We welcome your questions and feedback now and in the future.
