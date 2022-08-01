@@ -43,19 +43,15 @@ pre {
 
 
 ## About the workshop team
-| ![](images/Module00_headshots/headshot_cgates.jpg) | ![](images/Module00_headshots/headshot_mbradenb.jpg) | ![](images/Module00_headshots/headshot_trsaari.jpg) | ![](images/Module00_headshots/headshot_damki.jpg) |
+| ![](images/Module00_headshots/headshot_cgates.jpg) | ![](images/Module00_headshots/headshot_mbradenb.jpg) | ![](images/Module00_headshots/headshot_rcavalca.jpg) | ![](images/Module00_headshots/headshot_trsaari.jpg) |
 |:-:|:-:|:-:|:-:|
-| **Chris** | **Marci** | **Travis** | **Dana** |
+| **Chris** | **Marci** | **Raymond** | **Travis** |
 | | | | |
-| ![](images/Module00_headshots/headshot_mflick.jpg) | ![](images/Module00_headshots/headshot_grkenney.jpg) | ![](images/Module00_headshots/headshot_rcavalca.jpg) |
-|  **Matthew** | **Grace**| **Raymond** |
-
-### (Helpers joining Tuesday/Wednesday)
-
-| ![](images/Module00_headshots/headshot_meese.jpg) | ![](images/Module00_headshots/headshot_ncarruth.jpg) | ![](images/Module00_headshots/headshot_weishwu.jpg) |
-|:-:|:-:|:-:|
-| **Marisa** | **Nick** | **Weisheng** |
-
+| ![](images/Module00_headshots/headshot_mccwen.jpg) | ![](images/Module00_headshots/headshot_damki.jpg) | ![](images/Module00_headshots/headshot_mkdohert.jpg) | ![](images/Module00_headshots/headshot_jrhemama.jpg) |
+|  **Crystal** | **Dana** | **Matt**| **Rhema** |
+| | | |
+| ![](images/Module00_headshots/headshot_dengkw.jpg) | ![](images/Module00_headshots/headshot_weishwu.jpg) |
+|  **Kaiwen** | **Weisheng** |
 <br/>
 
 ## Workshop sponsors
@@ -126,8 +122,6 @@ pre {
 ![Zoom non verbals](images/Module00_zoom_nonverbals.png)
 
   - **Raise Hand** to request clarification or ask a question. (Same an in-person workshop.)
-  - **Gray chevron [Slow down / Give me a moment]** when you need more time to complete
-    an exercise or you would like the instructor to repeat an idea
   - Instructors will use **Green check** and **Red X** to poll the group
     at checkpoints along the way.
 <br/>
@@ -144,7 +138,7 @@ Take a moment to briefly introduce yourself (name, dept/lab, area of study) in a
 breakout room.
 
   - Zoom: Click Breakout Rooms
-  - Find the room corresponding to the first letter of your first name
+  - Find the room corresponding to the first letter of your last name
   - Hover over the number to the right and click **Join**.
   - When you have completed introductions, you can leave the breakout room to rejoin the main room.
 
@@ -160,7 +154,7 @@ breakout room.
 
 ![Posting messages to Slack](images/Module00_slack.png)
 
-  - Slack messages will be posted to the **2022-03-rnaseq-demystified-workshop** channel.  
+  - Slack messages will be posted to the **2022-08-rnaseq-demystified** channel.  
     Click on the channel in the left pane (1) to select this channel.
   - You can type in the **message field** (2); click **send** (3) to
     post your message to everyone.
@@ -170,7 +164,7 @@ breakout room.
 
 
 ### Exercise: Responding in Slack thread
-What is one thing you hope to learn today or tomorrow?
+What is one thing you hope to learn in this workshop?
 <br/>
 <br/>
 
@@ -196,7 +190,7 @@ What is one thing you hope to learn today or tomorrow?
 It is important that you can see:
 
  - Zoom (instructor's shared screen + reactions)
- - Your terminal/command window (days 1-2) or R/Studio (days 2-3)
+ - Your terminal/command window (days 1) or R/Studio (days 2-3)
  - Slack
  - Lesson plan web page
 

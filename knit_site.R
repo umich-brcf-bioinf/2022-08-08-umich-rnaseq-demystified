@@ -1,9 +1,14 @@
 # if (!requireNamespace("BiocManager", quietly = TRUE))
-#    install.packages("BiocManager")
+#     install.packages("BiocManager")
 # BiocManager::install(c("biomaRt","DESeq2"), update=FALSE, ask=FALSE)
-#
+# #
 # missing <- setdiff(c("tidyr", "ggplot2", "pheatmap", "ggrepel", "formattable", "RColorBrewer", "matrixStats", "dplyr", "biomaRt", "DESeq2"), rownames(installed.packages()))
-# if (!length(missing)) { cat("Ready for Computational Foundations workshop\n")} else {cat("PROBLEM: could not install:", missing, "\n")
+# 
+# if (!length(missing)) { 
+#   cat("Ready for Computational Foundations workshop\n")
+#   } else {
+#     cat("PROBLEM: could not install:", missing, "\n")
+#   }  
 # install.packages("pheatmap")
 # install.packages("ggrepel")
 # install.packages("formattable")
@@ -13,8 +18,7 @@
 # install.packages("dplyr")
 # }
 
-
-
+#setwd("~/git/2022-08-08-umich-rnaseq-demystified")
 
 library(rmarkdown)
 
@@ -42,8 +46,11 @@ render_site('source/Module07_DESeq2Init.Rmd')
 render_site('source/Module08_DESeq2DE.Rmd')
 render_site('source/Module09_SampleQCViz.Rmd')
 render_site('source/Module10_DEComparisons.Rmd')
-render_site('source/Module11_DEVisualizations.Rmd')
-render_site('source/Module11_DEVisualizations.Rmd')
+
+# Error in h(simpleError(msg, call)) : 
+# error in evaluating the argument 'x' in selecting a method for function 'head': object 'res_WT_anno' not found
+#render_site('source/Module11_DEVisualizations.Rmd')
+
 render_site('source/Module11a_breakout.Rmd')
 
 render_site('source/Module99_Wrap_up.md')

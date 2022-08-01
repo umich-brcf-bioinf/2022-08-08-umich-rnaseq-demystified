@@ -11,11 +11,11 @@
 
 <meta name="author" content="UM Bioinformatics Core" />
 
-<meta name="date" content="2022-03-14" />
+<meta name="date" content="2022-07-29" />
 
 <title>Day 2 - Module 08: Count normalizations and DESeq2 model fitting</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -68,6 +68,7 @@ if (window.hljs) {
 
 
 
+
 <style type="text/css">
 #rmd-source-code {
   display: none;
@@ -98,6 +99,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -326,7 +330,7 @@ div.tocify {
 <div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -339,7 +343,7 @@ div.tocify {
   <a href="Module00_Introduction.html">Intro</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Sequence QC
      
     <span class="caret"></span>
@@ -357,7 +361,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Alignment
      
     <span class="caret"></span>
@@ -372,7 +376,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Quantification
      
     <span class="caret"></span>
@@ -389,7 +393,7 @@ div.tocify {
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Groups/Model
      
     <span class="caret"></span>
@@ -407,7 +411,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Expression plots
      
     <span class="caret"></span>
@@ -419,7 +423,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Diff Expression
      
     <span class="caret"></span>
@@ -447,7 +451,7 @@ div.tocify {
 <div id="header">
 
 <div class="btn-group pull-right float-right">
-<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
 <ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
 <li><a id="rmd-download-source" href="#">Download Rmd</a></li>
 </ul>
@@ -455,9 +459,10 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Day 2 - Module 08: Count normalizations and DESeq2 model fitting</h1>
+<h1 class="title toc-ignore">Day 2 - Module 08: Count normalizations and
+DESeq2 model fitting</h1>
 <h4 class="author">UM Bioinformatics Core</h4>
-<h4 class="date">2022-03-14</h4>
+<h4 class="date">2022-07-29</h4>
 
 </div>
 
@@ -486,41 +491,94 @@ code.r{
 <li>Execute model fitting for differential expression comparisons</li>
 </ul>
 </blockquote>
-<div id="differential-expression-workflow" class="section level1" number="1">
-<h1><span class="header-section-number">1</span> Differential Expression Workflow</h1>
-<p>Here we will proceed with count normalizations and fit our DESeq2 model.</p>
-<p><img src="images/wayfinder/wayfinder-04.png" style="width:75.0%" /></p>
+<div id="differential-expression-workflow" class="section level1"
+number="1">
+<h1><span class="header-section-number">1</span> Differential Expression
+Workflow</h1>
+<p>Here we will proceed with count normalizations and fit our DESeq2
+model.</p>
+<p><img src="images/wayfinder/wayfinder-04.png"
+style="width:75.0%" /></p>
 <hr />
 </div>
 <div id="count-normalizations" class="section level1" number="2">
-<h1><span class="header-section-number">2</span> Count normalizations</h1>
-<p>Since counts of mapped reads for each gene is proportional to the expression of RNA in addition to many “uninteresting” other factors, normalization is the process of scaling raw count values to account for the “uninteresting” factors and ensure expression levels are more comparable.</p>
+<h1><span class="header-section-number">2</span> Count
+normalizations</h1>
+<p>Since counts of mapped reads for each gene is proportional to the
+expression of RNA in addition to many “uninteresting” other factors,
+normalization is the process of scaling raw count values to account for
+the “uninteresting” factors and ensure expression levels are more
+comparable.</p>
 <div id="normalization-goals" class="section level2" number="2.1">
-<h2><span class="header-section-number">2.1</span> Normalization goals</h2>
-<p>Two common factors that need to be accounted for during normalization are <strong>sequencing depth</strong> and <strong>gene length</strong>. Common normalization approaches (such as FPKM, RPKM, CPM, TPM, etc.) account for one or both of these factors.</p>
+<h2><span class="header-section-number">2.1</span> Normalization
+goals</h2>
+<p>Two common factors that need to be accounted for during normalization
+are <strong>sequencing depth</strong> and <strong>gene length</strong>.
+Common normalization approaches (such as FPKM, RPKM, CPM, TPM, etc.)
+account for one or both of these factors.</p>
 <ul>
-<li><strong>Sequencing depth</strong> normalization is necessary to account for the proportion of reads per gene expected for more deeply sequenced samples (like in pink below) versus a less deeply sequenced sample (like in green below).</li>
+<li><strong>Sequencing depth</strong> normalization is necessary to
+account for the proportion of reads per gene expected for more deeply
+sequenced samples (like in pink below) versus a less deeply sequenced
+sample (like in green below).</li>
 </ul>
 <div class="figure">
 <img src="images/normalization_methods_depth.png" alt="" />
-<p class="caption"><em>Note that each pink or green rectangle represents an aligned read, with reads spanning an intron connected by a dashed line. Figure from <a href="https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html">HBC training materials</a></em></p>
+<p class="caption"><em>Note that each pink or green rectangle represents
+an aligned read, with reads spanning an intron connected by a dashed
+line. Figure from <a
+href="https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html">HBC
+training materials</a></em></p>
 </div>
 <ul>
-<li><strong>Gene length</strong> normalization may also be necessary if comparing between different genes, since genes of different lengths have different probabilities of generating fragments that end up in the library.</li>
+<li><strong>Gene length</strong> normalization may also be necessary if
+comparing between different genes, since genes of different lengths have
+different probabilities of generating fragments that end up in the
+library.</li>
 </ul>
 <blockquote>
-<p><strong>Note</strong>: The above figure was originally from a <a href="https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html">HBC tutorial</a> that also includes a detailed comparison of different normalization (CPM, TPM, FPKM) approaches and their best uses.</p>
+<p><strong>Note</strong>: The above figure was originally from a <a
+href="https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html">HBC
+tutorial</a> that also includes a detailed comparison of different
+normalization (CPM, TPM, FPKM) approaches and their best uses.</p>
 </blockquote>
 <p><strong>Check-in: Questions about normalizations?</strong></p>
 </div>
 <div id="deseq2-normalizations" class="section level2" number="2.2">
-<h2><span class="header-section-number">2.2</span> DESeq2 normalizations</h2>
-<p>DESeq2 has an <a href="https://genomebiology.biomedcentral.com/articles/10.1186/gb-2010-11-10-r106">internal normalization process</a> that accounts for <strong>RNA composition</strong>. A few highly differentially expressed genes, differences in the number of genes expressed between samples, or contamination are not accounted for by depth or gene length normalization methods. Accounting for RNA composition is particularly important for differential expression analyses, regardless of the tool used.</p>
-<p>For data exploration and visualizations, it is helpful to generate an object of independently normalized counts. We will use the <a href="http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#count-data-transformations">rlog transformation</a> from DESeq2 that accounts for sequencing depth for each sample and RNA composition for the downstream quality control visualizations.</p>
-<p>The rlog transformation produces log2 scale data that has also been normalized to overall library size as well as variance across genes at different mean expression levels. For larger numbers of samples, there is an alternative transformation method, <a href="http://www.bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#count-data-transformations">vst</a> that can be used instead for count normalizations.</p>
-<p>The command to generate the normalized count object has a few parts, including <code>dds</code> as an input and providing a value to the option <code>blind</code>.</p>
+<h2><span class="header-section-number">2.2</span> DESeq2
+normalizations</h2>
+<p>DESeq2 has an <a
+href="https://genomebiology.biomedcentral.com/articles/10.1186/gb-2010-11-10-r106">internal
+normalization process</a> that accounts for <strong>RNA
+composition</strong>. A few highly differentially expressed genes,
+differences in the number of genes expressed between samples, or
+contamination are not accounted for by depth or gene length
+normalization methods. Accounting for RNA composition is particularly
+important for differential expression analyses, regardless of the tool
+used.</p>
+<p>For data exploration and visualizations, it is helpful to generate an
+object of independently normalized counts. We will use the <a
+href="http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#count-data-transformations">rlog
+transformation</a> from DESeq2 that accounts for sequencing depth for
+each sample and RNA composition for the downstream quality control
+visualizations.</p>
+<p>The rlog transformation produces log2 scale data that has also been
+normalized to overall library size as well as variance across genes at
+different mean expression levels. For larger numbers of samples, there
+is an alternative transformation method, <a
+href="http://www.bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#count-data-transformations">vst</a>
+that can be used instead for count normalizations.</p>
+<p>The command to generate the normalized count object has a few parts,
+including <code>dds</code> as an input and providing a value to the
+option <code>blind</code>.</p>
 <pre class="r"><code>rld &lt;- rlog(dds, blind = TRUE)</code></pre>
-<p>*Note: We might see a message that our data did not fit the default ‘parametric’ dispersion model so a local regression was substituted. If we had more time, we might look at a dispersion plot with the <code>plotDispEsts(dds)</code> function, but as <a href="https://support.bioconductor.org/p/107937/">this bioconductor thread</a> discusses, other visualizations of our data might be more helpful and/or easier to interpret.</p>
+<p>*Note: We might see a message that our data did not fit the default
+‘parametric’ dispersion model so a local regression was substituted. If
+we had more time, we might look at a dispersion plot with the
+<code>plotDispEsts(dds)</code> function, but as <a
+href="https://support.bioconductor.org/p/107937/">this bioconductor
+thread</a> discusses, other visualizations of our data might be more
+helpful and/or easier to interpret.</p>
 <p>Next, we’ll look at the results of the transformation.</p>
 <pre class="r"><code>head(assay(rld), 2)</code></pre>
 <pre><code>##                    Sample_116498 Sample_116499 Sample_116500 Sample_116501 Sample_116502
@@ -532,30 +590,51 @@ code.r{
 ##                    Sample_116508 Sample_116509
 ## ENSMUSG00000000001      12.52632      12.48844
 ## ENSMUSG00000000028      10.93564      10.96100</code></pre>
-<p>Looking at the rld values, we can see that they are now in log scale. Since we set <code>blind=TRUE</code>, the transformation is blind to the sample information we specified in the design formula. The normalized counts are helpful for visualization methods during expression-level quality assessment but <strong>aren’t used in the model fitting</strong>.</p>
+<p>Looking at the rld values, we can see that they are now in log scale.
+Since we set <code>blind=TRUE</code>, the transformation is blind to the
+sample information we specified in the design formula. The normalized
+counts are helpful for visualization methods during expression-level
+quality assessment but <strong>aren’t used in the model
+fitting</strong>.</p>
 </div>
 </div>
 <div id="deseq2-model-fitting" class="section level1" number="3">
-<h1><span class="header-section-number">3</span> DESeq2 Model Fitting</h1>
-<p>Next, we’ll fit our standard model using the <code>DESeq</code> function and take a look at the objects we generate.</p>
+<h1><span class="header-section-number">3</span> DESeq2 Model
+Fitting</h1>
+<p>Next, we’ll fit our standard model using the <code>DESeq</code>
+function and take a look at the objects we generate.</p>
 <pre class="r"><code>dds &lt;- DESeq(dds)</code></pre>
-<p>This command applies the model to our data, using the sample information supplied when generating the <code>dds</code> object so it takes some time to run.</p>
+<p>This command applies the model to our data, using the sample
+information supplied when generating the <code>dds</code> object so it
+takes some time to run.</p>
 <pre class="r"><code>resultsNames(dds)</code></pre>
-<pre><code>## [1] &quot;Intercept&quot;                    &quot;Gtype.Tx_ko.Tx_vs_wt.Tx&quot;      &quot;Gtype.Tx_ko.control_vs_wt.Tx&quot;
-## [4] &quot;Gtype.Tx_wt.control_vs_wt.Tx&quot;</code></pre>
-<p>The results include three pairwise comparisons to the specified control as default, but other information is now stored in the <code>dds</code> object so we can generate additional pairwise comparisons of interest.</p>
+<pre><code>## [1] &quot;Intercept&quot;                    &quot;Gtype.Tx_ko.Tx_vs_wt.Tx&quot;     
+## [3] &quot;Gtype.Tx_ko.control_vs_wt.Tx&quot; &quot;Gtype.Tx_wt.control_vs_wt.Tx&quot;</code></pre>
+<p>The results include three pairwise comparisons to the specified
+control as default, but other information is now stored in the
+<code>dds</code> object so we can generate additional pairwise
+comparisons of interest.</p>
 <pre class="r"><code>head(dds)</code></pre>
-<p><strong>Checkpoint</strong>: <em>If you see the same results when you execute <code>resultsNames(dds)</code>, please indicate with the green ‘yes’ button. Otherwise, please use the red ‘x’ button to get help before the break</em></p>
+<p><strong>Checkpoint</strong>: <em>If you see the same results when you
+execute <code>resultsNames(dds)</code>, please indicate with the green
+‘yes’ button. Otherwise, please use the red ‘x’ button to get help
+before the break</em></p>
 <div id="optional-exercise" class="section level4" number="3.0.0.1">
-<h4><span class="header-section-number">3.0.0.1</span> [Optional Exercise]</h4>
-<p>If you executed the commands in the option exercise from Module 07, you can fit a seperate DESeq2 model for the patient sample example, which included a covariate in our model.</p>
+<h4><span class="header-section-number">3.0.0.1</span> [Optional
+Exercise]</h4>
+<p>If you executed the commands in the option exercise from Module 07,
+you can fit a seperate DESeq2 model for the patient sample example,
+which included a covariate in our model.</p>
 <details>
 <summary>
 <em>Click for fitting a model that includes a covariate</em>
 </summary>
 <pre class="r"><code>dds_patient &lt;- DESeq(dds_patient)</code></pre>
 <pre class="r"><code>resultsNames(dds_patient)</code></pre>
-If you run through the optional exercises, you can explore the impact of adding a covariate by substituting <code>dds_patient</code> for <code>dds</code> and re-running those commands since both DESeq2 objects have their data organized in the same way.
+If you run through the optional exercises, you can explore the impact of
+adding a covariate by substituting <code>dds_patient</code> for
+<code>dds</code> and re-running those commands since both DESeq2 objects
+have their data organized in the same way.
 </details>
 <p><br> <br> <br></p>
 </div>
@@ -576,16 +655,33 @@ If you run through the optional exercises, you can explore the impact of adding 
 </div>
 <div id="sources" class="section level1" number="5">
 <h1><span class="header-section-number">5</span> Sources</h1>
-<div id="training-resources-used-to-develop-materials" class="section level2" number="5.1">
-<h2><span class="header-section-number">5.1</span> Training resources used to develop materials</h2>
+<div id="training-resources-used-to-develop-materials"
+class="section level2" number="5.1">
+<h2><span class="header-section-number">5.1</span> Training resources
+used to develop materials</h2>
 <ul>
-<li>HBC DGE setup: <a href="https://hbctraining.github.io/DGE_workshop/lessons/01_DGE_setup_and_overview.html" class="uri">https://hbctraining.github.io/DGE_workshop/lessons/01_DGE_setup_and_overview.html</a></li>
-<li>HBC Count Normalization: <a href="https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html" class="uri">https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html</a></li>
-<li>DESeq2 standard vignette: <a href="http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html" class="uri">http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html</a></li>
-<li>DESeq2 beginners vignette: <a href="https://bioc.ism.ac.jp/packages/2.14/bioc/vignettes/DESeq2/inst/doc/beginner.pdf" class="uri">https://bioc.ism.ac.jp/packages/2.14/bioc/vignettes/DESeq2/inst/doc/beginner.pdf</a></li>
-<li>Bioconductor RNA-seq Workflows: <a href="https://www.bioconductor.org/help/course-materials/2015/LearnBioconductorFeb2015/B02.1_RNASeq.html" class="uri">https://www.bioconductor.org/help/course-materials/2015/LearnBioconductorFeb2015/B02.1_RNASeq.html</a></li>
+<li>HBC DGE setup: <a
+href="https://hbctraining.github.io/DGE_workshop/lessons/01_DGE_setup_and_overview.html"
+class="uri">https://hbctraining.github.io/DGE_workshop/lessons/01_DGE_setup_and_overview.html</a></li>
+<li>HBC Count Normalization: <a
+href="https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html"
+class="uri">https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html</a></li>
+<li>DESeq2 standard vignette: <a
+href="http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html"
+class="uri">http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html</a></li>
+<li>DESeq2 beginners vignette: <a
+href="https://bioc.ism.ac.jp/packages/2.14/bioc/vignettes/DESeq2/inst/doc/beginner.pdf"
+class="uri">https://bioc.ism.ac.jp/packages/2.14/bioc/vignettes/DESeq2/inst/doc/beginner.pdf</a></li>
+<li>Bioconductor RNA-seq Workflows: <a
+href="https://www.bioconductor.org/help/course-materials/2015/LearnBioconductorFeb2015/B02.1_RNASeq.html"
+class="uri">https://www.bioconductor.org/help/course-materials/2015/LearnBioconductorFeb2015/B02.1_RNASeq.html</a></li>
 </ul>
-<p>These materials have been adapted and extended from materials listed above. These are open access materials distributed under the terms of the <a href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.</p>
+<p>These materials have been adapted and extended from materials listed
+above. These are open access materials distributed under the terms of
+the <a href="http://creativecommons.org/licenses/by/4.0/">Creative
+Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted
+use, distribution, and reproduction in any medium, provided the original
+author and source are credited.</p>
 </div>
 </div>
 
