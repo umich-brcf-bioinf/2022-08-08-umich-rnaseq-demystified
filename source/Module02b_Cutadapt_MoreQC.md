@@ -35,7 +35,7 @@ In this module we will learn:
 
 As a reminder, our overall differential expression workflow is shown below. In this lesson, we will go over the highlighed portion of the workflow.
 
-![](images/wayfinder/wayfinder-01.png)
+![](images/wayfinder/wayfinder-03.png)
 <br>
 <br>
 <br>

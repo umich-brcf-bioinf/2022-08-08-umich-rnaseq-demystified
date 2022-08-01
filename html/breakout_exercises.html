@@ -12,7 +12,7 @@
 <meta name="author" content="UM Bioinformatics Core" />
 
 
-<title>Day 2 - Breakout 03</title>
+<title>Breakout exercises and solutions</title>
 
 <script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -30,6 +30,9 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <script src="site_libs/navigation-1.1/sourceembed.js"></script>
@@ -239,6 +242,69 @@ $(document).ready(function () {
 
 
 
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
 
 </head>
 
@@ -246,6 +312,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -382,7 +458,7 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Day 2 - Breakout 03</h1>
+<h1 class="title toc-ignore">Breakout exercises and solutions</h1>
 <h4 class="author">UM Bioinformatics Core</h4>
 
 </div>
@@ -396,55 +472,38 @@ pre {
   font-size: 12pt
 }
 </style>
-<p><br></p>
-<div id="transfer-multiqc-report-with-scp-exercise-breakout"
-class="section level2">
-<h2>Transfer MultiQC Report With <code>scp</code> Exercise
-(Breakout)</h2>
-<p><br></p>
-<p><strong>15 Minutes</strong></p>
-<p><br></p>
-<p>We just tried two new variations of our MultiQC command, one pointed
-at the directory of our trimmed FastQC results, and another at the whole
-project directory. For convenience, we’ve included these reports in the
-zipped folder you downloaded at the beginning of the class. However,
-it’s also useful to know how to transfer data to/from a remote instance.
-We’ll explore how to use <code>scp</code> in this exercise.</p>
-<p><br></p>
-<div id="instructions" class="section level3">
-<h3>Instructions:</h3>
-<p><br></p>
 <ul>
-<li>One group member should share their screen in the breakout room. If
-nobody volunteers, a helper may randomly select someone.</li>
-<li>The group members should discuss the exercise and work together to
-find a solution.</li>
-<li>After a solution is found, allow time for all members to complete
-the exercise.</li>
-</ul>
-<p><br></p>
+<li><a href="Module02b_breakout01_ex.html">Cutadapt exercise</a>
 <ul>
-<li>Make sure that you are viewing your local terminal. The
-<code>scp</code> command should be run from your own machine.</li>
-<li>Use <code>scp</code> to transfer the trimmed read fastqc report and
-the comprehensive (all) report from the AWS machine to your personal
-computer.</li>
-<li>Confirm that you’ve received the reports</li>
+<li><a href="Module02b_breakout01_sol.html">Cutadapt solution</a></li>
+</ul></li>
+<li><a href="Module04_breakout02_ex.html">Alignment exercise</a>
+<ul>
+<li><a href="Module04_breakout02_sol.html">Alignment solution</a></li>
+</ul></li>
+<li><a href="Module05a_breakout03_ex.html">Report transfer exercise</a>
+<ul>
+<li><a href="Module05a_breakout03_sol.html">Report transfer
+solution</a></li>
+</ul></li>
+<li>Optional exercise that we will likely not do in workshop
+<ul>
+<li><a href="Module05b_breakout04_ex.html">Conda create exercise</a>
+<ul>
+<li><a href="Module05b_breakout04_sol.html">Conda create
+solution</a></li>
+</ul></li>
+</ul></li>
+<li><a href="Module09a_breakout.html">Heatmap exercise</a></li>
+<li><a href="Module11a_breakout.html">biomaRt annotation
+exercise</a></li>
 </ul>
-<p><br></p>
-<blockquote>
-<p>Hint: The command format is:</p>
-<pre><code>scp source destination</code></pre>
-<p>You will need to provide your ssh login information to complete the
-transfer</p>
-</blockquote>
-<p><br></p>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiQnJlYWtvdXQgZXhlcmNpc2VzIGFuZCBzb2x1dGlvbnMKIgphdXRob3I6ICJVTSBCaW9pbmZvcm1hdGljcyBDb3JlIgpvdXRwdXQ6CiAgICAgICAgaHRtbF9kb2N1bWVudDoKICAgICAgICAgICAgaW5jbHVkZXM6CiAgICAgICAgICAgICAgICBpbl9oZWFkZXI6IGhlYWRlci5odG1sCiAgICAgICAgICAgIHRoZW1lOiBwYXBlcgogICAgICAgICAgICB0b2M6IHRydWUKICAgICAgICAgICAgdG9jX2RlcHRoOiA0CiAgICAgICAgICAgIHRvY19mbG9hdDogdHJ1ZQogICAgICAgICAgICBudW1iZXJfc2VjdGlvbnM6IHRydWUKICAgICAgICAgICAgZmlnX2NhcHRpb246IHRydWUKICAgICAgICAgICAgbWFya2Rvd246IEdGTQogICAgICAgICAgICBjb2RlX2Rvd25sb2FkOiB0cnVlCi0tLQo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgpib2R5eyAvKiBOb3JtYWwgICovCiAgICAgIGZvbnQtc2l6ZTogMTRwdDsKICB9CnByZSB7CiAgZm9udC1zaXplOiAxMnB0Cn0KPC9zdHlsZT4KCi0gW0N1dGFkYXB0IGV4ZXJjaXNlXShNb2R1bGUwMmJfYnJlYWtvdXQwMV9leC5odG1sKQogIC0gW0N1dGFkYXB0IHNvbHV0aW9uXShNb2R1bGUwMmJfYnJlYWtvdXQwMV9zb2wuaHRtbCkKLSBbQWxpZ25tZW50IGV4ZXJjaXNlXShNb2R1bGUwNF9icmVha291dDAyX2V4Lmh0bWwpCiAgLSBbQWxpZ25tZW50IHNvbHV0aW9uXShNb2R1bGUwNF9icmVha291dDAyX3NvbC5odG1sKQotIFtSZXBvcnQgdHJhbnNmZXIgZXhlcmNpc2VdKE1vZHVsZTA1YV9icmVha291dDAzX2V4Lmh0bWwpCiAgLSBbUmVwb3J0IHRyYW5zZmVyIHNvbHV0aW9uXShNb2R1bGUwNWFfYnJlYWtvdXQwM19zb2wuaHRtbCkKLSBPcHRpb25hbCBleGVyY2lzZSB0aGF0IHdlIHdpbGwgbGlrZWx5IG5vdCBkbyBpbiB3b3Jrc2hvcAogIC0gW0NvbmRhIGNyZWF0ZSBleGVyY2lzZV0oTW9kdWxlMDViX2JyZWFrb3V0MDRfZXguaHRtbCkKICAgIC0gW0NvbmRhIGNyZWF0ZSBzb2x1dGlvbl0oTW9kdWxlMDViX2JyZWFrb3V0MDRfc29sLmh0bWwpCi0gW0hlYXRtYXAgZXhlcmNpc2VdKE1vZHVsZTA5YV9icmVha291dC5odG1sKQotIFtiaW9tYVJ0IGFubm90YXRpb24gZXhlcmNpc2VdKE1vZHVsZTExYV9icmVha291dC5odG1sKQo=</div>
+
+
 </div>
 </div>
-
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiRGF5IDIgLSBCcmVha291dCAwMyIKYXV0aG9yOiAiVU0gQmlvaW5mb3JtYXRpY3MgQ29yZSIKb3V0cHV0OgogICAgICAgIGh0bWxfZG9jdW1lbnQ6CiAgICAgICAgICAgIGluY2x1ZGVzOgogICAgICAgICAgICAgICAgaW5faGVhZGVyOiBoZWFkZXIuaHRtbAogICAgICAgICAgICB0aGVtZTogcGFwZXIKICAgICAgICAgICAgZmlnX2NhcHRpb246IHRydWUKICAgICAgICAgICAgbWFya2Rvd246IEdGTQogICAgICAgICAgICBjb2RlX2Rvd25sb2FkOiB0cnVlCi0tLQo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgpib2R5eyAvKiBOb3JtYWwgICovCiAgICAgIGZvbnQtc2l6ZTogMTRwdDsKICB9CnByZSB7CiAgZm9udC1zaXplOiAxMnB0Cn0KPC9zdHlsZT4KCjxicj4KCiMjIFRyYW5zZmVyIE11bHRpUUMgUmVwb3J0IFdpdGggYHNjcGAgRXhlcmNpc2UgKEJyZWFrb3V0KQoKPGJyPgoKKioxNSBNaW51dGVzKioKCjxicj4KCldlIGp1c3QgdHJpZWQgdHdvIG5ldyB2YXJpYXRpb25zIG9mIG91ciBNdWx0aVFDIGNvbW1hbmQsIG9uZSBwb2ludGVkIGF0IHRoZSBkaXJlY3Rvcnkgb2Ygb3VyIHRyaW1tZWQgRmFzdFFDIHJlc3VsdHMsIGFuZCBhbm90aGVyIGF0IHRoZSB3aG9sZSBwcm9qZWN0IGRpcmVjdG9yeS4gRm9yIGNvbnZlbmllbmNlLCB3ZSd2ZSBpbmNsdWRlZCB0aGVzZSByZXBvcnRzIGluIHRoZSB6aXBwZWQgZm9sZGVyIHlvdSBkb3dubG9hZGVkIGF0IHRoZSBiZWdpbm5pbmcgb2YgdGhlIGNsYXNzLiBIb3dldmVyLCBpdCdzIGFsc28gdXNlZnVsIHRvIGtub3cgaG93IHRvIHRyYW5zZmVyIGRhdGEgdG8vZnJvbSBhIHJlbW90ZSBpbnN0YW5jZS4gV2UnbGwgZXhwbG9yZSBob3cgdG8gdXNlIGBzY3BgIGluIHRoaXMgZXhlcmNpc2UuCgo8YnI+CgojIyMgSW5zdHJ1Y3Rpb25zOgoKPGJyPgoKLSBPbmUgZ3JvdXAgbWVtYmVyIHNob3VsZCBzaGFyZSB0aGVpciBzY3JlZW4gaW4gdGhlIGJyZWFrb3V0IHJvb20uIElmIG5vYm9keSB2b2x1bnRlZXJzLCBhIGhlbHBlciBtYXkgcmFuZG9tbHkgc2VsZWN0IHNvbWVvbmUuCi0gVGhlIGdyb3VwIG1lbWJlcnMgc2hvdWxkIGRpc2N1c3MgdGhlIGV4ZXJjaXNlIGFuZCB3b3JrIHRvZ2V0aGVyIHRvIGZpbmQgYSBzb2x1dGlvbi4KLSBBZnRlciBhIHNvbHV0aW9uIGlzIGZvdW5kLCBhbGxvdyB0aW1lIGZvciBhbGwgbWVtYmVycyB0byBjb21wbGV0ZSB0aGUgZXhlcmNpc2UuCgo8YnI+CgotIE1ha2Ugc3VyZSB0aGF0IHlvdSBhcmUgdmlld2luZyB5b3VyIGxvY2FsIHRlcm1pbmFsLiBUaGUgYHNjcGAgY29tbWFuZCBzaG91bGQgYmUgcnVuIGZyb20geW91ciBvd24gbWFjaGluZS4KLSBVc2UgYHNjcGAgdG8gdHJhbnNmZXIgdGhlIHRyaW1tZWQgcmVhZCBmYXN0cWMgcmVwb3J0IGFuZCB0aGUgY29tcHJlaGVuc2l2ZSAoYWxsKSByZXBvcnQgZnJvbSB0aGUgQVdTIG1hY2hpbmUgdG8geW91ciBwZXJzb25hbCBjb21wdXRlci4KLSBDb25maXJtIHRoYXQgeW91J3ZlIHJlY2VpdmVkIHRoZSByZXBvcnRzCgo8YnI+Cgo+IEhpbnQ6IFRoZSBjb21tYW5kIGZvcm1hdCBpczoKPgo+IH5+fgo+IHNjcCBzb3VyY2UgZGVzdGluYXRpb24KPiB+fn4KPgo+IFlvdSB3aWxsIG5lZWQgdG8gcHJvdmlkZSB5b3VyIHNzaCBsb2dpbiBpbmZvcm1hdGlvbiB0byBjb21wbGV0ZSB0aGUgdHJhbnNmZXIKCjxicj4K</div>
-
-
 
 </div>
 
@@ -478,10 +537,39 @@ $(document).ready(function () {
 <!-- code folding -->
 <script>
 $(document).ready(function () {
-  window.initializeSourceEmbed("Module05a_breakout03_ex.md");
+  window.initializeSourceEmbed("breakout_exercises.md");
 });
 </script>
 
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

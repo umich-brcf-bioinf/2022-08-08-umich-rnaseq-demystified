@@ -1,3 +1,11 @@
+# Simple check that items references in hrefs exist:
+# cd to root
+# show me how site hrefs overlap generated html files 
+# comm \
+#       <(find html/*.html -exec basename {} \; | sort) \
+#       <(egrep '^[^#].*href:' source/_site.yml | awk '{print $2}'| sort) \
+#   | awk -F'\t' 'BEGIN {OFS="\t\t\t\t"; print "in_html_only","in_site_only","in_both"} {print $1,$2,$3}'
+
 name: "RSD Workshop"
 output_dir: ../html
 exclude: ["Example.md"]
@@ -12,9 +20,9 @@ navbar:
         - text: "Warming up"
           href: Module01_Warming_Up.html
         - text: "Quality Control"
-          href: Module02_QC.html
-        - text: "Optional: Cutadapt/MoreQC"
-          href: Module02optional_Cutadapt_MoreQC.html
+          href: Module02a_QC.html
+        - text: "Cutadapt/MoreQC"
+          href: Module02b_Cutadapt_MoreQC.html
     - text: "Alignment"
       menu:
         - text: "Reference Genomes"
@@ -24,9 +32,9 @@ navbar:
     - text: "Quantification"
       menu:
         - text: "Count matrix / Alignment QC"
-          href: Module05_MultiQC_and_Count_Matrix.html
+          href: Module05a_MultiQC_and_Count_Matrix.html
         - text: "Optional: Additional details"
-          href: Module05optional_Additional_Details.html
+          href: Module05b_Additional_Details.html
   right:
     - text: "Groups/Model"
       menu:
