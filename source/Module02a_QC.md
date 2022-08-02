@@ -119,8 +119,8 @@ Toward the end of this module, we'll run FastQC. For now, we'll discuss the outp
 
 FastQC outputs an HTML report and a zipped archive of intermediate files. These will appear like this:
 
-    sample_01_R1.trimmed_fastqc.html
-    sample_01_R1.trimmed_fastqc.zip
+    SRR7777895_R1.trimmed_fastqc.html
+    SRR7777895_R1.trimmed_fastqc.zip
 
 For most situations, opening the HTML report and inspecting the results will provide the information necessary to make decisions about your data.
 
@@ -198,7 +198,7 @@ This can be dealt with by adding a step to the workflow that trims the reads of 
 
 ## Examining a FastQC report
 
-From the zipped folder you downloaded earlier, find the FastQC report `sample_01_R1.trimmed_fastqc.html`.
+From the zipped folder you downloaded earlier, find the FastQC report `SRR7777895_R1.trimmed_fastqc.html`.
 
 We'll view this report and try to interpret some of the figures.
 

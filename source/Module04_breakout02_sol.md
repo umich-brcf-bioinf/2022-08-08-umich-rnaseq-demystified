@@ -56,27 +56,31 @@ We just learned about how to use RSEM & STAR, but now we need to align all of th
 One solution is to define a bash variable for the sample, use that variable in the alignment command, and then redefine the variable before repeating the command for each change .
 
     # Define a variable $SAMPLE
-    SAMPLE=sample_02
+    SAMPLE=SRR7777896
     rsem-calculate-expression --star --num-threads 1 --star-gzipped-read-file \
     --star-output-genome-bam --keep-intermediate-files \
-    --paired-end out_trimmed/${SAMPLE}_R1.trimmed.fastq.gz out_trimmed/${SAMPLE}_R2.trimmed.fastq.gz \
-    ../refs/GRCh38.98.chr22reduced \
+    out_trimmed/${SAMPLE}_R1.trimmed.fastq.gz \
+    ../refs/GRCm38.102.chr19reduced \
     out_rsem/${SAMPLE}
-    SAMPLE=sample_03
+    SAMPLE=SRR7777897
     # Use the up arrow key to repeat the same command as above with the variable reassigned to sample_03
-    SAMPLE=sample_04
+    SAMPLE=SRR7777898
+    # Use the up arrow key to repeat the same command as above with the variable reassigned to sample_04
+    SAMPLE=SRR7777899
+    # Use the up arrow key to repeat the same command as above with the variable reassigned to sample_04
+    SAMPLE=SRR7777900
     # Use the up arrow key to repeat the same command as above with the variable reassigned to sample_04
 
 <br>
 
 Another solution is to create a for-loop with our bash variable and alignment command. E.g.
 
-    for SAMPLE in sample_02 sample_03 sample_04
+    for SAMPLE in SRR7777896 SRR7777897 SRR7777898 SRR7777899 SRR7777900
     do
         rsem-calculate-expression --star --num-threads 1 --star-gzipped-read-file \
         --star-output-genome-bam --keep-intermediate-files \
-        --paired-end out_trimmed/${SAMPLE}_R1.trimmed.fastq.gz out_trimmed/${SAMPLE}_R2.trimmed.fastq.gz \
-        ../refs/GRCh38.98.chr22reduced \
+        out_trimmed/${SAMPLE}_R1.trimmed.fastq.gz \
+        ../refs/GRCm38.102.chr19reduced \
         out_rsem/${SAMPLE}
     done
 
