@@ -11,11 +11,11 @@
 
 <meta name="author" content="UM Bioinformatics Core" />
 
-<meta name="date" content="2022-03-16" />
+<meta name="date" content="2022-08-01" />
 
 <title>Day 3 - Module 11 Gene Annotations</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -68,6 +68,7 @@ if (window.hljs) {
 
 
 
+
 <style type="text/css">
 #rmd-source-code {
   display: none;
@@ -98,6 +99,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -326,7 +330,7 @@ div.tocify {
 <div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -339,7 +343,7 @@ div.tocify {
   <a href="Module00_Introduction.html">Intro</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Sequence QC
      
     <span class="caret"></span>
@@ -349,15 +353,15 @@ div.tocify {
       <a href="Module01_Warming_Up.html">Warming up</a>
     </li>
     <li>
-      <a href="Module02_QC.html">Quality Control</a>
+      <a href="Module02a_QC.html">Quality Control</a>
     </li>
     <li>
-      <a href="Module02optional_Cutadapt_MoreQC.html">Optional: Cutadapt/MoreQC</a>
+      <a href="Module02b_Cutadapt_MoreQC.html">Cutadapt/MoreQC</a>
     </li>
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Alignment
      
     <span class="caret"></span>
@@ -372,24 +376,24 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Quantification
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="Module05_MultiQC_and_Count_Matrix.html">Count matrix / Alignment QC</a>
+      <a href="Module05a_MultiQC_and_Count_Matrix.html">Count matrix / Alignment QC</a>
     </li>
     <li>
-      <a href="Module05optional_Additional_Details.html">Optional: Additional details</a>
+      <a href="Module05b_Additional_Details.html">Optional: Additional details</a>
     </li>
   </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Groups/Model
      
     <span class="caret"></span>
@@ -407,7 +411,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Expression plots
      
     <span class="caret"></span>
@@ -419,7 +423,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Diff Expression
      
     <span class="caret"></span>
@@ -447,7 +451,7 @@ div.tocify {
 <div id="header">
 
 <div class="btn-group pull-right float-right">
-<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
 <ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
 <li><a id="rmd-download-source" href="#">Download Rmd</a></li>
 </ul>
@@ -457,7 +461,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Day 3 - Module 11 Gene Annotations</h1>
 <h4 class="author">UM Bioinformatics Core</h4>
-<h4 class="date">2022-03-16</h4>
+<h4 class="date">2022-08-01</h4>
 
 </div>
 
@@ -536,20 +540,20 @@ function to combine the <code>GeneKey</code> table with the
   relocate(c(&quot;genes&quot;, &quot;external_gene_name&quot;)) # optionally, re-order columns to make output more readable
 
 head(res_WT_anno)</code></pre>
-<pre><code>##                genes external_gene_name    baseMean log2FoldChange      lfcSE        stat
-## 1 ENSMUSG00000000001              Gnai3 6255.632164   -0.014024321 0.09301588 -0.15077341
-## 2 ENSMUSG00000000028              Cdc45 1337.874474    0.522421732 0.13599465  3.84148730
-## 3 ENSMUSG00000000031                H19    3.773571   -1.156597290 1.60080258 -0.72251088
-## 4 ENSMUSG00000000037              Scml2   27.563275   -0.279611867 0.47655119 -0.58674046
-## 5 ENSMUSG00000000049               Apoh    2.256350    4.010718329 1.88912289  2.12305846
-## 6 ENSMUSG00000000056               Narf 2194.251314   -0.008544091 0.17722204 -0.04821122
-##         pvalue        padj
-## 1 0.8801544640 0.960702559
-## 2 0.0001222911 0.003948693
-## 3 0.4699804359          NA
-## 4 0.5573780290 0.804647138
-## 5 0.0337489531          NA
-## 6 0.9615479086 0.987888734</code></pre>
+<pre><code>##                genes external_gene_name    baseMean log2FoldChange
+## 1 ENSMUSG00000000001              Gnai3 6255.632164   -0.014024321
+## 2 ENSMUSG00000000028              Cdc45 1337.874474    0.522421732
+## 3 ENSMUSG00000000031                H19    3.773571   -1.156597290
+## 4 ENSMUSG00000000037              Scml2   27.563275   -0.279611867
+## 5 ENSMUSG00000000049               Apoh    2.256350    4.010718329
+## 6 ENSMUSG00000000056               Narf 2194.251314   -0.008544091
+##        lfcSE        stat       pvalue        padj
+## 1 0.09301588 -0.15077341 0.8801544640 0.960702559
+## 2 0.13599465  3.84148730 0.0001222911 0.003948693
+## 3 1.60080258 -0.72251088 0.4699804359          NA
+## 4 0.47655119 -0.58674046 0.5573780290 0.804647138
+## 5 1.88912289  2.12305846 0.0337489531          NA
+## 6 0.17722204 -0.04821122 0.9615479086 0.987888734</code></pre>
 <p>Alternatively, if you are more familiar with base functions:</p>
 <pre class="r"><code>res_WT_anno &lt;- res_WT # copy table
 res_WT_anno &lt;- cbind(genes=row.names(res_WT_anno), res_WT_anno[ ,c(1:6)])
@@ -559,20 +563,20 @@ res_WT_anno &lt;- as.data.frame(res_WT_anno)
 res_WT_anno &lt;- merge(GeneKey, res_WT_anno, by.x = &quot;ensembl_gene_id&quot;, by.y=&quot;genes&quot;, all.x = FALSE, all.y = TRUE)
 
 head(res_WT_anno)</code></pre>
-<pre><code>##      ensembl_gene_id external_gene_name    baseMean log2FoldChange      lfcSE        stat
-## 1 ENSMUSG00000000001              Gnai3 6255.632164   -0.014024321 0.09301588 -0.15077341
-## 2 ENSMUSG00000000028              Cdc45 1337.874474    0.522421732 0.13599465  3.84148730
-## 3 ENSMUSG00000000031                H19    3.773571   -1.156597290 1.60080258 -0.72251088
-## 4 ENSMUSG00000000037              Scml2   27.563275   -0.279611867 0.47655119 -0.58674046
-## 5 ENSMUSG00000000049               Apoh    2.256350    4.010718329 1.88912289  2.12305846
-## 6 ENSMUSG00000000056               Narf 2194.251314   -0.008544091 0.17722204 -0.04821122
-##         pvalue        padj
-## 1 0.8801544640 0.960702559
-## 2 0.0001222911 0.003948693
-## 3 0.4699804359          NA
-## 4 0.5573780290 0.804647138
-## 5 0.0337489531          NA
-## 6 0.9615479086 0.987888734</code></pre>
+<pre><code>##      ensembl_gene_id external_gene_name    baseMean log2FoldChange
+## 1 ENSMUSG00000000001              Gnai3 6255.632164   -0.014024321
+## 2 ENSMUSG00000000028              Cdc45 1337.874474    0.522421732
+## 3 ENSMUSG00000000031                H19    3.773571   -1.156597290
+## 4 ENSMUSG00000000037              Scml2   27.563275   -0.279611867
+## 5 ENSMUSG00000000049               Apoh    2.256350    4.010718329
+## 6 ENSMUSG00000000056               Narf 2194.251314   -0.008544091
+##        lfcSE        stat       pvalue        padj
+## 1 0.09301588 -0.15077341 0.8801544640 0.960702559
+## 2 0.13599465  3.84148730 0.0001222911 0.003948693
+## 3 1.60080258 -0.72251088 0.4699804359          NA
+## 4 0.47655119 -0.58674046 0.5573780290 0.804647138
+## 5 1.88912289  2.12305846 0.0337489531          NA
+## 6 0.17722204 -0.04821122 0.9615479086 0.987888734</code></pre>
 <p>Notice that not all genes were annotated with an ENSEMBl gene id or
 gene description. While we are able to annotate our results, this is a
 helpful reminder that gene symbol is often not a good unique

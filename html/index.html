@@ -13,7 +13,7 @@
 
 <title>index</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -60,6 +60,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -80,6 +81,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -232,7 +236,7 @@ $(document).ready(function () {
 <div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -245,7 +249,7 @@ $(document).ready(function () {
   <a href="Module00_Introduction.html">Intro</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Sequence QC
      
     <span class="caret"></span>
@@ -255,15 +259,15 @@ $(document).ready(function () {
       <a href="Module01_Warming_Up.html">Warming up</a>
     </li>
     <li>
-      <a href="Module02_QC.html">Quality Control</a>
+      <a href="Module02a_QC.html">Quality Control</a>
     </li>
     <li>
-      <a href="Module02optional_Cutadapt_MoreQC.html">Optional: Cutadapt/MoreQC</a>
+      <a href="Module02b_Cutadapt_MoreQC.html">Cutadapt/MoreQC</a>
     </li>
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Alignment
      
     <span class="caret"></span>
@@ -278,24 +282,24 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Quantification
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="Module05_MultiQC_and_Count_Matrix.html">Count matrix / Alignment QC</a>
+      <a href="Module05a_MultiQC_and_Count_Matrix.html">Count matrix / Alignment QC</a>
     </li>
     <li>
-      <a href="Module05optional_Additional_Details.html">Optional: Additional details</a>
+      <a href="Module05b_Additional_Details.html">Optional: Additional details</a>
     </li>
   </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Groups/Model
      
     <span class="caret"></span>
@@ -313,7 +317,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Expression plots
      
     <span class="caret"></span>
@@ -325,7 +329,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Diff Expression
      
     <span class="caret"></span>
@@ -397,7 +401,7 @@ workspace</a></h4>
 Startup</a></td>
 </tr>
 <tr class="even">
-<td align="left">9:20</td>
+<td align="left">9:30</td>
 <td align="left"><strong>Sequence QC:</strong></td>
 </tr>
 <tr class="odd">
@@ -407,14 +411,13 @@ Up</a></td>
 </tr>
 <tr class="even">
 <td align="left"></td>
-<td align="left">    <a href="Module02_QC.html">Quality Control
+<td align="left">    <a href="Module02a_QC.html">Quality Control
 (FASTQs)</a></td>
 </tr>
 <tr class="odd">
 <td align="left"></td>
-<td align="left">    <a
-href="Module02optional_Cutadapt_MoreQC.html">Trimming and
-MultiQC</a></td>
+<td align="left">    <a href="Module02b_Cutadapt_MoreQC.html">Trimming
+and MultiQC</a></td>
 </tr>
 <tr class="even">
 <td align="left">11:00</td>
@@ -435,14 +438,30 @@ genomes</a></td>
 href="Module04_Alignment.html">Alignment</a></td>
 </tr>
 <tr class="even">
+<td align="left"></td>
+<td align="left"><strong>Quantification:</strong></td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">    <a
+href="Module05a_MultiQC_and_Count_Matrix.html">Count matrix / Alignment
+QC</a></td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">    <a
+href="Module05b_Additional_Details.html">Additional details and
+exercise</a></td>
+</tr>
+<tr class="odd">
 <td align="left">1:00</td>
 <td align="left">Day 1 concludes</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div id="day-2-travis-dana" class="section level4">
-<h4>Day 2 (Travis &amp; Dana)</h4>
+<div id="day-2-chris-raymond" class="section level4">
+<h4>Day 2 (Chris &amp; Raymond)</h4>
 <table>
 <colgroup>
 <col width="44%" />
@@ -454,27 +473,7 @@ href="Module04_Alignment.html">Alignment</a></td>
 <td align="left">Review</td>
 </tr>
 <tr class="even">
-<td align="left">9:10</td>
-<td align="left"><strong>Quantification:</strong></td>
-</tr>
-<tr class="odd">
-<td align="left"></td>
-<td align="left">    <a
-href="Module05_MultiQC_and_Count_Matrix.html">Count matrix / Alignment
-QC</a></td>
-</tr>
-<tr class="even">
-<td align="left"></td>
-<td align="left">    <a
-href="Module05optional_Additional_Details.html">Additional details and
-exercise</a></td>
-</tr>
-<tr class="odd">
-<td align="left">11:00</td>
-<td align="left">Break</td>
-</tr>
-<tr class="even">
-<td align="left">11:15</td>
+<td align="left">9:20</td>
 <td align="left"><strong>Groups and Modeling:</strong></td>
 </tr>
 <tr class="odd">
@@ -493,14 +492,27 @@ Initialization</a></td>
 normalization and model fitting</a></td>
 </tr>
 <tr class="even">
+<td align="left">11:00</td>
+<td align="left">Break</td>
+</tr>
+<tr class="odd">
+<td align="left">11:15</td>
+<td align="left"><strong>Expression plots:</strong></td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">    <a href="Module09_SampleQCViz.html">Sample
+visualizations for QC</a></td>
+</tr>
+<tr class="odd">
 <td align="left">1:00</td>
 <td align="left">Day 2 concludes</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div id="day-3-dana" class="section level4">
-<h4>Day 3 (Dana)</h4>
+<div id="day-3-raymond" class="section level4">
+<h4>Day 3 (Raymond)</h4>
 <table>
 <colgroup>
 <col width="44%" />
@@ -513,41 +525,37 @@ normalization and model fitting</a></td>
 </tr>
 <tr class="even">
 <td align="left">9:10</td>
-<td align="left"><strong>Expression plots:</strong></td>
-</tr>
-<tr class="odd">
-<td align="left"></td>
-<td align="left">    <a href="Module09_SampleQCViz.html">Sample
-visualizations for QC</a></td>
-</tr>
-<tr class="even">
-<td align="left">11:00</td>
-<td align="left">Break</td>
-</tr>
-<tr class="odd">
-<td align="left">11:15</td>
 <td align="left"><strong>Differential Expression:</strong></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"></td>
 <td align="left">    <a
 href="Module10_DEComparisons.html">Comparisons</a></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"></td>
 <td align="left">    <a href="Module11_DEVisualizations.html">DE
 Visiualization and Annotation</a></td>
 </tr>
+<tr class="odd">
+<td align="left">11:00</td>
+<td align="left">Break</td>
+</tr>
 <tr class="even">
+<td align="left">11:15</td>
+<td align="left">    <a href="Module11_DEVisualizations.html">DE
+Visiualization and Annotation (continued)</a></td>
+</tr>
+<tr class="odd">
 <td align="left"></td>
 <td align="left">    <a href="Module11X_BonusContent.html">Bonus
 Content</a></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">12:45</td>
 <td align="left"><a href="Module99_Wrap_up.html">Wrap-up</a></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">1:00</td>
 <td align="left">Day 3 concludes</td>
 </tr>

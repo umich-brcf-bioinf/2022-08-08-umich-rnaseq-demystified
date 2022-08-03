@@ -35,7 +35,7 @@ In this Quality Control (QC) module, we will learn:
 
 An overview of the steps of entire differential expression experiment and analysis workflow is shown below. In this lesson, we will go over the highlighted part of the workflow.
 
-![](images/wayfinder/wayfinder-01.png)
+![](images/wayfinder/wayfinder-02.png)
 <br>
 <br>
 <br>

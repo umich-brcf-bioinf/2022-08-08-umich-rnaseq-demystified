@@ -35,7 +35,7 @@ In this module, we will learn:
 
 We'll discuss the alignment and gene quantification steps which gather the necessary data that we will need prior to testing for differential expression, the topic of Day 2.
 
-![](images/wayfinder/wayfinder-02.png)
+![](images/wayfinder/wayfinder-04.png)
 <br>
 <br>
 <br>

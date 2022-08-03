@@ -1,5 +1,5 @@
 ---
-title: "Day 2 - Module 05: MultiQC and Counts"
+title: "Day 1 - Module 05: MultiQC and Counts"
 author: "UM Bioinformatics Core"
 output:
         html_document:
@@ -37,7 +37,7 @@ In this module, we will learn:
 
 Here we will take the results from the previous module and operate on them a bit further. This will wrap up the preceding exercises, leaving us well-poised to begin differential expression, which we will discuss today and tomorrow.
 
-![](images/wayfinder/wayfinder-03.png)
+![](images/wayfinder/wayfinder-05.png)
 <br>
 <br>
 <br>

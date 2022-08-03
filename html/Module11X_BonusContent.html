@@ -11,11 +11,11 @@
 
 <meta name="author" content="UM Bioinformatics Core" />
 
-<meta name="date" content="2021-12-06" />
+<meta name="date" content="2022-08-01" />
 
 <title>Day 3 - Module 11X: Bonus Content</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -71,6 +71,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -91,6 +92,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -316,7 +320,7 @@ div.tocify {
 <div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -329,7 +333,7 @@ div.tocify {
   <a href="Module00_Introduction.html">Intro</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Sequence QC
      
     <span class="caret"></span>
@@ -339,15 +343,15 @@ div.tocify {
       <a href="Module01_Warming_Up.html">Warming up</a>
     </li>
     <li>
-      <a href="Module02_QC.html">Quality Control</a>
+      <a href="Module02a_QC.html">Quality Control</a>
     </li>
     <li>
-      <a href="Module02optional_Cutadapt_MoreQC.html">Optional: Cutadapt/MoreQC</a>
+      <a href="Module02b_Cutadapt_MoreQC.html">Cutadapt/MoreQC</a>
     </li>
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Alignment
      
     <span class="caret"></span>
@@ -362,24 +366,24 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Quantification
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="Module05_MultiQC_and_Count_Matrix.html">Count matrix / Alignment QC</a>
+      <a href="Module05a_MultiQC_and_Count_Matrix.html">Count matrix / Alignment QC</a>
     </li>
     <li>
-      <a href="Module05optional_Additional_Details.html">Optional: Additional details</a>
+      <a href="Module05b_Additional_Details.html">Optional: Additional details</a>
     </li>
   </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Groups/Model
      
     <span class="caret"></span>
@@ -397,7 +401,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Expression plots
      
     <span class="caret"></span>
@@ -409,7 +413,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Diff Expression
      
     <span class="caret"></span>
@@ -440,7 +444,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Day 3 - Module 11X: Bonus Content</h1>
 <h4 class="author">UM Bioinformatics Core</h4>
-<h4 class="date">2021-12-06</h4>
+<h4 class="date">2022-08-01</h4>
 
 </div>
 
@@ -468,9 +472,76 @@ code.r{
 <li>Additional visualizations for gene level QC assessment</li>
 </ul>
 </blockquote>
-<div id="count-boxplots" class="section level1" number="1">
-<h1 number="1"><span class="header-section-number">1</span> Count boxplots</h1>
-<p>To understand how skewed our raw data was and how well our normalization worked, we can look at distributions of raw and normalized counts. First, we need to set up some tables and labels.</p>
+<div id="pca-plot-customization-with-ggplot2" class="section level1"
+number="1">
+<h1><span class="header-section-number">1</span> PCA plot customization
+with ggplot2</h1>
+<p>We can also generate a customized plot using the <code>ggplot2</code>
+package that will include shape assignments for our treatment groups and
+color assignments for the individual samples.</p>
+<p>First, create some objects to store the sample and group
+information.</p>
+<pre class="r"><code>#PCA plot for Rlog-Normalized counts for all samples
+CombinatoricGroup &lt;- factor(MetaInfo$Gtype.Tx)
+SampleName &lt;- factor(row.names(MetaInfo))</code></pre>
+<p>Take a look at <code>CombinatoricGroup</code> and
+<code>SampleName</code> - what information is now stored in these
+objects?</p>
+<p>Next, look at the documentation for <code>plotPCA</code> function
+from DESeq2. Then write a command to store the PCA results for the top
+500 genes for <code>intgroup</code> = ‘Gtype.Tx’, using the normalized
+data, as an object named <code>p.all</code>.</p>
+<details>
+<summary>
+<em>Click for solution</em>
+</summary>
+<pre class="r"><code>#Generate the PCA projections using the `plotPCA` function from DESeq2.
+p.all &lt;- plotPCA(rld, intgroup = c(&#39;Gtype.Tx&#39;), ntop = 500)</code></pre>
+</details>
+<p>Next, look at the possible slots of the <code>p.all</code> object to
+determine where the PCA data is stored. Then, create a ggplot2 object
+called <code>gp</code>, specifying PC1 as the x-axis and PC2 as the
+y-axis and setting the color to correspond to the samples and the shape
+to correspond to the <code>CombinatoricGroup</code>. Add a primary title
+‘All samples Rlog-Normalized’</p>
+<p><em>Hint: Use aesthetics, e.g.: aes() and search for how to add a
+title to a ggplot figure</em></p>
+<details>
+<summary>
+<em>Click for solution</em>
+</summary>
+<pre class="r"><code>gp &lt;- ggplot(p.all$data, aes(x = PC1, y = PC2, color = SampleName, shape = CombinatoricGroup)) +
+  geom_point() +
+  ggtitle(label = as.character(&#39;All samples Rlog-Normalized&#39;))</code></pre>
+</details>
+<p>Finally, output the plot to file</p>
+<pre class="r"><code>pdf(file = paste0(plotPath, &#39;PCAplot_Fancy_rlog_&#39;, Comparison, &#39;.pdf&#39;), onefile = TRUE)
+plot(gp)
+dev.off()</code></pre>
+<pre><code>## quartz_off_screen 
+##                 2</code></pre>
+<p>Additionally, we can generated customized PCA plot of raw data to
+compare to the normalized data.</p>
+<pre class="r"><code>pdf(file = paste0(plotPath, &#39;PCAplot_raw_&#39;, Comparison, &#39;.pdf&#39;), onefile = TRUE)
+#PCA for Raw counts for all samples
+RC &lt;- SummarizedExperiment(log2(counts(dds, normalized = FALSE)), colData=colData(dds))
+p.RC &lt;- plotPCA(DESeqTransform(RC), intgroup = &#39;Gtype.Tx&#39;)
+
+gpRC &lt;- ggplot(p.RC$data, aes(x = PC1, y = PC2, color = SampleName, shape = CombinatoricGroup)) +     xlab(p.RC$labels[2]) + ylab(p.RC$labels[1]) + scale_shape_manual(values=1:nlevels(CombinatoricGroup), name = &#39;Combinatoric Group&#39;) + geom_point(size=2) + ggtitle(label = as.character(&#39;All samples Raw Data&#39;)) + theme(plot.title = element_text(hjust = 0.5)) + guides(colour=guide_legend(nrow=12, title = &#39;Sample&#39;), legend.key = element_rect(size = 1), legend.key.size = unit(0, &#39;cm&#39;)) + theme_classic(base_size = 10) + theme(legend.margin=margin(t = 0, unit=&#39;mm&#39;))
+plot(gpRC)
+
+dev.off()</code></pre>
+<pre><code>## quartz_off_screen 
+##                 2</code></pre>
+<pre class="r"><code># embedd example of plot (rlog only)
+plot(gpRC)</code></pre>
+<p><img src="Module11X_BonusContent_files/figure-html/PCAraw-1.png" width="672" /></p>
+</div>
+<div id="count-boxplots" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Count boxplots</h1>
+<p>To understand how skewed our raw data was and how well our
+normalization worked, we can look at distributions of raw and normalized
+counts. First, we need to set up some tables and labels.</p>
 <pre class="r"><code>## setup for raw counts
 plotPath = &quot;figures/&quot;
 
@@ -490,7 +561,8 @@ annot_df = data.frame(
 # join counts and annotation table
 tidy_mat = tidyr::gather(as_tibble(mat), key = &#39;sample&#39;, value = &#39;counts&#39;) %&gt;%
     left_join(annot_df, by = &#39;sample&#39;)</code></pre>
-<p>Once we set up the input data, we can plot the raw counts for our samples.</p>
+<p>Once we set up the input data, we can plot the raw counts for our
+samples.</p>
 <pre class="r"><code>box_plot = ggplot(tidy_mat, aes(x = sample, y = log2(counts))) +
     geom_boxplot(notch = TRUE) +
     labs(
@@ -500,9 +572,12 @@ tidy_mat = tidyr::gather(as_tibble(mat), key = &#39;sample&#39;, value = &#39;co
     theme_bw() + theme(axis.text.x = element_text(angle = 90))
 box_plot</code></pre>
 <p><img src="Module11X_BonusContent_files/figure-html/BoxplotsRaw-1.png" width="672" /></p>
-<p>After generating the plot with ggplot, we can save it as a file in the directory we set up.</p>
+<p>After generating the plot with ggplot, we can save it as a file in
+the directory we set up.</p>
 <pre class="r"><code>ggsave(filename = paste0(plotPath, &quot;BoxPlot_Gtype.Tx_raw.pdf&quot;), plot = box_plot, height = 8, width = 8, dpi = 300)</code></pre>
-<p>To understand how the rlog normalization impacted the distributions of counts for each sample, we can plot boxplots for the normalized data and compare that to our plot of the raw data.</p>
+<p>To understand how the rlog normalization impacted the distributions
+of counts for each sample, we can plot boxplots for the normalized data
+and compare that to our plot of the raw data.</p>
 <pre class="r"><code>## rlog counts
 pdata = data.frame(colData(rld))
 mat = as.matrix(assay(rld))
@@ -529,28 +604,60 @@ box_plot</code></pre>
 <p><img src="Module11X_BonusContent_files/figure-html/BoxplotsRlog-1.png" width="672" /></p>
 <pre class="r"><code>ggsave(filename = paste0(plotPath, &quot;BoxPlot_Gtype.Tx_rlog.pdf&quot;), plot = box_plot, height = 8, width = 8, dpi = 300)</code></pre>
 </div>
-<div id="heatmaps" class="section level1" number="2">
-<h1 number="2"><span class="header-section-number">2</span> Heatmaps</h1>
-<p>To understand the patterns of expression across all our samples, including how well our samples cluster by group labels, we can generate a heatmaps.</p>
-<p>The first heatmap to generate is of the top 500 expressed genes across all samples. First, we’ll set our color palette using a tool called <a href="https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html">Color Brewer</a>.</p>
+<div id="heatmaps" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Heatmaps</h1>
+<p>To understand the patterns of expression across all our samples,
+including how well our samples cluster by group labels, we can generate
+a heatmaps.</p>
+<p>The first heatmap to generate is of the top 500 expressed genes
+across all samples. First, we’ll set our color palette using a tool
+called <a
+href="https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html">Color
+Brewer</a>.</p>
 <pre class="r"><code>#heatmap with top 500 variant or expressed genes, rlog normalized data
 colors &lt;- colorRampPalette(brewer.pal(9, &#39;Blues&#39;))(255)</code></pre>
-<p>First, we’ll select the top 500 expressed genes across all our samples to prioritize this set of genes and allow for patterns to be more easily ovbserved.</p>
+<p>First, we’ll select the top 500 expressed genes across all our
+samples to prioritize this set of genes and allow for patterns to be
+more easily ovbserved.</p>
 <pre class="r"><code>select &lt;- order(rowMeans(assay(rld)), decreasing=TRUE)[1:500]
 df &lt;- data.frame(Group = colData(rld)[,c(&#39;Gtype.Tx&#39;)], row.names = rownames(colData(dds)))</code></pre>
-<p>Next, we’ll set up a PDF file and plot our heatmap. Saving the plot as an object allows us to view the figure within our session as well as writing the plot to file.</p>
-<p>The <a href="https://cran.r-project.org/web/packages/pheatmap/pheatmap.pdf"><code>pheatmap</code> function</a> does quite a lot in a single step, including scaling the data by row and clustering both the samples (columns) and genes (rows).</p>
-<p><strong>Note</strong>: <a href="https://towardsdatascience.com/pheatmap-draws-pretty-heatmaps-483dab9a3cc">This blog post</a> has a nice step by step overview of the pheatmap options, using basketball data as an example.</p>
+<p>Next, we’ll set up a PDF file and plot our heatmap. Saving the plot
+as an object allows us to view the figure within our session as well as
+writing the plot to file.</p>
+<p>The <a
+href="https://cran.r-project.org/web/packages/pheatmap/pheatmap.pdf"><code>pheatmap</code>
+function</a> does quite a lot in a single step, including scaling the
+data by row and clustering both the samples (columns) and genes
+(rows).</p>
+<p><strong>Note</strong>: <a
+href="https://towardsdatascience.com/pheatmap-draws-pretty-heatmaps-483dab9a3cc">This
+blog post</a> has a nice step by step overview of the pheatmap options,
+using basketball data as an example.</p>
 <pre class="r"><code>pdf(file = paste0(plotPath,&#39;Heatmap_TopExp_&#39;, Comparison, &#39;.pdf&#39;), onefile = FALSE, width=10, height=20)
 pheatmap(assay(rld)[select,], scale=&quot;row&quot;,  cluster_rows=TRUE, show_rownames=FALSE, cluster_cols=TRUE, annotation_col=df, fontsize = 7, las = 2, fontsize_row = 7, color = colors, main = &#39;500 Top Expressed Genes Heatmap&#39;)
 dev.off()</code></pre>
 <pre><code>## pdf 
 ##   3</code></pre>
-<p>Looking at the heatmap, we see that samples within the same treatment group cluster together, fitting our understanding of the experimental design. We also see clusters of genes that appear to have contrasting patterns between the treatment groups, which is promising for our differential expression comparisons.</p>
-<p><strong>Note</strong>: Heatmaps are helpful visualizations, especially for sharing an overview of your RNA-seq data. The why and how of to use them properly can be confusing, such as outlined in the questions and answers in <a href="https://www.biostars.org/p/230115/">this biostars post</a> that adds additional context to the overview in this workshop.</p>
-<div id="sample-and-top-variable-expressed-heatmaps" class="section level2" number="2.1">
-<h2 number="2.1"><span class="header-section-number">2.1</span> Sample and Top Variable Expressed Heatmaps</h2>
-<p>This <a href="http://www.opiniomics.org/you-probably-dont-understand-heatmaps/">blog post</a> reviews the data transformation procedure for generating heatmaps and is a useful resource. They review the steps for generating a sample correlation heatmap similar to the plot generated below.</p>
+<p>Looking at the heatmap, we see that samples within the same treatment
+group cluster together, fitting our understanding of the experimental
+design. We also see clusters of genes that appear to have contrasting
+patterns between the treatment groups, which is promising for our
+differential expression comparisons.</p>
+<p><strong>Note</strong>: Heatmaps are helpful visualizations,
+especially for sharing an overview of your RNA-seq data. The why and how
+of to use them properly can be confusing, such as outlined in the
+questions and answers in <a
+href="https://www.biostars.org/p/230115/">this biostars post</a> that
+adds additional context to the overview in this workshop.</p>
+<div id="sample-and-top-variable-expressed-heatmaps"
+class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Sample and Top
+Variable Expressed Heatmaps</h2>
+<p>This <a
+href="http://www.opiniomics.org/you-probably-dont-understand-heatmaps/">blog
+post</a> reviews the data transformation procedure for generating
+heatmaps and is a useful resource. They review the steps for generating
+a sample correlation heatmap similar to the plot generated below.</p>
 <pre class="r"><code>#heatmap of normalized data, sample distibution matrix
 sampleDists &lt;- dist(t(assay(rld))) #rld
 sampleDistMatrix &lt;- as.matrix(sampleDists) # convert to matrix
@@ -565,9 +672,14 @@ pheatmap(sampleDistMatrix,
 dev.off()</code></pre>
 <pre><code>## pdf 
 ##   3</code></pre>
-<p>If we look at the <code>sampleDists</code> object, we now see from the diagonal values that there appears to be two major groups of samples, with better defined subgroups in the bottom right quadrant.</p>
-<p>Overall, like the heatmap of the top 500 most expressed genes, we see that samples in the same treatment groups cluster well together when the full dataset is considered.</p>
-<p>Another informative heatmap is for the top most variably expressed genes in the dataset. An example of this code is shown below.</p>
+<p>If we look at the <code>sampleDists</code> object, we now see from
+the diagonal values that there appears to be two major groups of
+samples, with better defined subgroups in the bottom right quadrant.</p>
+<p>Overall, like the heatmap of the top 500 most expressed genes, we see
+that samples in the same treatment groups cluster well together when the
+full dataset is considered.</p>
+<p>Another informative heatmap is for the top most variably expressed
+genes in the dataset. An example of this code is shown below.</p>
 <pre class="r"><code>colors &lt;- colorRampPalette(brewer.pal(9, &#39;Blues&#39;))(255)
 
 select &lt;- order(rowVars(assay(rld)), decreasing=TRUE)[1:500]
@@ -580,74 +692,61 @@ dev.off()</code></pre>
 ##   3</code></pre>
 </div>
 </div>
-<div id="sources-used" class="section level1" number="3">
-<h1 number="3"><span class="header-section-number">3</span> Sources Used</h1>
+<div id="sources-used" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Sources Used</h1>
 <ul>
-<li>HBC QC tutorial: <a href="https://hbctraining.github.io/DGE_workshop/lessons/03_DGE_QC_analysis.html" class="uri">https://hbctraining.github.io/DGE_workshop/lessons/03_DGE_QC_analysis.html</a><br />
+<li>HBC QC tutorial: <a
+href="https://hbctraining.github.io/DGE_workshop/lessons/03_DGE_QC_analysis.html"
+class="uri">https://hbctraining.github.io/DGE_workshop/lessons/03_DGE_QC_analysis.html</a><br />
 </li>
-<li>Detailed Heatmap tutorial from Galaxy: <a href="https://training.galaxyproject.org/training-material/topics/transcriptomics/tutorials/rna-seq-viz-with-heatmap2/tutorial.html" class="uri">https://training.galaxyproject.org/training-material/topics/transcriptomics/tutorials/rna-seq-viz-with-heatmap2/tutorial.html</a></li>
+<li>Detailed Heatmap tutorial from Galaxy: <a
+href="https://training.galaxyproject.org/training-material/topics/transcriptomics/tutorials/rna-seq-viz-with-heatmap2/tutorial.html"
+class="uri">https://training.galaxyproject.org/training-material/topics/transcriptomics/tutorials/rna-seq-viz-with-heatmap2/tutorial.html</a></li>
 </ul>
 <hr />
 </div>
-<div id="session-info" class="section level1" number="4">
-<h1 number="4"><span class="header-section-number">4</span> Session Info</h1>
+<div id="session-info" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Session Info</h1>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>## R version 4.1.2 (2021-11-01)
+<pre><code>## R version 4.2.1 (2022-06-23)
 ## Platform: x86_64-apple-darwin17.0 (64-bit)
-## Running under: macOS Monterey 12.0.1
+## Running under: macOS Monterey 12.4
 ## 
 ## Matrix products: default
-## LAPACK: /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRlapack.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRlapack.dylib
 ## 
 ## locale:
 ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 ## 
 ## attached base packages:
-## [1] stats4    stats     graphics  grDevices utils     datasets  methods  
-## [8] base     
+## [1] stats4    stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-##  [1] biomaRt_2.50.0              data.table_1.14.2          
-##  [3] RColorBrewer_1.1-2          pheatmap_1.0.12            
-##  [5] ggrepel_0.9.1               dplyr_1.0.7                
-##  [7] tidyr_1.1.4                 ggplot2_3.3.5              
-##  [9] DESeq2_1.34.0               SummarizedExperiment_1.24.0
-## [11] Biobase_2.30.0              MatrixGenerics_1.6.0       
-## [13] matrixStats_0.61.0          GenomicRanges_1.46.0       
-## [15] GenomeInfoDb_1.30.0         IRanges_2.28.0             
-## [17] S4Vectors_0.32.2            BiocGenerics_0.40.0        
-## [19] rmarkdown_2.11             
+##  [1] biomaRt_2.52.0              data.table_1.14.2           RColorBrewer_1.1-3          pheatmap_1.0.12             ggrepel_0.9.1               dplyr_1.0.9                
+##  [7] tidyr_1.2.0                 ggplot2_3.3.6               DESeq2_1.36.0               SummarizedExperiment_1.26.1 Biobase_2.56.0              MatrixGenerics_1.8.1       
+## [13] matrixStats_0.62.0          GenomicRanges_1.48.0        GenomeInfoDb_1.32.1         IRanges_2.30.0              S4Vectors_0.34.0            BiocGenerics_0.42.0        
+## [19] rmarkdown_2.14             
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] bitops_1.0-7           bit64_4.0.5            filelock_1.0.2        
-##  [4] progress_1.2.2         httr_1.4.2             tools_4.1.2           
-##  [7] bslib_0.3.1            utf8_1.2.2             R6_2.5.1              
-## [10] DBI_1.1.1              colorspace_2.0-2       withr_2.4.2           
-## [13] tidyselect_1.1.1       prettyunits_1.1.1      bit_4.0.4             
-## [16] curl_4.3.2             compiler_4.1.2         cli_3.1.0             
-## [19] xml2_1.3.2             DelayedArray_0.20.0    labeling_0.4.2        
-## [22] sass_0.4.0             scales_1.1.1           genefilter_1.76.0     
-## [25] rappdirs_0.3.3         stringr_1.4.0          digest_0.6.28         
-## [28] XVector_0.34.0         pkgconfig_2.0.3        htmltools_0.5.2       
-## [31] dbplyr_2.1.1           fastmap_1.1.0          highr_0.9             
-## [34] rlang_0.4.12           rstudioapi_0.13        RSQLite_2.2.8         
-## [37] jquerylib_0.1.4        generics_0.1.1         farver_2.1.0          
-## [40] jsonlite_1.7.2         BiocParallel_1.28.0    RCurl_1.98-1.5        
-## [43] magrittr_2.0.1         GenomeInfoDbData_1.2.7 Matrix_1.3-4          
-## [46] Rcpp_1.0.7             munsell_0.5.0          fansi_0.5.0           
-## [49] lifecycle_1.0.1        stringi_1.7.5          yaml_2.2.1            
-## [52] zlibbioc_1.16.0        BiocFileCache_2.2.0    grid_4.1.2            
-## [55] blob_1.2.2             parallel_4.1.2         crayon_1.4.2          
-## [58] lattice_0.20-45        splines_4.1.2          annotate_1.48.0       
-## [61] hms_1.1.1              locfit_1.5-9.4         knitr_1.36            
-## [64] pillar_1.6.4           geneplotter_1.72.0     XML_3.99-0.8          
-## [67] glue_1.4.2             evaluate_0.14          vctrs_0.3.8           
-## [70] gtable_0.3.0           purrr_0.3.4            assertthat_0.2.1      
-## [73] cachem_1.0.6           xfun_0.27              xtable_1.8-4          
-## [76] survival_3.2-13        tibble_3.1.5           AnnotationDbi_1.32.3  
-## [79] memoise_2.0.0          ellipsis_0.3.2</code></pre>
+##  [1] bitops_1.0-7           bit64_4.0.5            filelock_1.0.2         httr_1.4.3             progress_1.2.2         tools_4.2.1            bslib_0.3.1           
+##  [8] utf8_1.2.2             R6_2.5.1               DBI_1.1.3              colorspace_2.0-3       withr_2.5.0            prettyunits_1.1.1      tidyselect_1.1.2      
+## [15] curl_4.3.2             bit_4.0.4              compiler_4.2.1         cli_3.3.0              xml2_1.3.3             DelayedArray_0.22.0    labeling_0.4.2        
+## [22] sass_0.4.1             scales_1.2.0           genefilter_1.78.0      rappdirs_0.3.3         stringr_1.4.0          digest_0.6.29          XVector_0.36.0        
+## [29] pkgconfig_2.0.3        htmltools_0.5.2        dbplyr_2.2.1           fastmap_1.1.0          highr_0.9              rlang_1.0.2            RSQLite_2.2.14        
+## [36] jquerylib_0.1.4        generics_0.1.2         farver_2.1.0           jsonlite_1.8.0         BiocParallel_1.30.3    RCurl_1.98-1.6         magrittr_2.0.3        
+## [43] GenomeInfoDbData_1.2.8 Matrix_1.4-1           Rcpp_1.0.8.3           munsell_0.5.0          fansi_1.0.3            lifecycle_1.0.1        stringi_1.7.6         
+## [50] yaml_2.3.5             zlibbioc_1.16.0        BiocFileCache_2.4.0    grid_4.2.1             blob_1.2.3             parallel_4.2.1         crayon_1.5.1          
+## [57] lattice_0.20-45        Biostrings_2.64.0      splines_4.2.1          annotate_1.48.0        hms_1.1.1              locfit_1.5-9.6         knitr_1.39            
+## [64] pillar_1.7.0           geneplotter_1.74.0     codetools_0.2-18       XML_3.99-0.10          glue_1.6.2             evaluate_0.15          BiocManager_1.30.17   
+## [71] vctrs_0.4.1            gtable_0.3.0           purrr_0.3.4            assertthat_0.2.1       cachem_1.0.6           xfun_0.31              xtable_1.8-4          
+## [78] survival_3.3-1         tibble_3.1.7           AnnotationDbi_1.32.3   memoise_2.0.1          ellipsis_0.3.2</code></pre>
 <hr />
-<p>These materials have been adapted and extended from materials listed above. These are open access materials distributed under the terms of the <a href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.</p>
+<p>These materials have been adapted and extended from materials listed
+above. These are open access materials distributed under the terms of
+the <a href="http://creativecommons.org/licenses/by/4.0/">Creative
+Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted
+use, distribution, and reproduction in any medium, provided the original
+author and source are credited.</p>
 </div>
 
 
