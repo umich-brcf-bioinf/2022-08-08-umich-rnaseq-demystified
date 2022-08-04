@@ -35,7 +35,7 @@ source("../bin/chunk-options.R")
 knitr_fig_path("06-")
 ```
 
-> # Objectives:
+> # Objectives {.unlisted .unnumbered}
 > * Overview of reproducible research & analysis setup
 > * Broad introduction to DESeq2 & why it is widely used for differential expression comparisons
 > * How to import and review gene count table
@@ -45,13 +45,13 @@ knitr_fig_path("06-")
 
 Today we will proceed through key steps in a differential expression analysis, starting from a count table that's similar to what you generated in the first half of the workshop and similar to the one of the outputs included in the [data that the Advanced Genomics Core delivers](https://brcf.medicine.umich.edu/cores/advanced-genomics/data-delivery/) for RNA-seq libraries.
 
-![](images/wayfinder/wayfinder-07.png){width=95%}
+<img src="images/wayfinder/wayfinder-07.png" alt="wayfinder" style="width: 1000px;"/>
 
 # Reproducible Research
 
 Today we'll be exploring some RNA-seq data that is fairly representative of what we see in the core and start with input files similar to the count table you generated in the previous steps and similar to one of the outputs currently being delivered by the Advanced Sequencing Core.
 
-#### [Warm-Up]
+## Warm-up {.unlisted .unnumbered}
 
 To get started, let's get a sense of what approaches you already use to compare gene expression:
 
@@ -124,13 +124,13 @@ dir.create("outputs")
 
 **Checkpoint**: *Please use the green 'check' if you have saved your code file and see the `data`, `scripts`, and `outputs` directories in the `RSD_R` folder and the red 'x' if you do not.*
 
-> # Reminder: Code execution shortcut
+> # Reminder: Code execution shortcut {.unlisted .unnumbered}
 >
 > **Ctrl-Enter** is a standard shortcut in Rstudio to send the current line (or selected lines) to the console. If you see an `>`, then R has executed the command. If you see a `+`, this means that the command is not complete and R is waiting (usually for a `)`).
 >
 <br>
 
-> # Reminder: Object naming conventions
+> # Reminder: Object naming conventions {.unlisted .unnumbered}
 > * Cannot start with numbers
 > * Cannot include dashes
 > * Cannot have spaces

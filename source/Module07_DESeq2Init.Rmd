@@ -34,7 +34,7 @@ code.r{
     }
 </style>
 
-> # Objectives:
+> # Objectives {.unlisted .unnumbered}
 > * 'Unblind' our sample IDs
 > * Understand possible confounding factors
 > * Understand the impact of batches or additional covariates
@@ -208,7 +208,7 @@ Notice how the `dds` object now has less elements after filtering, so there were
 **Checkpoint**: *Questions?*
 
 
-#### [Optional exercise]: Adding covariates to sample information
+#### [Optional exercise]: Adding covariates to sample information {.unlisted .unnumbered}
 
 You can test out manually adding a covariate to our `samplesheet` data table and then create a new DESeq2 object.
 

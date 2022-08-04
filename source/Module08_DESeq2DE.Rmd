@@ -34,7 +34,7 @@ code.r{
     }
 </style>
 
-> # Objectives:    
+> # Objectives:
 > * Discuss count normalizations
 > * Execute model fitting for differential expression comparisons
 
@@ -58,11 +58,11 @@ Since counts of mapped reads for each gene is proportional to the expression of 
 
 ## Normalization goals
 
-Two common factors that need to be accounted for during normalization are **sequencing depth** and **gene length**. Common normalization approaches (such as FPKM, RPKM, CPM, TPM, etc.) account for one or both of these factors.    
+Two common factors that need to be accounted for during normalization are **sequencing depth** and **gene length**. Common normalization approaches (such as FPKM, RPKM, CPM, TPM, etc.) account for one or both of these factors.
 
-* **Sequencing depth** normalization is necessary to account for the proportion of reads per gene expected for more deeply sequenced samples (like in pink below) versus a less deeply sequenced sample (like in green below).    
+* **Sequencing depth** normalization is necessary to account for the proportion of reads per gene expected for more deeply sequenced samples (like in pink below) versus a less deeply sequenced sample (like in green below).
 
-![*Note that each pink or green rectangle represents an aligned read, with reads spanning an intron connected by a dashed line. Figure from [HBC  training materials](https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html)*](./images/normalization_methods_depth.png)    
+![*Note that each pink or green rectangle represents an aligned read, with reads spanning an intron connected by a dashed line. Figure from [HBC  training materials](https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html)*](./images/normalization_methods_depth.png)
 
 
 * **Gene length** normalization may also be necessary if comparing between different genes, since genes of different lengths have different probabilities of generating fragments that end up in the library.
@@ -118,7 +118,7 @@ head(dds)
 
 
 
-#### [Optional Exercise]
+#### [Optional Exercise] {.unlisted .unnumbered}
 
 If you executed the commands in the option exercise from Module 07, you can fit a seperate DESeq2 model for the patient sample example, which included a covariate in our model.
 
@@ -140,11 +140,11 @@ resultsNames(dds_patient)
 
 # Summary
 
-In this section, we:   
+In this section, we:
 
-* Learned about count normalizations and uses    
-* Generated a normalized count table    
-* Fit two DESeq2 models for our data    
+* Learned about count normalizations and uses
+* Generated a normalized count table
+* Fit two DESeq2 models for our data
 * Saw the impact of including a covariate in our model
 
 
@@ -152,7 +152,9 @@ In this section, we:
 ---
 
 # Sources
-## Training resources used to develop materials
+
+Training resources used to develop materials
+
 * HBC DGE setup: https://hbctraining.github.io/DGE_workshop/lessons/01_DGE_setup_and_overview.html
 * HBC Count Normalization: https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html
 * DESeq2 standard vignette: http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html

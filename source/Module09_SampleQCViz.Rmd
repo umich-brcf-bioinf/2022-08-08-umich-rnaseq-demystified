@@ -34,7 +34,7 @@ code.r{
     }
 </style>
 
-> # Objectives:
+> # Objectives {.unlisted .unnumbered}
 > * Generate common QC visualizations
 > * Understand how to interpret QC visualizations
 > * Understand when to revise the model used in the DESeq2 initialization
@@ -154,7 +154,7 @@ dev.off()
 
 **Checkpoint**: *If generated and saved the `p.all` PCA plot, please indicate with the green 'check' button. Otherwise, please use  use the red 'x' button in your zoom reaction panel to have this step repeated.*
 
-## [Breakout Exercise 1] - Imagine a heatmap
+## [Breakout Exercise 1] - Imagine a heatmap {.unlisted .unnumbered}
 
 It can be useful to visualize to visualize how our samples organize along with the expression pattern of individual genes. We will create a heatmap of the top most variable genes using the `pheatmap` function.
 
@@ -222,7 +222,8 @@ In this section, we:
 ---
 
 
-# Sources Used
+# Sources
+
 * HBC QC tutorial: https://hbctraining.github.io/DGE_workshop/lessons/03_DGE_QC_analysis.html
 * Detailed Heatmap tutorial from Galaxy: https://training.galaxyproject.org/training-material/topics/transcriptomics/tutorials/rna-seq-viz-with-heatmap2/tutorial.html
 * PCA Overview: https://blog.bioturing.com/2018/06/14/principal-component-analysis-explained-simply/

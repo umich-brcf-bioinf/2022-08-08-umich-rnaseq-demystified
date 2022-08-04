@@ -45,7 +45,7 @@ library('RColorBrewer', character.only=TRUE)
 load("rdata/RunningData.RData")
 ```
 
-> # Objectives
+> # Objectives {.unlisted .unnumbered}
 > * Additional visualizations for gene level QC assessment
 
 # PCA plot customization with ggplot2
@@ -254,7 +254,8 @@ dev.off()
 ```
 
 
-# Sources Used
+# Sources
+
 * HBC QC tutorial: https://hbctraining.github.io/DGE_workshop/lessons/03_DGE_QC_analysis.html
 * Detailed Heatmap tutorial from Galaxy: https://training.galaxyproject.org/training-material/topics/transcriptomics/tutorials/rna-seq-viz-with-heatmap2/tutorial.html
 

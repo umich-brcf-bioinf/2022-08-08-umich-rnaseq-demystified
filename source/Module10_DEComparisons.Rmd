@@ -34,7 +34,7 @@ code.r{
     }
 </style>
 
-> # Objectives
+> # Objectives {.unlisted .unnumbered}
 > * Generate tables of DE results
 > * Understand what a p-value represents.
 > * Understand multiple hypothesis correction application and importance
@@ -193,7 +193,8 @@ Now that we've generated our differential comparisons and have an understanding 
 ---
 
 
-# Sources Used
+# Sources
+
 * HBC DGE training module, part 1: https://hbctraining.github.io/DGE_workshop/lessons/04_DGE_DESeq2_analysis.html
 * HBC DGE training module, part 2: https://hbctraining.github.io/DGE_workshop/lessons/05_DGE_DESeq2_analysis2.html
 * DESeq2 vignette: http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#differential-expression-analysis
