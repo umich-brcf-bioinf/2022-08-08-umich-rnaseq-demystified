@@ -1,5 +1,5 @@
 ---
-title: "Day 3 - Module 11: DE Visualizations and Gene Annotations"
+title: "Module 11: DE Visualizations and Annotation"
 author: "UM Bioinformatics Core"
 date: "`r Sys.Date()`"
 output:
@@ -10,29 +10,29 @@ output:
             toc: true
             toc_depth: 4
             toc_float: true
-            number_sections: true
+            number_sections: false
             fig_caption: true
             markdown: GFM
             code_download: true
 ---
+
 <style type="text/css">
-body{ /* Normal  */
-      font-size: 14pt;
-  }
-pre {
-  font-size: 12pt
+body, td {
+   font-size: 18px;
 }
 code.r{
-  font-size: 12pt;
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
 }
 </style>
 
-<!--- Allow the page to be wider --->
-<style>
-    body .main-container {
-        max-width: 1200px;
-    }
-</style>
+```{r, include = FALSE}
+source("../bin/chunk-options.R")
+knitr_fig_path("11-")
+```
+
 > # Objectives {.unlisted .unnumbered}
 > * Understand advantages of using gene ids when analyzing data.
 > * Given a list of ENSEMBL gene ids, add gene symbols and Entrez accessions.
@@ -71,99 +71,91 @@ As described by this [Galaxy project tutorial](https://galaxyproject.github.io/t
 First, we need to set thresholds for determining significant genes. A reasonable threshold would be a fold-change of less than -1.5 or greater than 1.5 and an adjusted pvalue less than 0.05.
 
 ```{r PlotSetup1}
-fc <- 1.5
-pval <- 0.05
+fc = 1.5
+fdr = 0.05
 ```
 
-Then, we need to sep up some objects to run our plotting code, creating a new object that will have the right shape for plotting, labeling our comparison of interest, and setting up our output directory
+Next, we'll set up an object on which we'll use as the basis for our plot. Let's coerce the `DataFrame` which was returned into a `tibble` and use some `tidyverse` functions to do this:
+
 ```{r PlotSetup2}
-df<- res_WT[order(res_WT$padj),] #select our data of interest
-df <- as.data.frame(df) #convert our object type
-df <- cbind("id" = row.names(df), df) #set rownames to valid column
-str(df)
+# Let's first swing the rownames out as a column and coerce to a tibble
+results_plus_vs_minus = as_tibble(results_plus_vs_minus, rownames = 'id') %>% arrange(padj)
 
-Comparison <- "ko.control_v_wt.control"
+# Now let's save a copy to add columns for our plots
+df = results_plus_vs_minus
 
+comparison = 'plus_vs_minus'
 ```
 
 Once we've setup the annotations we need, we can proceed with generating the volcano plot, including our thresholds.
-```{r VolcanoPlot, message=FALSE, warning=FALSE}
-pdf(file = paste0(plotPath,'VolcanoPlot_', Comparison, '.pdf'), onefile = FALSE)
-# Initialize the plot, saving as object 'p' and specifying the plot type as 'geom_point'
 
-p <- ggplot(df, aes(x = log2FoldChange, y = -log10(padj))) +
+```{r VolcanoPlot, message=FALSE, warning=FALSE}
+# Initialize the plot, saving as object 'p' and specifying the plot type as 'geom_point'
+p = ggplot(df, aes(x = log2FoldChange, y = -log10(padj))) +
     geom_point(shape = 21, colour= 'darkgrey', size = 1) +
-    theme_classic() +
+    theme_bw() +
     xlab('Log2 fold-change') + ylab('-Log10 adjusted p-value')
 
 # Add threshold lines
-p <- p +
+p = p +
     geom_vline(
         xintercept = c(0, -log2(fc), log2(fc)),
         linetype = c(1, 2, 2)) +
     geom_hline(
-        yintercept = -log10(pval),
+        yintercept = -log10(fdr),
         linetype = 2)
 
 # Add Title that includes comparison name
-p <- p + ggtitle(as.character(Comparison))
+p = p + ggtitle(as.character(comparison))
 
-print(p)
-dev.off()
+# Display the plot in the plots pane of RStudio
 p
 ```
 
-<br>
-
 <details>
-    <summary>*Click for color coded volcano plot*</summary>
-    Now we need to [subset our data](https://www.statmethods.net/management/subset.html) to label the datapoints (genes) that pass our thresholds.
+<summary>*Click for color coded volcano plot*</summary>
+Now we need to [subset our data](https://www.statmethods.net/management/subset.html) to label the datapoints (genes) that pass our thresholds.
+
 ```{r PlotSetup2a, message=FALSE, warning=FALSE}
-df$dot <- rep(3, nrow(df))
-df$dot[which(df$padj <= pval & df$log2FoldChange < 0 & abs(df$log2FoldChange) >= log2(fc))] = 2
-df$dot[which(df$padj <= pval & df$log2FoldChange > 0 & abs(df$log2FoldChange) >= log2(fc))] = 1
-df$sig <- df$dot
+df$dot = rep(3, nrow(df))
+df$dot[which(df$padj <= fdr & df$log2FoldChange < 0 & abs(df$log2FoldChange) >= log2(fc))] = 2
+df$dot[which(df$padj <= fdr & df$log2FoldChange > 0 & abs(df$log2FoldChange) >= log2(fc))] = 1
+df$sig = df$dot
 
 #take top 5 up, down, then combine, assign label
-top <- rbind(head(subset(df, df$dot == 1), 5),head(subset(df, df$dot == 2), 5))
-top$label <- top$id
-df <- merge(x = df, y = top[,c('id','label')], by = "id", all.x = TRUE)
+top = rbind(head(subset(df, df$dot == 1), 5),head(subset(df, df$dot == 2), 5))
+top$label = top$id
+df = merge(x = df, y = top[,c('id','label')], by = "id", all.x = TRUE)
 
 #count the number of significan up and down genes, assign value for legend
-df$dot <- factor(df$dot,levels = c(1,2,3), labels = c(paste0('Up: ', sum(df$dot == 1)),paste0('Down: ', sum(df$dot == 2)),'NS'))
+df$dot = factor(df$dot,levels = c(1,2,3), labels = c(paste0('Up: ', sum(df$dot == 1)),paste0('Down: ', sum(df$dot == 2)),'NS'))
 ```
 
-    Once we've setup the annotations we need, we can proceed with generating the volcano plot.
+Once we've setup the annotations we need, we can proceed with generating the volcano plot.
 
 ```{r VolcanoPlot2, message=FALSE, warning=FALSE}
-pdf(file = paste0(plotPath,'VolcanoPlot_Fancier', Comparison, '.pdf'), onefile = FALSE)
-
-p <- ggplot(df, aes(x = log2FoldChange, y = -log10(padj))) +
+p = ggplot(df, aes(x = log2FoldChange, y = -log10(padj))) +
     geom_point(aes(color = df$dot), size = 1) +
     theme_classic() +
     xlab('Log2 fold-change') + ylab('-Log10 adjusted p-value')
 # specify colors for up-/down-/nonsignificant genes
-p <- p + scale_color_manual(name = '', values=c('#B31B21', '#1465AC', 'darkgray'))
+p = p + scale_color_manual(name = '', values=c('#B31B21', '#1465AC', 'darkgray'))
 # add threshol lines
-p <- p +
+p = p +
     geom_vline(
         xintercept = c(0, -log2(fc), log2(fc)),
         linetype = c(1, 2, 2),
         color = c('black', 'black', 'black')) +
     geom_hline(
-        yintercept = -log10(pval),
+        yintercept = -log10(fdr),
         linetype = 2,
         color = 'black')
 # Add Title that includes comparison name
-p <- p + ggtitle(as.character(Comparison))
+p = p + ggtitle(as.character(comparison))
 
-print(p)
-dev.off()
 p
 ```
-
 </details>
-
 <br>
 
 For additional visualizations for our DE results, we included some example code in the Bonus Content module and this [HBC tutorial](https://hbctraining.github.io/DGE_workshop/lessons/06_DGE_visualizing_results.html) includes some nice examples.
@@ -177,56 +169,51 @@ However, we can also use conditional statements to determine the number of genes
 *[Question]: How would we identify the number of genes with adjusted p-values < 0.05 and a fold-change above 1.5 (or below -1.5)?*
 
 ```{r StatSigGenes2}
-#summary(res_WT)
-sum(res_WT$padj < 0.05 & abs(res_WT$log2FoldChange) >= log2(1.5), na.rm = TRUE)
-sum(res_Tx$padj < 0.05 & abs(res_Tx$log2FoldChange) >= log2(1.5), na.rm = TRUE)
+#summary(results_plus_vs_minus)
+sum(results_plus_vs_minus$padj < fdr & abs(results_plus_vs_minus$log2FoldChange) >= log2(fc), na.rm = TRUE)
 ```
+
 How do the number of DE genes compare to what we observed from the PCA plots?
 
 #### Choosing thresholds
 
 Thresholding on adjusted p-values < 0.05 is a standard threshold, but depending on the research question and/or how the results will be used, other thresholds might be reasonable.
 
-There is a nice [Biostart post that discusses choosing adjusted p-value thresholds](https://www.biostars.org/p/209118/), including cases where a more relaxed threshold might be appropriate and (some heated) discussion of the dangers of adjusting the choosen threshold after running an analysis. Additionally, there is a [Dalmon et al 2012](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-13-S2-S11) paper about p-value and fold-change thresholds for microarray data that may help provide some context.
-
+There is a nice [Biostar post that discusses choosing adjusted p-value thresholds](https://www.biostars.org/p/209118/), including cases where a more relaxed threshold might be appropriate and (some heated) discussion of the dangers of adjusting the choosen threshold after running an analysis. Additionally, there is a [Dalmon et al 2012](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-13-S2-S11) paper about p-value and fold-change thresholds for microarray data that may help provide some context.
 
 ### Subsetting significant genes
 
 It can be useful to annotate our results table with additional information to make them easier to interpret, such as adding additional gene information or better summarizing our DE results.
 
-
 <details>
-    <summary>*Click for code to generate a table of only DE genes*</summary>
-    You may be interested in identifying only the genes that pass your significance thresholds. A useful way to do this is to conditionally subset your results.
+<summary>*Click for code to generate a table of only DE genes*</summary>
+You may be interested in identifying only the genes that pass your significance thresholds. A useful way to do this is to conditionally subset your results.
 
-    *Note: The tidyverse functions you learned in Software Carpentry could also be alternatively used here.*
+*Note: The tidyverse functions you learned in Software Carpentry could also be alternatively used here.*
 
 ```{r ConditionalSubset, eval=FALSE}
-res_sig <- na.omit(res_WT)
-res_sig <- res_sig[which(res_sig$padj < 0.05 & abs(res_sig$log2FoldChange) >= log2(1.5)), ]
+res_sig = na.omit(results_plus_vs_minus)
+res_sig = res_sig[which(res_sig$padj < fdr & abs(res_sig$log2FoldChange) >= log2(fc)), ]
 head(res_sig)
 ```
-    For more details about sub-setting tables in R, we recommend reviewing the [Data Carpentry manipulating and analyzing data module](https://datacarpentry.org/R-ecology-lesson/03-dplyr.html).
-    We can also annotate our results to include a column that identifies our significant genes.
-</details>
 
-<br>
+For more details about sub-setting tables in R, we recommend reviewing the [Data Carpentry manipulating and analyzing data module](https://datacarpentry.org/R-ecology-lesson/03-dplyr.html).
+
+We can also annotate our results to include a column that identifies our significant genes.
+</details>
 
 We can also add an annotation column to indicate if a gene passes the `padj` and `log2FoldChange` thresholds we set to call DE genes.
 ```{r ConditionalAnno, eval=FALSE}
-res_WT_DE <- res_WT # copy table
-
 # add a column and assign all genes are non-significance
-res_WT_DE$Call <- rep(FALSE, length(res_WT$baseMean))
+results_plus_vs_minus$Call = rep(FALSE, length(results_plus_vs_minus$baseMean))
 
 # change 'Call' column to TRUE if meets conditions for significant differences
-res_WT_DE[which(!is.na(res_WT_DE$padj) & res_WT_DE$padj < 0.05 & abs(res_WT_DE$log2FoldChange) >= log2(1.5)), ]$Call <- TRUE
+results_plus_vs_minus[which(!is.na(results_plus_vs_minus$padj) & results_plus_vs_minus$padj < 0.05 & abs(results_plus_vs_minus$log2FoldChange) >= log2(1.5)), ]$Call = TRUE
 
 # reorder table to rank significant genes at the top
-res_WT_DE <- res_WT_DE[order(-res_WT_DE$Call),]
-head(res_WT_DE)
+results_plus_vs_minus = results_plus_vs_minus[order(-results_plus_vs_minus$Call),]
+head(results_plus_vs_minus)
 ```
-
 
 ## Adding genome annotations
 
@@ -238,52 +225,9 @@ Luckily, Bioconductor provides many tools and resources to facilitate access to 
 
 To start, we will first load the [biomaRt library](https://bioconductor.org/packages/3.14/bioc/html/biomaRt.html) & choose what reference we want to access. For a more detailed walk through of using biomaRt, [this training module](https://bioinformatics-core-shared-training.github.io/cruk-summer-school-2019/RNAseq/html/05_Annotation_and_Visualisation.html) might be useful, including what to do when annotations are not 1:1 mappings.
 
-## [Breakout Exercise 2] - Adding gene symbol annotations {.unlisted .unnumbered}
-
-First, we'll load the `biomaRt` library and then specify the dataset and biomart we want to use, where the values for `dataset` and `biomart` are based on the [biomaRt vignette on how to build a query](https://bioconductor.org/packages/release/bioc/vignettes/biomaRt) and the [biomaRt vignette on accessing ensembl](https://bioconductor.org/packages/3.14/bioc/vignettes/biomaRt/inst/doc/accessing_ensembl.html)
-
-```{r Pullmart, warning=FALSE }
-library("biomaRt")
-
-ensembl <- useEnsembl(dataset = "mmusculus_gene_ensembl", biomart='ensembl')
-
-```
-
-
-*Note that this process takes some time and will take up a larger amount of working memory so proceed with caution if you try to run these commands on a laptop with less than 4G of memory*
-
-
-To identify possible **filters** to restrict our data, we can use the `listFilters` function. To identify the **attributes** we want to retrive, we can use the `listAttributes` function. The best approach is to use [list or search functions](https://bioconductor.org/packages/release/bioc/vignettes/biomaRt/inst/doc/accessing_ensembl.html#how-to-build-a-biomart-query) to help narrow down the available options.
-```{r AddAnnotations2, warning=FALSE, eval=FALSE}
-head(listFilters(mart = ensembl), n = 20)
-head(listAttributes(ensembl), n = 30)
-```
-
-We can access additional genomic annotations using the [`bioMart` package](https://bioconductor.org/packages/release/bioc/html/biomaRt.html). To identify  we'll structure our 'query' or search of the bioMart resources to use the [ENSEMBL id](https://m.ensembl.org/info/genome/genebuild/gene_names.html) from our alignment to add the gene symbols and gene description for each gene.
-
-```{r AddAnotation3, warning=FALSE}
-## wasn't working for my version of biomaRt but might work for you
-GeneKey <- getBM(attributes=c('ensembl_gene_id', 'external_gene_name'),
-      filters = 'ensembl_gene_id',
-      values = row.names(assay(dds)),
-      mart = ensembl) # will take some time to run
-
-## check the key
-head(GeneKey)
-```
-
-
-Now that we have the ENSEMBL information and a gene symbol to match to our results, we can procced to the [breakout exercise to annotate our DE table(s)](https://umich-brcf-bioinf.github.io/2022-03-14-umich-rnaseq-demystified/html/Module11a_breakout.html)
-
-
-```{r checkAnnos}
-head(res_WT_anno)
-```
-    Notice that not all genes were annotated with an ENSEMBl gene id or gene description. While we are able to annotate our results, we should be very cautious as the gene symbol is not a good unique identifier plus we did not use a UCSC annotation resource so the HUGO gene symbol may not always match. However, this code is similar to the steps needed to annotate ENSEMBL id based results, like what would have been generated from yesterday's alignments, with more interpretable gene symbols.
-
-
-
-**Note**: For additional information regarding bioMart, please consult the [ENSEMBL bioMart vignette](https://bioconductor.org/packages/release/bioc/vignettes/biomaRt/inst/doc/accessing_ensembl.html) or the broader [Bioconductor Annotation Resources vignette ](http://bioconductor.org/packages/devel/workflows/vignettes/annotation/inst/doc/Annotation_Resources.html).
+> # [Breakout Exercise 2] - Adding gene symbol annotations {.unlisted .unnumbered}
+>
+> Navigate to [this]() page, where we will begin our second breakout exercise together, and then split into smaller groups to finish it.
 
 # Outputting results to file
 
@@ -297,7 +241,7 @@ dir.create("tables", showWarnings = FALSE)
 ## DE results table
 
 Next we'll write out our DE results for the KD comparison to file, since we added additional information to that table.
-```{r DEResultsOuput}
+```{r DEResultsOuput, eval = FALSE}
 write.csv(res_WT_anno,
           row.names = FALSE,
           na = ".",
@@ -306,30 +250,28 @@ write.csv(res_WT_anno,
 
 If we generated another comparision, we could repeat our annotations or write the DE results directly to file.
 
-```{r DEResultsOuput2}
-write.csv(res_Tx,
+```{r DEResultsOuput2, eval = FALSE}
+write.csv(results_plus_vs_minus,
           row.names = FALSE,
           na = ".",
           file="tables/DEResults_ko.Tx_v_wt.Tx.csv")
 ```
 
-
 ## Count tables
 
 The most relevant count tables are the raw, filtered count table that we used as the input for our analysis and the rlog normalized count table that we used for our quality control visualizations.
 
-
 To output the raw counts, we will need to use the `counts` function to access the count table from within its larger `DESeqDataSet` object.
-```{r OutputCountsRaw}
+
+```{r OutputCountsRaw, eval = FALSE}
 write.csv(counts(dds, normalized = FALSE), file="tables/DESeq2_raw_counts.csv")
 ```
 
 Then we'll output the rlog count table, using the `assay` function to access the normalized count table from within its larger `DESeqDataSet` object.
-```{r OutputCountsRlog}
+
+```{r OutputCountsRlog, eval = FALSE}
 write.csv(assay(rld), file="tables/DESeq2_rlogNormalized_counts.csv")
 ```
-
-
 
 # Summary
 
@@ -381,13 +323,6 @@ The University of Michigan has license and support for additional tools, such as
 * Bioconductor Genomic Annotation resources: http://bioconductor.org/packages/devel/workflows/vignettes/annotation/inst/doc/Annotation_Resources.html
 * BioMart vignette: https://bioconductor.org/packages/release/bioc/vignettes/biomaRt/inst/doc/accessing_ensembl.html
 
-
-
-```{r WriteOut.RData, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
-#Hidden code block to write out data for knitting
-save.image(file = "rdata/RunningData_Full.RData")
-```
-
 # Additional Resources
 * MIDAS Reproduciblity Hub: https://midas.umich.edu/reproducibility-overview/
 * ARC resources: https://arc-ts.umich.edu/
@@ -399,6 +334,10 @@ save.image(file = "rdata/RunningData_Full.RData")
 
 ---
 
+```{r WriteOut.RData, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
+#Hidden code block to write out data for knitting
+save.image(file = "rdata/RunningData_Full.RData")
+```
 
 # Session Info
 ```{r SessionInfo}

@@ -11,9 +11,9 @@
 
 <meta name="author" content="UM Bioinformatics Core" />
 
-<meta name="date" content="2022-08-01" />
+<meta name="date" content="2022-08-04" />
 
-<title>Day 3 - Module 09: Sample Visualizations for Quality Control</title>
+<title>Module 09: Sample Visualizations for Quality Control</title>
 
 <script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -459,51 +459,39 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Day 3 - Module 09: Sample Visualizations
-for Quality Control</h1>
+<h1 class="title toc-ignore">Module 09: Sample Visualizations for
+Quality Control</h1>
 <h4 class="author">UM Bioinformatics Core</h4>
-<h4 class="date">2022-08-01</h4>
+<h4 class="date">2022-08-04</h4>
 
 </div>
 
 
 <style type="text/css">
-body{ /* Normal  */
-      font-size: 14pt;
-  }
-pre {
-  font-size: 12pt
+body, td {
+   font-size: 18px;
 }
 code.r{
-  font-size: 12pt;
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
 }
 </style>
-<!--- Allow the page to be wider --->
-<style>
-    body .main-container {
-        max-width: 1200px;
-    }
-</style>
 <blockquote>
-<h1 id="objectives">Objectives:</h1>
+<h1 id="objectives" class="unlisted unnumbered">Objectives</h1>
 <ul>
-<li>Generate common QC visualizations<br />
-</li>
-<li>Understand how to interpret QC visualizations<br />
-</li>
+<li>Generate common QC visualizations</li>
+<li>Understand how to interpret QC visualizations</li>
 <li>Understand when to revise the model used in the DESeq2
-initialization<br />
-</li>
-<li>Understand the pitfalls of post-hoc analysis<br />
-</li>
+initialization</li>
+<li>Understand the pitfalls of post-hoc analysis</li>
 <li>Describe the causes and implications of batch effect or other QC
 issues in an RNA-Seq experiment</li>
 </ul>
 </blockquote>
-<div id="differential-expression-workflow" class="section level1"
-number="1">
-<h1><span class="header-section-number">1</span> Differential Expression
-Workflow</h1>
+<div id="differential-expression-workflow" class="section level1">
+<h1>Differential Expression Workflow</h1>
 <p>Prior to testing for differential expression between our comparisons
 of interest, we’ll first generate plots that will assess how well our
 samples match up with our expectations (based on their treatment groups)
@@ -514,10 +502,9 @@ style="width:75.0%" /></p>
 <hr />
 </div>
 <div id="sample-visualizatons-for-quality-control"
-class="section level1" number="2">
-<h1><span class="header-section-number">2</span> Sample Visualizatons
-for Quality Control</h1>
-<p>On Monday, we discussed aspects of quality control assessment at the
+class="section level1">
+<h1>Sample Visualizatons for Quality Control</h1>
+<p>We have discussed some aspects of quality control assessment at the
 sequencing data level. Today we will outline sample-level and gene-level
 quality control assessments to determine what we should expect for our
 differential expression comparisons.</p>
@@ -530,10 +517,8 @@ expression heatmaps, sample correlation heatmaps, and boxplots of raw
 and/or normalized counts, the code for which (due to time restrictions)
 can be found as bonus content through the materials for today and in the
 bonus content module.</p>
-<div id="principle-component-analysis-pca-plots" class="section level2"
-number="2.1">
-<h2><span class="header-section-number">2.1</span> Principle Component
-Analysis (PCA) Plots</h2>
+<div id="principle-component-analysis-pca-plots" class="section level2">
+<h2>Principle Component Analysis (PCA) Plots</h2>
 <p>A common and very useful plot for evaluating how well our samples
 cluster by treatment groups are Principle Component Analysis (PCA)
 plots. PCA is used to emphasize variation and bring out patterns in
@@ -558,9 +543,8 @@ video</a>. Additionally, this <a
 href="https://towardsdatascience.com/principal-component-analysis-3c39fbf5cb9d">TowardsDataScience
 blog post</a> goes through the math behind PCAs.</p>
 </blockquote>
-<div id="interpreting-pca-plots" class="section level3" number="2.1.1">
-<h3><span class="header-section-number">2.1.1</span> Interpreting PCA
-plots</h3>
+<div id="interpreting-pca-plots" class="section level3">
+<h3>Interpreting PCA plots</h3>
 <p>For most bulk RNA-seq experiments, we expect the majority of the
 total variance to be explained by the first two or three principle
 components.</p>
@@ -578,10 +562,9 @@ href="https://blog.bioturing.com/2018/06/14/principal-component-analysis-explain
 overview of PCA basics</a> walks through both the generation and
 interpretation of PCA plots.</p>
 </div>
-<div id="evaluating-batch-effects-or-confounders" class="section level3"
-number="2.1.2">
-<h3><span class="header-section-number">2.1.2</span> Evaluating batch
-effects or confounders</h3>
+<div id="evaluating-batch-effects-or-confounders"
+class="section level3">
+<h3>Evaluating batch effects or confounders</h3>
 <p>PCA plots are also useful for evaluating the impact of factors other
 than the experimental treatment or group.</p>
 <p>At times, batch effects can be quite obvious, such as this example
@@ -618,88 +601,109 @@ experimental conditions. <img src="images/batch_ex1c.jpg" />
 </details>
 </div>
 </div>
-<div id="plot-setup" class="section level2" number="2.2">
-<h2><span class="header-section-number">2.2</span> Plot Setup</h2>
-<p>We’ve already loaded the libraries we need for this module. We’ll
-follow best practices and create new a subdirectory to organize our
-output figures, as well as a variable to store a descriptor of the
-dataset we are looking at so we can more easily recycle our plotting
-functions.</p>
-<pre class="r"><code>plotPath = &#39;./DE_outputs/figures/&#39;
-dir.create(plotPath, showWarnings = FALSE)
-Comparison &lt;- &quot;Gtype.Tx&quot; # descriptor for the dataset we are looking at</code></pre>
+<div id="plot-setup" class="section level2">
+<h2>Plot Setup</h2>
+<p>We’ve already loaded the libraries we need for this module. We have
+also thought ahead in the previous module and created the
+<code>outputs/figures</code> and <code>outputs/tables</code>
+directories.</p>
 </div>
-<div id="pca-plot-initialization" class="section level2" number="2.3">
-<h2><span class="header-section-number">2.3</span> PCA Plot
-initialization</h2>
+<div id="pca-plot-initialization" class="section level2">
+<h2>PCA Plot initialization</h2>
 <p>Below, we will plot the rlog normalized data and generate the PCA
 projections for the top 500 using the <code>plotPCA</code> function from
-DESeq2, specifying <code>Gtype.Tx</code> as the condition of interest,
+DESeq2, specifying <code>condition</code> as the condition of interest,
 and view the simple plot generated by the function.</p>
-<pre class="r"><code>p.all &lt;- plotPCA(rld, intgroup = c(&#39;Gtype.Tx&#39;), ntop = 500)
-p.all</code></pre>
-<p><img src="Module09_SampleQCViz_files/figure-html/PCArlog3-1.png" width="672" /></p>
-<p>We also see that samples in both <code>control</code> groups are
-fairly tightly grouped, while samples within each <code>Tx</code> group
-do not cluster as tightly.</p>
-<p><em>[Question]: What can we take away from this PCA plot? Does it
-look like there are batch effects? Would we expect more DE genes for
-comparisons between ko.control and wt.control samples OR wt.Tx and ko.Tx
-samples?</em></p>
-<p>Next, we’ll save this plot to file.</p>
-<pre class="r"><code>pdf(file = paste0(plotPath, &#39;PCAplot_rlog_&#39;, Comparison, &#39;.pdf&#39;), onefile = TRUE)
-p.all
+<pre class="r"><code>pca_plot = plotPCA(rld, intgroup = c(&#39;condition&#39;), ntop = 500)
+pca_plot</code></pre>
+<p><img src="fig/09-PCArlog3-1.png" width="816" style="display: block; margin: auto;" /></p>
+<p>The samples don’t appear to cluster too tightly on their
+<code>condition</code>, but we do observe that they do separate in PC2.
+With real data, it is often the case that data doesn’t cluster as well
+as you’d expect, or that the covariate of interest is not associated
+with the first (or sometimes second or third) principal component. That
+doesn’t necessarily mean the experiment is a failure, but it does raise
+questions such as “What is associated with PC1?” Sometimes we can’t
+answer a question like this if we don’t have any sample measure to color
+on in the PCA.</p>
+<p>Next, let’s save this plot as a file in our
+<code>outputs/figures</code> folder.</p>
+<pre class="r"><code>pdf(file = file.path(&#39;outputs&#39;, &#39;figures&#39;, &#39;PCA_rlog_condition.pdf&#39;))
+pca_plot
 dev.off()</code></pre>
-<pre><code>## quartz_off_screen 
-##                 2</code></pre>
+<p>Alternatively, since <code>pca_plot</code> is a <code>ggplot</code>,
+we can also use <code>ggsave()</code>.</p>
+<pre class="r"><code>ggsave(
+    filename = file.path(&#39;outputs&#39;, &#39;figures&#39;, &#39;PCA_rlog_condition.pdf&#39;),
+    plot = pca_plot,
+    width = 6, height = 6, units = &#39;in&#39;)</code></pre>
+<blockquote>
+<h1 id="exercise---customize-the-pca"
+class="unlisted unnumbered">Exercise - Customize the PCA</h1>
+<p>It turns out that <code>pca_plot</code> object is a
+<code>ggplot</code>. You can see this with <code>class(pca_plot)</code>.
+This means we can use what we learned at the end of the Computational
+Foundations Workshop to modify this plot as we might see necessary. Try
+doing the following to the <code>pca_plot</code>:</p>
+<ol style="list-style-type: decimal">
+<li>Add a title and subtitle to the plot using the <code>labs()</code>
+function.</li>
+<li>Change the theme of the plot with <code>theme_bw()</code>.</li>
+<li>Challenge: Change the legend title to “Condition”. Hint, you can do
+this with the <code>labs()</code> function too, using the corresponding
+aesthetic mapping (e.g. “color”).</li>
+</ol>
+<p>Remember <code>ggplot2</code> adds plot components in layers, and you
+can add additional layers with the <code>+</code> sign. So if the plot
+already exists as an object, as <code>pca_plot</code> does in this case,
+you can add to it like <code>pca_plot + ...</code></p>
+</blockquote>
+<details>
+<summary>
+Solution
+</summary>
+<p>Here is one possible answer:</p>
+<pre class="r"><code>pca_plot +
+    labs(
+        title = &#39;PCA Plot&#39;,
+        subtitle = &#39;Top 500 variable genes&#39;,
+        color = &#39;Condition&#39;) +
+    theme_bw()</code></pre>
+<img src="fig/09-customize_pca_exercise-1.png" width="816" style="display: block; margin: auto;" />
+</details>
+<p><br></p>
 <p><strong>Checkpoint</strong>: <em>If generated and saved the
-<code>p.all</code> PCA plot, please indicate with the green ‘check’
+<code>pca_plot</code> PCA plot, please indicate with the green ‘check’
 button. Otherwise, please use use the red ‘x’ button in your zoom
 reaction panel to have this step repeated.</em></p>
-</div>
-<div id="breakout-exercise-1---imagine-a-heatmap" class="section level2"
-number="2.4">
-<h2><span class="header-section-number">2.4</span> [Breakout Exercise 1]
-- Imagine a heatmap</h2>
-<p>It can be useful to visualize to visualize how our samples organize
-along with the expression pattern of individual genes. We will create a
-heatmap of the top most variable genes using the <code>pheatmap</code>
-function.</p>
-<p>Before the exercise, let’s look at the help page using the
-<code>?</code> symbol.</p>
-<pre class="r"><code>?pheatmap</code></pre>
-<p>If we scroll down to the examples, we can test some of them out:</p>
-<pre class="r"><code># copied from the pheatmap documentation
-test = matrix(rnorm(200), 20, 10)
-test[1:10, seq(1, 10, 2)] = test[1:10, seq(1, 10, 2)] + 3
-test[11:20, seq(2, 10, 2)] = test[11:20, seq(2, 10, 2)] + 2
-test[15:20, seq(2, 10, 2)] = test[15:20, seq(2, 10, 2)] + 4
-colnames(test) = paste(&quot;Test&quot;, 1:10, sep = &quot;&quot;)
-rownames(test) = paste(&quot;Gene&quot;, 1:20, sep = &quot;&quot;)
-
-
-pheatmap(test)</code></pre>
-<p><img src="Module09_SampleQCViz_files/figure-html/testpheat-1.png" width="672" /></p>
-<p>Now that we’ve gotten a sense of what <code>pheatmap</code> can
-generate, let’ navigate to our first <a
-href="https://umich-brcf-bioinf.github.io/2022-03-14-umich-rnaseq-demystified/html/Module09a_breakout.html">breakout
-exercise</a> <br> <br></p>
+<blockquote>
+<h1 id="breakout-exercise-1---imagine-a-heatmap"
+class="unlisted unnumbered">[Breakout Exercise 1] - Imagine a
+heatmap</h1>
+<p>Plotting the expression values across all samples for the top
+variable genes in an experiment can help to visualize how samples
+cluster together by their expression profiles. When combined with
+phenotypic data, it can help show how samples with different treatments
+behave relative to one another. Let’s work through this exercise in
+small groups and generate a heatmap of the data we’ve been working
+with.</p>
+<p><a
+href="https://umich-brcf-bioinf.github.io/2022-03-14-umich-rnaseq-demystified/html/Module09a_breakout.html">Link
+to exercise</a></p>
+</blockquote>
 </div>
 <div id="transferring-our-plot-to-our-local-computer"
-class="section level2" number="2.5">
-<h2><span class="header-section-number">2.5</span> Transferring our plot
-to our local computer</h2>
+class="section level2">
+<h2>Transferring our plot to our local computer</h2>
 <p>Rstudio server allows us to download files through the interactive
 file panel on the right side. If we navigate into the plot subfolder and
-select the <code>PCAplot_rlog_Gtype.Tx.pdf</code> or the file, we can
+select the <code>PCAplot_rlog_condition.pdf</code> or the file, we can
 then click the blue gear symbol labeled <code>More</code> and select
 <code>Export...</code>. We should see a prompt regarding the name of the
 file and if we click <code>Download</code> the file should show up in
 your local “Downloads” folder.</p>
-<div id="optional---scree-plot-example" class="section level3"
-number="2.5.1">
-<h3><span class="header-section-number">2.5.1</span> Optional - Scree
-Plot example</h3>
+<div id="optional---scree-plot-example" class="section level3">
+<h3>Optional - Scree Plot example</h3>
 <details>
 <summary>
 <em>Bonus: Click for example code for generating a ScreePlot</em>
@@ -710,25 +714,25 @@ be used independently of plotting, such as described by <a
 href="https://statquest.org/pca-clearly-explained/">this statquest
 post</a> and replicated below.</p>
 <pre class="r"><code># generate PCA loadings
-pca &lt;- prcomp(t(assay(rld)), scale=TRUE)
+pca = prcomp(t(assay(rld)), scale=TRUE)
 
 ## get the scree information
-pca.var &lt;- pca$sdev^2
-scree &lt;- pca.var/sum(pca.var)
-p &lt;- barplot((scree[1:10]*100), main=&quot;Scree Plot&quot;, xlab=&quot;Principal Component&quot;, ylab=&quot;Percent Variation&quot;)</code></pre>
-<p><img src="Module09_SampleQCViz_files/figure-html/ScreePlot-1.png" width="672" /></p>
+pca.var = pca$sdev^2
+scree = pca.var/sum(pca.var)
+p = barplot((scree[1:10]*100), main=&quot;Scree Plot&quot;, xlab=&quot;Principal Component&quot;, ylab=&quot;Percent Variation&quot;)</code></pre>
+<p><img src="fig/09-ScreePlot-1.png" width="816" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>print(p)</code></pre>
-<pre><code>##       [,1]
-##  [1,]  0.7
-##  [2,]  1.9
-##  [3,]  3.1
-##  [4,]  4.3
-##  [5,]  5.5
-##  [6,]  6.7
-##  [7,]  7.9
-##  [8,]  9.1
-##  [9,] 10.3
-## [10,] 11.5</code></pre>
+<pre><code>      [,1]
+ [1,]  0.7
+ [2,]  1.9
+ [3,]  3.1
+ [4,]  4.3
+ [5,]  5.5
+ [6,]  6.7
+ [7,]  7.9
+ [8,]  9.1
+ [9,] 10.3
+[10,] 11.5</code></pre>
 We can see that the majority (~65%) of the variance across our samples
 is explained by the first three principle components, giving us some
 additional confidence regarding the quality of our data. In these scree
@@ -745,28 +749,25 @@ src="images/proportion-of-variance-blog-horz.jpg" />
 </div>
 </div>
 </div>
-<div id="summary" class="section level1" number="3">
-<h1><span class="header-section-number">3</span> Summary</h1>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
 <p>In this section, we:</p>
 <ul>
-<li>Discussed variance within treatment groups<br />
-</li>
+<li>Discussed variance within treatment groups</li>
 <li>Discussed technical artifacts, including batches</li>
 <li>Learned to generate PCA plots</li>
 </ul>
 <hr />
 </div>
-<div id="sources-used" class="section level1" number="4">
-<h1><span class="header-section-number">4</span> Sources Used</h1>
+<div id="sources" class="section level1">
+<h1>Sources</h1>
 <ul>
 <li>HBC QC tutorial: <a
 href="https://hbctraining.github.io/DGE_workshop/lessons/03_DGE_QC_analysis.html"
-class="uri">https://hbctraining.github.io/DGE_workshop/lessons/03_DGE_QC_analysis.html</a><br />
-</li>
+class="uri">https://hbctraining.github.io/DGE_workshop/lessons/03_DGE_QC_analysis.html</a></li>
 <li>Detailed Heatmap tutorial from Galaxy: <a
 href="https://training.galaxyproject.org/training-material/topics/transcriptomics/tutorials/rna-seq-viz-with-heatmap2/tutorial.html"
-class="uri">https://training.galaxyproject.org/training-material/topics/transcriptomics/tutorials/rna-seq-viz-with-heatmap2/tutorial.html</a><br />
-</li>
+class="uri">https://training.galaxyproject.org/training-material/topics/transcriptomics/tutorials/rna-seq-viz-with-heatmap2/tutorial.html</a></li>
 <li>PCA Overview: <a
 href="https://blog.bioturing.com/2018/06/14/principal-component-analysis-explained-simply/"
 class="uri">https://blog.bioturing.com/2018/06/14/principal-component-analysis-explained-simply/</a></li>
@@ -780,7 +781,7 @@ use, distribution, and reproduction in any medium, provided the original
 author and source are credited.</p>
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiRGF5IDMgLSBNb2R1bGUgMDk6IFNhbXBsZSBWaXN1YWxpemF0aW9ucyBmb3IgUXVhbGl0eSBDb250cm9sIgphdXRob3I6ICJVTSBCaW9pbmZvcm1hdGljcyBDb3JlIgpkYXRlOiAiYHIgU3lzLkRhdGUoKWAiCm91dHB1dDoKICAgICAgICBodG1sX2RvY3VtZW50OgogICAgICAgICAgICBpbmNsdWRlczoKICAgICAgICAgICAgICAgIGluX2hlYWRlcjogaGVhZGVyLmh0bWwKICAgICAgICAgICAgdGhlbWU6IHBhcGVyCiAgICAgICAgICAgIHRvYzogdHJ1ZQogICAgICAgICAgICB0b2NfZGVwdGg6IDQKICAgICAgICAgICAgdG9jX2Zsb2F0OiB0cnVlCiAgICAgICAgICAgIG51bWJlcl9zZWN0aW9uczogdHJ1ZQogICAgICAgICAgICBmaWdfY2FwdGlvbjogdHJ1ZQogICAgICAgICAgICBtYXJrZG93bjogR0ZNCiAgICAgICAgICAgIGNvZGVfZG93bmxvYWQ6IHRydWUKLS0tCjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+CmJvZHl7IC8qIE5vcm1hbCAgKi8KICAgICAgZm9udC1zaXplOiAxNHB0OwogIH0KcHJlIHsKICBmb250LXNpemU6IDEycHQKfQpjb2RlLnJ7CiAgZm9udC1zaXplOiAxMnB0Owp9Cjwvc3R5bGU+Cgo8IS0tLSBBbGxvdyB0aGUgcGFnZSB0byBiZSB3aWRlciAtLS0+CjxzdHlsZT4KICAgIGJvZHkgLm1haW4tY29udGFpbmVyIHsKICAgICAgICBtYXgtd2lkdGg6IDEyMDBweDsKICAgIH0KPC9zdHlsZT4KCj4gIyBPYmplY3RpdmVzOiAgICAgCj4gKiBHZW5lcmF0ZSBjb21tb24gUUMgdmlzdWFsaXphdGlvbnMgICAKPiAqIFVuZGVyc3RhbmQgaG93IHRvIGludGVycHJldCBRQyB2aXN1YWxpemF0aW9ucyAgICAKPiAqIFVuZGVyc3RhbmQgd2hlbiB0byByZXZpc2UgdGhlIG1vZGVsIHVzZWQgaW4gdGhlIERFU2VxMiBpbml0aWFsaXphdGlvbiAgICAKPiAqIFVuZGVyc3RhbmQgdGhlIHBpdGZhbGxzIG9mIHBvc3QtaG9jIGFuYWx5c2lzICAgICAKPiAqIERlc2NyaWJlIHRoZSBjYXVzZXMgYW5kIGltcGxpY2F0aW9ucyBvZiBiYXRjaCBlZmZlY3Qgb3Igb3RoZXIgUUMgaXNzdWVzIGluIGFuIFJOQS1TZXEgZXhwZXJpbWVudCAgICAgCgoKYGBge3IgTW9kdWxlcywgZXZhbD1UUlVFLCBlY2hvPUZBTFNFLCBtZXNzYWdlPUZBTFNFLCB3YXJuaW5nPUZBTFNFfQpsaWJyYXJ5KERFU2VxMikKbGlicmFyeShnZ3Bsb3QyKQpsaWJyYXJ5KHRpZHlyKQpsaWJyYXJ5KGRwbHlyKQpsaWJyYXJ5KG1hdHJpeFN0YXRzKQpsaWJyYXJ5KGdncmVwZWwpCmxpYnJhcnkocGhlYXRtYXApCmxpYnJhcnkoUkNvbG9yQnJld2VyKQpsb2FkKCJyZGF0YS9SdW5uaW5nRGF0YS5SRGF0YSIpCmBgYAoKCiMgRGlmZmVyZW50aWFsIEV4cHJlc3Npb24gV29ya2Zsb3cKClByaW9yIHRvIHRlc3RpbmcgZm9yIGRpZmZlcmVudGlhbCBleHByZXNzaW9uIGJldHdlZW4gb3VyIGNvbXBhcmlzb25zIG9mIGludGVyZXN0LCB3ZSdsbCBmaXJzdCBnZW5lcmF0ZSBwbG90cyB0aGF0IHdpbGwgYXNzZXNzIGhvdyB3ZWxsIG91ciBzYW1wbGVzIG1hdGNoIHVwIHdpdGggb3VyIGV4cGVjdGF0aW9ucyAoYmFzZWQgb24gdGhlaXIgdHJlYXRtZW50IGdyb3VwcykgYW5kIHdoYXQgd2UgbWlnaHQgZXhwZWN0IHRvIHNlZSBmcm9tIG91ciBkaWZmZXJlbnRpYWwgZXhwcmVzc2lvbiBjb21wYXJpc29ucy4KCiFbXSguL2ltYWdlcy93YXlmaW5kZXIvd2F5ZmluZGVyLTA5LnBuZyl7d2lkdGg9NzUlfQoKLS0tCgojIFNhbXBsZSBWaXN1YWxpemF0b25zIGZvciBRdWFsaXR5IENvbnRyb2wgICAgIAoKT24gTW9uZGF5LCB3ZSBkaXNjdXNzZWQgYXNwZWN0cyBvZiBxdWFsaXR5IGNvbnRyb2wgYXNzZXNzbWVudCBhdCB0aGUgc2VxdWVuY2luZyBkYXRhIGxldmVsLiBUb2RheSB3ZSB3aWxsIG91dGxpbmUgc2FtcGxlLWxldmVsIGFuZCBnZW5lLWxldmVsIHF1YWxpdHkgY29udHJvbCBhc3Nlc3NtZW50cyB0byBkZXRlcm1pbmUgd2hhdCB3ZSBzaG91bGQgZXhwZWN0IGZvciBvdXIgZGlmZmVyZW50aWFsIGV4cHJlc3Npb24gY29tcGFyaXNvbnMuCgpUbyBkbyB0aGlzLCB3ZSB3aWxsIGZpcnN0IGFzc2VzcyB0aGUgc2ltaWxhcml0eSBvZiBvdXIgc2FtcGxlcyBieSB1c2luZyBwcmluY2lwYWwgY29tcG9uZW50IGFuYWx5c2lzIChQQ0EpLiBUaGlzIHdpbGwgYWxsb3cgdXMgdG8gZGV0ZXJtaW5lIGhvdyB3ZWxsIHBhdHRlcm5zIGluIHRoZSBkYXRhIGZpdHMgb3VyIGV4cGVjdGF0aW9ucyBmcm9tIHRoZSBleHBlcmltZW50cyBkZXNpZ24gYW5kIHBvc3NpYmxlIHNvdXJjZXMgb2YgdmFyaWF0aW9uLgoKT3RoZXIgY29tbW9uIHZpc3VhbGl6YXRpb25zIHRoYXQgd2UgZ2VuZXJhdGUgZm9yIG91ciBhbmFseXNlcyBpbmNsdWRlIGV4cHJlc3Npb24gaGVhdG1hcHMsIHNhbXBsZSBjb3JyZWxhdGlvbiBoZWF0bWFwcywgYW5kIGJveHBsb3RzIG9mIHJhdyBhbmQvb3Igbm9ybWFsaXplZCBjb3VudHMsIHRoZSBjb2RlIGZvciB3aGljaCAoZHVlIHRvIHRpbWUgcmVzdHJpY3Rpb25zKSBjYW4gYmUgZm91bmQgYXMgYm9udXMgY29udGVudCB0aHJvdWdoIHRoZSBtYXRlcmlhbHMgZm9yIHRvZGF5IGFuZCBpbiB0aGUgYm9udXMgY29udGVudCBtb2R1bGUuCgojIyBQcmluY2lwbGUgQ29tcG9uZW50IEFuYWx5c2lzIChQQ0EpIFBsb3RzCgpBIGNvbW1vbiBhbmQgdmVyeSB1c2VmdWwgcGxvdCBmb3IgZXZhbHVhdGluZyBob3cgd2VsbCBvdXIgc2FtcGxlcyBjbHVzdGVyIGJ5IHRyZWF0bWVudCBncm91cHMgYXJlIFByaW5jaXBsZSBDb21wb25lbnQgQW5hbHlzaXMgKFBDQSkgcGxvdHMuIFBDQSBpcyB1c2VkIHRvIGVtcGhhc2l6ZSB2YXJpYXRpb24gYW5kIGJyaW5nIG91dCBwYXR0ZXJucyBpbiBsYXJnZSBkYXRhc2V0cyBieSB1c2luZyBkaW1lbnNpb25hbGl0eSByZWR1dGlvbi4KClRoaXMgaW1hZ2UgZnJvbQpbYSBoZWxwZnVsIHN0ZXAgYnkgc3RlcCBleHBsYWluYXRpb24gb2YgUENBXShodHRwczovL2Jsb2cuYmlvdHVyaW5nLmNvbS8yMDE4LzA2LzE0L3ByaW5jaXBhbC1jb21wb25lbnQtYW5hbHlzaXMtZXhwbGFpbmVkLXNpbXBseS8pIGhlbHBzIHRvIGlsbHVzdHJhdGUgdGhlIHByaW5jaXBsZSBjb21wb25lbnQgcHJvamVjdGlvbnMgZm9yIHR3byBnZW5lcyBtZWFzdXJlZCBpbiBhcHByb3hpbWF0ZWx5IDYwIG1vdXNlIHNhbXBsZXMuIEdlbmVyYWxseSwgdGhpcyBwcm9jZXNzIGlzIHJlcGVhdGVkIGFuZCBhZnRlciBlYWNoIGdlbmUncyBjb250cmlidXRpb24gdG8gYSBwcmluY2lwbGUgY29tcG9uZW50IG9yIHdlaWdodCBpcyBkZXRlcm1pbmVkLCB0aGUgZXhwcmVzc2lvbiBhbmQgd2VpZ2h0IGFyZSBzdW1tZWQgYWNyb3NzIGdlbmVzIGZvciBlYWNoIHNhbXBsZSB0byBjYWxjdWxhdGUgYSB2YWx1ZSBmb3IgZWFjaCBwcmluY2lwbGUgY29tcG9uZW50LgoKCiFbXSguL2ltYWdlcy9CbG9nX3BjYV82Yi5wbmcpCgo+KipOb3RlKio6IEEgbW9yZSBkZXRhaWxlZCBvdmVydmlldyBvZiB0aGUgUENBIHByb2NlZHVyZSBpcyBvdXRsaW5lZCBpbiBbYSBIYXJ2YXJkIENoYW4gQmlvaW5mb3JtYXRpYyBDb3JlIHRyYWluaW5nIG1vZHVsZV0oaHR0cHM6Ly9oYmN0cmFpbmluZy5naXRodWIuaW8vREdFX3dvcmtzaG9wL2xlc3NvbnMvcHJpbmNpcGFsX2NvbXBvbmVudF9hbmFseXNpcy5odG1sKSBhbmQgaXMgYmFzZWQgb24gYSBtb3JlIHRob3JvdWdoIGRlc2NyaXB0aW9uIHByZXNlbnRlZCBpbiBhIFtTdGF0UXVlc3TigJlzIHZpZGVvXShodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PV9VVkhuZUJVQlcwKS4gQWRkaXRpb25hbGx5LCB0aGlzIFtUb3dhcmRzRGF0YVNjaWVuY2UgYmxvZyBwb3N0XShodHRwczovL3Rvd2FyZHNkYXRhc2NpZW5jZS5jb20vcHJpbmNpcGFsLWNvbXBvbmVudC1hbmFseXNpcy0zYzM5ZmJmNWNiOWQpIGdvZXMgdGhyb3VnaCB0aGUgbWF0aCBiZWhpbmQgUENBcy4KCiMjIyBJbnRlcnByZXRpbmcgUENBIHBsb3RzCgpGb3IgbW9zdCBidWxrIFJOQS1zZXEgZXhwZXJpbWVudHMsIHdlIGV4cGVjdCB0aGUgbWFqb3JpdHkgb2YgdGhlIHRvdGFsIHZhcmlhbmNlIHRvIGJlIGV4cGxhaW5lZCBieSB0aGUgZmlyc3QgdHdvIG9yIHRocmVlIHByaW5jaXBsZSBjb21wb25lbnRzLgoKIVtdKGltYWdlcy9QQ0FwbG90X0ZhbmN5X3Jsb2dfa28uVHgucG5nKXt3aWR0aD03NSV9CgpJbiB0aGlzIHBsb3QsIHdoaWNoIGlzIHNpbWlsYXIgdG8gd2hhdCB3ZSdsbCBnZW5lcmF0ZSBiZWxvdyBmb3Igb3VyIGRhdGEsIHdoZXJlIHByaW5jaXBsZSBjb21wb25lbnQgMSAoUEMxKSBleHBsYWlucyB+ODAlIG9mIHRoZSB2YXJpYW5jZSBpbiBvdXIgZGF0YSB3aGlsZSBwcmluY2lwbGUgY29tcG9uZW50IDIgKFBDMikgZXhwbGFpbnMgfjEyJSBvZiB0aGUgdmFyaWFuY2UsIHdoaWNoIGZpdHMgdGhhdCBleHBlY3Rpb25zLgoKKltRdWVzdGlvbl06IEhvdyBtaWdodCB3ZSBpbnRlcnByZXQgdGhlIHZhcmlhbmNlIGV4cGxhaW5lZCBieSBlYWNoIHByaW5jaXBsZSBjb21wb25lbnQgaW4gdGhlIGNvbnRleHQgb2YgdGhlIGxhYmVsZWQgc2FtcGxlIHBvaW50cz8qCgoKRm9yIG1vcmUgaW5mb3JtYXRpb24sIHRoaXMgW2hlbHBmdWwgb3ZlcnZpZXcgb2YgUENBIGJhc2ljc10oaHR0cHM6Ly9ibG9nLmJpb3R1cmluZy5jb20vMjAxOC8wNi8xNC9wcmluY2lwYWwtY29tcG9uZW50LWFuYWx5c2lzLWV4cGxhaW5lZC1zaW1wbHkvKSB3YWxrcyB0aHJvdWdoIGJvdGggdGhlIGdlbmVyYXRpb24gYW5kIGludGVycHJldGF0aW9uIG9mIFBDQSBwbG90cy4gICAgCgoKIyMjIEV2YWx1YXRpbmcgYmF0Y2ggZWZmZWN0cyBvciBjb25mb3VuZGVycwoKUENBIHBsb3RzIGFyZSBhbHNvIHVzZWZ1bCBmb3IgZXZhbHVhdGluZyB0aGUgaW1wYWN0IG9mIGZhY3RvcnMgb3RoZXIgdGhhbiB0aGUgZXhwZXJpbWVudGFsIHRyZWF0bWVudCBvciBncm91cC4KCkF0IHRpbWVzLCBiYXRjaCBlZmZlY3RzIGNhbiBiZSBxdWl0ZSBvYnZpb3VzLCBzdWNoIGFzIHRoaXMgZXhhbXBsZSBmcm9tIHRoZSBbREVTZXEyIHZpZ25ldHRlXShodHRwOi8vYmlvY29uZHVjdG9yLm9yZy9wYWNrYWdlcy9kZXZlbC9iaW9jL3ZpZ25ldHRlcy9ERVNlcTIvaW5zdC9kb2MvREVTZXEyLmh0bWwpLCB3aGVyZSBzYW1wbGVzIHdpdGhpbiBlYWNoIHRyZWF0bWVudCBncm91cCBsb29rIHN0YWdnZXJlZCBpbnRvIHR3byBzdWJncm91cHMuCgoKIVtdKC4vaW1hZ2VzL1BDQTFfREVTZXEyVmlnbmV0dGUucG5nKQoKSWYgd2UgY29sb3Igb25seSBieSBzZXF1ZW5jaW5nIHJ1biB0eXBlIChwYWlyZWQtZW5kIHZzLiBzaW5nbGUtZW5kKSwgd2Ugc2VlIHRoYXQgUEMyICgyOSUgb2YgdmFyaWFuY2UpIGlzIHByaW1hcmlseSBleHBsYWluZWQgYnkgdGhpcyB0ZWNobmljYWwgY292YXJpYXRlLgoKIVtdKC4vaW1hZ2VzL1BDQTJfREVTZXEyVmlnbmV0dGUucG5nKQoKSG93ZXZlciwgdGhlIHNhbXBsZXMgYXJlIGNsZWFybHkgc2VwZXJhdGVkIGJ5IGV4cGVyaW1lbnRhbCBjb25kaXRpb24gb24gUEMxICoqYW5kKiogc2luY2Ugd2UgaGF2ZSBub24tY29uZm91bmRlZCBiYXRjaGVzLCBpZiB3ZSBzYXcgdGhpcyBwYXR0ZXJuIGluIG91ciBkYXRhIHdlIGNvdWxkIGluY29ycG9yYXRlIHRoZSB0ZWNobmljYWwgY292YXJpYXRlIGludG8gb3VyIG1vZGVsIGRlc2lnbiwgc3VjaCBhcyBvdXRsaW5lZCBpbiB0aGUgW0RFU2VxMiB2aWduZXR0ZV0oaHR0cDovL2Jpb2NvbmR1Y3Rvci5vcmcvcGFja2FnZXMvZGV2ZWwvYmlvYy92aWduZXR0ZXMvREVTZXEyL2luc3QvZG9jL0RFU2VxMi5odG1sI211bHRpLWZhY3Rvci1kZXNpZ25zKS4KCjxkZXRhaWxzPgogICAgPHN1bW1hcnk+KkNsaWNrIGZvciBjb21wbGV4IGRlc2lnbiBkaXNjdXNzaW9uKjwvc3VtbWFyeT4KICAgIEluIGV4cGVyaW1lbnRzIHdpdGggbW9yZSBjb21wbGV4IGRlc2lnbnMsIHN1Y2ggYXMgd2hlbiB0aGVyZSBhcmUgaW50ZXJlc2VjdGluZy9tdWx0aXBsZSB0cmVhdG1lbnQgY29uZGl0aW9ucywgaXQgY2FuIGJlIGxlc3MgY2xlYXIgd2hhdCBjb3ZhcmlhbnRzIGFyZSBpbmZsdWVuY2luZyBleHByZXNzaW9uLCBzdWNoIGFzIGlsbHVzdHJhdGVkIGZyb20gW3RoaXMgZG9jdW1lbmF0aW9uIGZvciBhIG1pY3JvYXJyYXkgYW5hbHlzaXMgdG9vbF0oaHR0cDovL3d3dy5tb2xtaW5lLmNvbS9tYWdtYS9nbG9iYWxfYW5hbHlzaXMvYmF0Y2hfZWZmZWN0Lmh0bWwpLgogICAgRnJvbSB0aGUgUENBIGxhYmVsZWQgYnkgZXhwZXJpbWVudGFsIHRyZWF0bWVudCwgd2Ugc2VlIHRoYXQgc2FtcGxlcyBmcm9tIHRoZSB0cmVhdG1lbnQgZ3JvdXAgZG8gbm90IGNsdXN0ZXIgdG9nZXRoZXIgYW5kIHRoYXQgdGhlcmUgaXMgaGlnaCB2YXJpYW5jZSBhY3Jvc3MgYWxsIHRyZWF0bWVudCBncm91cHMuCiAgICAhW10oLi9pbWFnZXMvYmF0Y2hfZXgxYi5qcGcpCiAgICBIb3dldmVyLCB3aGVuIHRoZSBwbG90IGlzIGNvbG9yIGNvZGVkIGJ5IHRoZSB0ZWNobmljYWwgYmF0Y2hlcyBvZiBwcm9iZSBsYWJlbGluZywgd2Ugc2VlIHRoYXQgdGhlIHBhdHRlcm5zIGluIHRoZSBkYXRhIGFyZSBiZXR0ZXIgZXhwbGFpbmVkIGJ5IGJhdGNoIHRoYW4gdGhlIGV4cGVyaW1lbnRhbCBjb25kaXRpb25zLgogICAgIVtdKC4vaW1hZ2VzL2JhdGNoX2V4MWMuanBnKQo8L2RldGFpbHM+CgoKIyMgUGxvdCBTZXR1cAoKV2UndmUgYWxyZWFkeSBsb2FkZWQgdGhlIGxpYnJhcmllcyB3ZSBuZWVkIGZvciB0aGlzIG1vZHVsZS4gV2UnbGwgZm9sbG93IGJlc3QgcHJhY3RpY2VzIGFuZCBjcmVhdGUgbmV3IGEgc3ViZGlyZWN0b3J5IHRvIG9yZ2FuaXplIG91ciBvdXRwdXQgZmlndXJlcywgYXMgd2VsbCBhcyBhIHZhcmlhYmxlIHRvIHN0b3JlIGEgZGVzY3JpcHRvciBvZiB0aGUgZGF0YXNldCB3ZSBhcmUgbG9va2luZyBhdCBzbyB3ZSBjYW4gbW9yZSBlYXNpbHkgcmVjeWNsZSBvdXIgcGxvdHRpbmcgZnVuY3Rpb25zLgoKYGBge3IgU2V0dXBkaXJlY3Rvcnl9CnBsb3RQYXRoID0gJy4vREVfb3V0cHV0cy9maWd1cmVzLycKZGlyLmNyZWF0ZShwbG90UGF0aCwgc2hvd1dhcm5pbmdzID0gRkFMU0UpCkNvbXBhcmlzb24gPC0gIkd0eXBlLlR4IiAjIGRlc2NyaXB0b3IgZm9yIHRoZSBkYXRhc2V0IHdlIGFyZSBsb29raW5nIGF0CmBgYAoKIyMgUENBIFBsb3QgaW5pdGlhbGl6YXRpb24KCkJlbG93LCB3ZSB3aWxsIHBsb3QgdGhlIHJsb2cgbm9ybWFsaXplZCBkYXRhIGFuZCBnZW5lcmF0ZSB0aGUgUENBIHByb2plY3Rpb25zIGZvciB0aGUgdG9wIDUwMCB1c2luZyB0aGUgYHBsb3RQQ0FgIGZ1bmN0aW9uIGZyb20gREVTZXEyLCBzcGVjaWZ5aW5nIGBHdHlwZS5UeGAgYXMgdGhlIGNvbmRpdGlvbiBvZiBpbnRlcmVzdCwgYW5kIHZpZXcgdGhlIHNpbXBsZSBwbG90IGdlbmVyYXRlZCBieSB0aGUgZnVuY3Rpb24uCgpgYGB7ciBQQ0FybG9nM30KcC5hbGwgPC0gcGxvdFBDQShybGQsIGludGdyb3VwID0gYygnR3R5cGUuVHgnKSwgbnRvcCA9IDUwMCkKcC5hbGwKYGBgCgpXZSBhbHNvIHNlZSB0aGF0IHNhbXBsZXMgaW4gYm90aCBgY29udHJvbGAgZ3JvdXBzIGFyZSBmYWlybHkgdGlnaHRseSBncm91cGVkLCB3aGlsZSBzYW1wbGVzIHdpdGhpbiBlYWNoIGBUeGAgZ3JvdXAgZG8gbm90IGNsdXN0ZXIgYXMgdGlnaHRseS4gCgoqW1F1ZXN0aW9uXTogV2hhdCBjYW4gd2UgdGFrZSBhd2F5IGZyb20gdGhpcyBQQ0EgcGxvdD8gRG9lcyBpdCBsb29rIGxpa2UgdGhlcmUgYXJlIGJhdGNoIGVmZmVjdHM/IFdvdWxkIHdlIGV4cGVjdCBtb3JlIERFIGdlbmVzIGZvciBjb21wYXJpc29ucyBiZXR3ZWVuIGtvLmNvbnRyb2wgYW5kIHd0LmNvbnRyb2wgc2FtcGxlcyBPUiB3dC5UeCBhbmQga28uVHggc2FtcGxlcz8qCgpOZXh0LCB3ZSdsbCBzYXZlIHRoaXMgcGxvdCB0byBmaWxlLgpgYGB7ciBQQ0FybG9nMX0KcGRmKGZpbGUgPSBwYXN0ZTAocGxvdFBhdGgsICdQQ0FwbG90X3Jsb2dfJywgQ29tcGFyaXNvbiwgJy5wZGYnKSwgb25lZmlsZSA9IFRSVUUpCnAuYWxsCmRldi5vZmYoKQpgYGAKCioqQ2hlY2twb2ludCoqOiAqSWYgZ2VuZXJhdGVkIGFuZCBzYXZlZCB0aGUgYHAuYWxsYCBQQ0EgcGxvdCwgcGxlYXNlIGluZGljYXRlIHdpdGggdGhlIGdyZWVuICdjaGVjaycgYnV0dG9uLiBPdGhlcndpc2UsIHBsZWFzZSB1c2UgIHVzZSB0aGUgcmVkICd4JyBidXR0b24gaW4geW91ciB6b29tIHJlYWN0aW9uIHBhbmVsIHRvIGhhdmUgdGhpcyBzdGVwIHJlcGVhdGVkLioKCiMjIFtCcmVha291dCBFeGVyY2lzZSAxXSAtIEltYWdpbmUgYSBoZWF0bWFwCgpJdCBjYW4gYmUgdXNlZnVsIHRvIHZpc3VhbGl6ZSB0byB2aXN1YWxpemUgaG93IG91ciBzYW1wbGVzIG9yZ2FuaXplIGFsb25nIHdpdGggdGhlIGV4cHJlc3Npb24gcGF0dGVybiBvZiBpbmRpdmlkdWFsIGdlbmVzLiBXZSB3aWxsIGNyZWF0ZSBhIGhlYXRtYXAgb2YgdGhlIHRvcCBtb3N0IHZhcmlhYmxlIGdlbmVzIHVzaW5nIHRoZSBgcGhlYXRtYXBgIGZ1bmN0aW9uLgoKQmVmb3JlIHRoZSBleGVyY2lzZSwgbGV0J3MgbG9vayBhdCB0aGUgaGVscCBwYWdlIHVzaW5nIHRoZSBgP2Agc3ltYm9sLgpgYGB7ciBwaGVhdERvYywgZXZhbD1GQUxTRX0KP3BoZWF0bWFwCmBgYAoKSWYgd2Ugc2Nyb2xsIGRvd24gdG8gdGhlIGV4YW1wbGVzLCB3ZSBjYW4gdGVzdCBzb21lIG9mIHRoZW0gb3V0OgpgYGB7ciB0ZXN0cGhlYXR9CiMgY29waWVkIGZyb20gdGhlIHBoZWF0bWFwIGRvY3VtZW50YXRpb24KdGVzdCA9IG1hdHJpeChybm9ybSgyMDApLCAyMCwgMTApCnRlc3RbMToxMCwgc2VxKDEsIDEwLCAyKV0gPSB0ZXN0WzE6MTAsIHNlcSgxLCAxMCwgMildICsgMwp0ZXN0WzExOjIwLCBzZXEoMiwgMTAsIDIpXSA9IHRlc3RbMTE6MjAsIHNlcSgyLCAxMCwgMildICsgMgp0ZXN0WzE1OjIwLCBzZXEoMiwgMTAsIDIpXSA9IHRlc3RbMTU6MjAsIHNlcSgyLCAxMCwgMildICsgNApjb2xuYW1lcyh0ZXN0KSA9IHBhc3RlKCJUZXN0IiwgMToxMCwgc2VwID0gIiIpCnJvd25hbWVzKHRlc3QpID0gcGFzdGUoIkdlbmUiLCAxOjIwLCBzZXAgPSAiIikKCgpwaGVhdG1hcCh0ZXN0KQpgYGAKCk5vdyB0aGF0IHdlJ3ZlIGdvdHRlbiBhIHNlbnNlIG9mIHdoYXQgYHBoZWF0bWFwYCBjYW4gZ2VuZXJhdGUsIGxldCcgbmF2aWdhdGUgdG8gb3VyIGZpcnN0IFticmVha291dCBleGVyY2lzZV0oaHR0cHM6Ly91bWljaC1icmNmLWJpb2luZi5naXRodWIuaW8vMjAyMi0wMy0xNC11bWljaC1ybmFzZXEtZGVteXN0aWZpZWQvaHRtbC9Nb2R1bGUwOWFfYnJlYWtvdXQuaHRtbCkKPGJyPgo8YnI+CgojIyBUcmFuc2ZlcnJpbmcgb3VyIHBsb3QgdG8gb3VyIGxvY2FsIGNvbXB1dGVyCgpSc3R1ZGlvIHNlcnZlciBhbGxvd3MgdXMgdG8gZG93bmxvYWQgZmlsZXMgdGhyb3VnaCB0aGUgaW50ZXJhY3RpdmUgZmlsZSBwYW5lbCBvbiB0aGUgcmlnaHQgc2lkZS4gSWYgd2UgbmF2aWdhdGUgaW50byB0aGUgcGxvdCBzdWJmb2xkZXIgYW5kIHNlbGVjdCB0aGUgYFBDQXBsb3RfcmxvZ19HdHlwZS5UeC5wZGZgIG9yIHRoZSAgZmlsZSwgd2UgY2FuIHRoZW4gY2xpY2sgdGhlIGJsdWUgZ2VhciBzeW1ib2wgbGFiZWxlZCBgTW9yZWAgYW5kIHNlbGVjdCBgRXhwb3J0Li4uYC4gV2Ugc2hvdWxkIHNlZSBhIHByb21wdCByZWdhcmRpbmcgdGhlIG5hbWUgb2YgdGhlIGZpbGUgYW5kIGlmIHdlIGNsaWNrIGBEb3dubG9hZGAgdGhlIGZpbGUgc2hvdWxkIHNob3cgdXAgaW4geW91ciBsb2NhbCAiRG93bmxvYWRzIiBmb2xkZXIuCgojIyMgT3B0aW9uYWwgLSBTY3JlZSBQbG90IGV4YW1wbGUgCgo8ZGV0YWlscz4KICAgIDxzdW1tYXJ5PipCb251czogQ2xpY2sgZm9yIGV4YW1wbGUgY29kZSBmb3IgZ2VuZXJhdGluZyBhIFNjcmVlUGxvdCo8L3N1bW1hcnk+CiAgICAgQSBzY3JlZXBsb3QgaXMgYSB3YXkgdG8gdmlzdWFsaXplIHRoZSB2YXJpYW5jZSBleHBsYWluZWQgYnkgYWxsIHByaW5jaXBsZSBjb21wb25lbnRzLgogICAgIFRvIGdlbmVyYXRlIGEgc2NyZWUgcGxvdCwgdGhlIFBDQSByZXN1bHRzIG5lZWQgdG8gYmUgdXNlZCBpbmRlcGVuZGVudGx5IG9mIHBsb3R0aW5nLCBzdWNoIGFzIGRlc2NyaWJlZCBieSBbdGhpcyBzdGF0cXVlc3QgcG9zdF0oaHR0cHM6Ly9zdGF0cXVlc3Qub3JnL3BjYS1jbGVhcmx5LWV4cGxhaW5lZC8pIGFuZCByZXBsaWNhdGVkIGJlbG93LgpgYGB7ciBTY3JlZVBsb3R9CiMgZ2VuZXJhdGUgUENBIGxvYWRpbmdzCnBjYSA8LSBwcmNvbXAodChhc3NheShybGQpKSwgc2NhbGU9VFJVRSkKCiMjIGdldCB0aGUgc2NyZWUgaW5mb3JtYXRpb24KcGNhLnZhciA8LSBwY2Ekc2Rldl4yCnNjcmVlIDwtIHBjYS52YXIvc3VtKHBjYS52YXIpCnAgPC0gYmFycGxvdCgoc2NyZWVbMToxMF0qMTAwKSwgbWFpbj0iU2NyZWUgUGxvdCIsIHhsYWI9IlByaW5jaXBhbCBDb21wb25lbnQiLCB5bGFiPSJQZXJjZW50IFZhcmlhdGlvbiIpCnByaW50KHApCmBgYAogICAgV2UgY2FuIHNlZSB0aGF0IHRoZSBtYWpvcml0eSAofjY1JSkgb2YgdGhlIHZhcmlhbmNlIGFjcm9zcyBvdXIgc2FtcGxlcyBpcyBleHBsYWluZWQgYnkgdGhlIGZpcnN0IHRocmVlIHByaW5jaXBsZSBjb21wb25lbnRzLCBnaXZpbmcgdXMgc29tZSBhZGRpdGlvbmFsIGNvbmZpZGVuY2UgcmVnYXJkaW5nIHRoZSBxdWFsaXR5IG9mIG91ciBkYXRhLgogICAgSW4gdGhlc2Ugc2NyZWUgcGxvdCBleGFtcGxlcyBmcm9tIEJpb1R1cmluZywgdGhlIHBsb3Qgb24gdGhlIGxlZnQgZml0cyB3aGF0IHdlIHdvdWxkIGV4cGVjdCBmb3IgYSBkYXRhc2V0IHdpdGggaGlnaCBzaWduYWwgZnJvbSB0aGUgZXhwZXJpbWVudGFsIHRyZWF0bWVudCwgd2hlcmUgdGhlIG1ham9yaXR5IG9mIHRoZSB2YXJpYW5jZSBpcyBleHBsYWluZWQgYnkgdGhlIGZpcnN0IGZldyBwcmluY2lwbGUgY29tcG9uZW50cy4gVGhlIHBsb3Qgb24gdGhlIHJpZ2h0IGlsbHVzdHJhdGVzIGEgc2NlbmFyaW8gd2hlcmUgdGhlIHZhcmlhbmNlIGlzIGRpc3RyaWJ1dGVkIGFjcm9zcyBtYW55IGNvbXBvbmVudHMsIHdoaWNoIGNvdWxkIGJlIGR1ZSB0byBsb3cgc2lnbmFsIGZyb20gdGhlIGV4cGVyaW1lbnRhbCB0cmVhdG1lbnQsIGNvbXBsZXggZXhwZXJpbWVudGFsIGRlc2lnbiwgb3IgY29uZm91bmRpbmcgZmFjdG9ycy4KaW1hZ2U6ICFbXSguL2ltYWdlcy9wcm9wb3J0aW9uLW9mLXZhcmlhbmNlLWJsb2ctaG9yei5qcGcpCjwvZGV0YWlscz4KCgo8YnI+CgojIFN1bW1hcnkKCkluIHRoaXMgc2VjdGlvbiwgd2U6ICAgIAoKKiBEaXNjdXNzZWQgdmFyaWFuY2Ugd2l0aGluIHRyZWF0bWVudCBncm91cHMgICAgIAoqIERpc2N1c3NlZCB0ZWNobmljYWwgYXJ0aWZhY3RzLCBpbmNsdWRpbmcgYmF0Y2hlcwoqIExlYXJuZWQgdG8gZ2VuZXJhdGUgUENBIHBsb3RzCgoKCi0tLQoKCiMgU291cmNlcyBVc2VkICAgIAoqIEhCQyBRQyB0dXRvcmlhbDogaHR0cHM6Ly9oYmN0cmFpbmluZy5naXRodWIuaW8vREdFX3dvcmtzaG9wL2xlc3NvbnMvMDNfREdFX1FDX2FuYWx5c2lzLmh0bWwgICAgCiogRGV0YWlsZWQgSGVhdG1hcCB0dXRvcmlhbCBmcm9tIEdhbGF4eTogaHR0cHM6Ly90cmFpbmluZy5nYWxheHlwcm9qZWN0Lm9yZy90cmFpbmluZy1tYXRlcmlhbC90b3BpY3MvdHJhbnNjcmlwdG9taWNzL3R1dG9yaWFscy9ybmEtc2VxLXZpei13aXRoLWhlYXRtYXAyL3R1dG9yaWFsLmh0bWwgICAKKiBQQ0EgT3ZlcnZpZXc6IGh0dHBzOi8vYmxvZy5iaW90dXJpbmcuY29tLzIwMTgvMDYvMTQvcHJpbmNpcGFsLWNvbXBvbmVudC1hbmFseXNpcy1leHBsYWluZWQtc2ltcGx5LyAgICAgCgoKCmBgYHtyIFdyaXRlT3V0LlJEYXRhLCBldmFsPUZBTFNFLCBlY2hvPUZBTFNFLCBtZXNzYWdlPUZBTFNFLCB3YXJuaW5nPUZBTFNFfQojSGlkZGVuIGNvZGUgYmxvY2sgdG8gd3JpdGUgb3V0IGRhdGEgZm9yIGtuaXR0aW5nCnNhdmUuaW1hZ2UoZmlsZSA9ICJyZGF0YS9SdW5uaW5nRGF0YS5SRGF0YSIpCmBgYAoKCgotLS0KCgpUaGVzZSBtYXRlcmlhbHMgaGF2ZSBiZWVuIGFkYXB0ZWQgYW5kIGV4dGVuZGVkIGZyb20gbWF0ZXJpYWxzIGxpc3RlZCBhYm92ZS4gVGhlc2UgYXJlIG9wZW4gYWNjZXNzIG1hdGVyaWFscyBkaXN0cmlidXRlZCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIFtDcmVhdGl2ZSBDb21tb25zIEF0dHJpYnV0aW9uIGxpY2Vuc2UgKENDIEJZIDQuMCldKGh0dHA6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LzQuMC8pLCB3aGljaCBwZXJtaXRzIHVucmVzdHJpY3RlZCB1c2UsIGRpc3RyaWJ1dGlvbiwgYW5kIHJlcHJvZHVjdGlvbiBpbiBhbnkgbWVkaXVtLCBwcm92aWRlZCB0aGUgb3JpZ2luYWwgYXV0aG9yIGFuZCBzb3VyY2UgYXJlIGNyZWRpdGVkLgo=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiTW9kdWxlIDA5OiBTYW1wbGUgVmlzdWFsaXphdGlvbnMgZm9yIFF1YWxpdHkgQ29udHJvbCIKYXV0aG9yOiAiVU0gQmlvaW5mb3JtYXRpY3MgQ29yZSIKZGF0ZTogImByIFN5cy5EYXRlKClgIgpvdXRwdXQ6CiAgICAgICAgaHRtbF9kb2N1bWVudDoKICAgICAgICAgICAgaW5jbHVkZXM6CiAgICAgICAgICAgICAgICBpbl9oZWFkZXI6IGhlYWRlci5odG1sCiAgICAgICAgICAgIHRoZW1lOiBwYXBlcgogICAgICAgICAgICB0b2M6IHRydWUKICAgICAgICAgICAgdG9jX2RlcHRoOiA0CiAgICAgICAgICAgIHRvY19mbG9hdDogdHJ1ZQogICAgICAgICAgICBudW1iZXJfc2VjdGlvbnM6IGZhbHNlCiAgICAgICAgICAgIGZpZ19jYXB0aW9uOiB0cnVlCiAgICAgICAgICAgIG1hcmtkb3duOiBHRk0KICAgICAgICAgICAgY29kZV9kb3dubG9hZDogdHJ1ZQotLS0KCjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+CmJvZHksIHRkIHsKICAgZm9udC1zaXplOiAxOHB4Owp9CmNvZGUucnsKICBmb250LXNpemU6IDEycHg7Cn0KcHJlIHsKICBmb250LXNpemU6IDEycHgKfQo8L3N0eWxlPgoKYGBge3IsIGluY2x1ZGUgPSBGQUxTRX0Kc291cmNlKCIuLi9iaW4vY2h1bmstb3B0aW9ucy5SIikKa25pdHJfZmlnX3BhdGgoIjA5LSIpCmBgYAoKPiAjIE9iamVjdGl2ZXMgey51bmxpc3RlZCAudW5udW1iZXJlZH0KPiAqIEdlbmVyYXRlIGNvbW1vbiBRQyB2aXN1YWxpemF0aW9ucwo+ICogVW5kZXJzdGFuZCBob3cgdG8gaW50ZXJwcmV0IFFDIHZpc3VhbGl6YXRpb25zCj4gKiBVbmRlcnN0YW5kIHdoZW4gdG8gcmV2aXNlIHRoZSBtb2RlbCB1c2VkIGluIHRoZSBERVNlcTIgaW5pdGlhbGl6YXRpb24KPiAqIFVuZGVyc3RhbmQgdGhlIHBpdGZhbGxzIG9mIHBvc3QtaG9jIGFuYWx5c2lzCj4gKiBEZXNjcmliZSB0aGUgY2F1c2VzIGFuZCBpbXBsaWNhdGlvbnMgb2YgYmF0Y2ggZWZmZWN0IG9yIG90aGVyIFFDIGlzc3VlcyBpbiBhbiBSTkEtU2VxIGV4cGVyaW1lbnQKCgpgYGB7ciBNb2R1bGVzLCBldmFsPVRSVUUsIGVjaG89RkFMU0UsIG1lc3NhZ2U9RkFMU0UsIHdhcm5pbmc9RkFMU0V9CmxpYnJhcnkoREVTZXEyKQpsaWJyYXJ5KGdncGxvdDIpCmxpYnJhcnkodGlkeXIpCmxpYnJhcnkoZHBseXIpCmxpYnJhcnkobWF0cml4U3RhdHMpCmxpYnJhcnkoZ2dyZXBlbCkKbGlicmFyeShwaGVhdG1hcCkKbGlicmFyeShSQ29sb3JCcmV3ZXIpCmxvYWQoInJkYXRhL1J1bm5pbmdEYXRhLlJEYXRhIikKYGBgCgoKIyBEaWZmZXJlbnRpYWwgRXhwcmVzc2lvbiBXb3JrZmxvdwoKUHJpb3IgdG8gdGVzdGluZyBmb3IgZGlmZmVyZW50aWFsIGV4cHJlc3Npb24gYmV0d2VlbiBvdXIgY29tcGFyaXNvbnMgb2YgaW50ZXJlc3QsIHdlJ2xsIGZpcnN0IGdlbmVyYXRlIHBsb3RzIHRoYXQgd2lsbCBhc3Nlc3MgaG93IHdlbGwgb3VyIHNhbXBsZXMgbWF0Y2ggdXAgd2l0aCBvdXIgZXhwZWN0YXRpb25zIChiYXNlZCBvbiB0aGVpciB0cmVhdG1lbnQgZ3JvdXBzKSBhbmQgd2hhdCB3ZSBtaWdodCBleHBlY3QgdG8gc2VlIGZyb20gb3VyIGRpZmZlcmVudGlhbCBleHByZXNzaW9uIGNvbXBhcmlzb25zLgoKIVtdKC4vaW1hZ2VzL3dheWZpbmRlci93YXlmaW5kZXItMDkucG5nKXt3aWR0aD03NSV9CgotLS0KCiMgU2FtcGxlIFZpc3VhbGl6YXRvbnMgZm9yIFF1YWxpdHkgQ29udHJvbAoKV2UgaGF2ZSBkaXNjdXNzZWQgc29tZSBhc3BlY3RzIG9mIHF1YWxpdHkgY29udHJvbCBhc3Nlc3NtZW50IGF0IHRoZSBzZXF1ZW5jaW5nIGRhdGEgbGV2ZWwuIFRvZGF5IHdlIHdpbGwgb3V0bGluZSBzYW1wbGUtbGV2ZWwgYW5kIGdlbmUtbGV2ZWwgcXVhbGl0eSBjb250cm9sIGFzc2Vzc21lbnRzIHRvIGRldGVybWluZSB3aGF0IHdlIHNob3VsZCBleHBlY3QgZm9yIG91ciBkaWZmZXJlbnRpYWwgZXhwcmVzc2lvbiBjb21wYXJpc29ucy4KClRvIGRvIHRoaXMsIHdlIHdpbGwgZmlyc3QgYXNzZXNzIHRoZSBzaW1pbGFyaXR5IG9mIG91ciBzYW1wbGVzIGJ5IHVzaW5nIHByaW5jaXBhbCBjb21wb25lbnQgYW5hbHlzaXMgKFBDQSkuIFRoaXMgd2lsbCBhbGxvdyB1cyB0byBkZXRlcm1pbmUgaG93IHdlbGwgcGF0dGVybnMgaW4gdGhlIGRhdGEgZml0cyBvdXIgZXhwZWN0YXRpb25zIGZyb20gdGhlIGV4cGVyaW1lbnRzIGRlc2lnbiBhbmQgcG9zc2libGUgc291cmNlcyBvZiB2YXJpYXRpb24uCgpPdGhlciBjb21tb24gdmlzdWFsaXphdGlvbnMgdGhhdCB3ZSBnZW5lcmF0ZSBmb3Igb3VyIGFuYWx5c2VzIGluY2x1ZGUgZXhwcmVzc2lvbiBoZWF0bWFwcywgc2FtcGxlIGNvcnJlbGF0aW9uIGhlYXRtYXBzLCBhbmQgYm94cGxvdHMgb2YgcmF3IGFuZC9vciBub3JtYWxpemVkIGNvdW50cywgdGhlIGNvZGUgZm9yIHdoaWNoIChkdWUgdG8gdGltZSByZXN0cmljdGlvbnMpIGNhbiBiZSBmb3VuZCBhcyBib251cyBjb250ZW50IHRocm91Z2ggdGhlIG1hdGVyaWFscyBmb3IgdG9kYXkgYW5kIGluIHRoZSBib251cyBjb250ZW50IG1vZHVsZS4KCiMjIFByaW5jaXBsZSBDb21wb25lbnQgQW5hbHlzaXMgKFBDQSkgUGxvdHMKCkEgY29tbW9uIGFuZCB2ZXJ5IHVzZWZ1bCBwbG90IGZvciBldmFsdWF0aW5nIGhvdyB3ZWxsIG91ciBzYW1wbGVzIGNsdXN0ZXIgYnkgdHJlYXRtZW50IGdyb3VwcyBhcmUgUHJpbmNpcGxlIENvbXBvbmVudCBBbmFseXNpcyAoUENBKSBwbG90cy4gUENBIGlzIHVzZWQgdG8gZW1waGFzaXplIHZhcmlhdGlvbiBhbmQgYnJpbmcgb3V0IHBhdHRlcm5zIGluIGxhcmdlIGRhdGFzZXRzIGJ5IHVzaW5nIGRpbWVuc2lvbmFsaXR5IHJlZHV0aW9uLgoKVGhpcyBpbWFnZSBmcm9tClthIGhlbHBmdWwgc3RlcCBieSBzdGVwIGV4cGxhaW5hdGlvbiBvZiBQQ0FdKGh0dHBzOi8vYmxvZy5iaW90dXJpbmcuY29tLzIwMTgvMDYvMTQvcHJpbmNpcGFsLWNvbXBvbmVudC1hbmFseXNpcy1leHBsYWluZWQtc2ltcGx5LykgaGVscHMgdG8gaWxsdXN0cmF0ZSB0aGUgcHJpbmNpcGxlIGNvbXBvbmVudCBwcm9qZWN0aW9ucyBmb3IgdHdvIGdlbmVzIG1lYXN1cmVkIGluIGFwcHJveGltYXRlbHkgNjAgbW91c2Ugc2FtcGxlcy4gR2VuZXJhbGx5LCB0aGlzIHByb2Nlc3MgaXMgcmVwZWF0ZWQgYW5kIGFmdGVyIGVhY2ggZ2VuZSdzIGNvbnRyaWJ1dGlvbiB0byBhIHByaW5jaXBsZSBjb21wb25lbnQgb3Igd2VpZ2h0IGlzIGRldGVybWluZWQsIHRoZSBleHByZXNzaW9uIGFuZCB3ZWlnaHQgYXJlIHN1bW1lZCBhY3Jvc3MgZ2VuZXMgZm9yIGVhY2ggc2FtcGxlIHRvIGNhbGN1bGF0ZSBhIHZhbHVlIGZvciBlYWNoIHByaW5jaXBsZSBjb21wb25lbnQuCgoKIVtdKC4vaW1hZ2VzL0Jsb2dfcGNhXzZiLnBuZykKCj4qKk5vdGUqKjogQSBtb3JlIGRldGFpbGVkIG92ZXJ2aWV3IG9mIHRoZSBQQ0EgcHJvY2VkdXJlIGlzIG91dGxpbmVkIGluIFthIEhhcnZhcmQgQ2hhbiBCaW9pbmZvcm1hdGljIENvcmUgdHJhaW5pbmcgbW9kdWxlXShodHRwczovL2hiY3RyYWluaW5nLmdpdGh1Yi5pby9ER0Vfd29ya3Nob3AvbGVzc29ucy9wcmluY2lwYWxfY29tcG9uZW50X2FuYWx5c2lzLmh0bWwpIGFuZCBpcyBiYXNlZCBvbiBhIG1vcmUgdGhvcm91Z2ggZGVzY3JpcHRpb24gcHJlc2VudGVkIGluIGEgW1N0YXRRdWVzdOKAmXMgdmlkZW9dKGh0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9X1VWSG5lQlVCVzApLiBBZGRpdGlvbmFsbHksIHRoaXMgW1Rvd2FyZHNEYXRhU2NpZW5jZSBibG9nIHBvc3RdKGh0dHBzOi8vdG93YXJkc2RhdGFzY2llbmNlLmNvbS9wcmluY2lwYWwtY29tcG9uZW50LWFuYWx5c2lzLTNjMzlmYmY1Y2I5ZCkgZ29lcyB0aHJvdWdoIHRoZSBtYXRoIGJlaGluZCBQQ0FzLgoKIyMjIEludGVycHJldGluZyBQQ0EgcGxvdHMKCkZvciBtb3N0IGJ1bGsgUk5BLXNlcSBleHBlcmltZW50cywgd2UgZXhwZWN0IHRoZSBtYWpvcml0eSBvZiB0aGUgdG90YWwgdmFyaWFuY2UgdG8gYmUgZXhwbGFpbmVkIGJ5IHRoZSBmaXJzdCB0d28gb3IgdGhyZWUgcHJpbmNpcGxlIGNvbXBvbmVudHMuCgohW10oaW1hZ2VzL1BDQXBsb3RfRmFuY3lfcmxvZ19rby5UeC5wbmcpe3dpZHRoPTc1JX0KCkluIHRoaXMgcGxvdCwgd2hpY2ggaXMgc2ltaWxhciB0byB3aGF0IHdlJ2xsIGdlbmVyYXRlIGJlbG93IGZvciBvdXIgZGF0YSwgd2hlcmUgcHJpbmNpcGxlIGNvbXBvbmVudCAxIChQQzEpIGV4cGxhaW5zIH44MCUgb2YgdGhlIHZhcmlhbmNlIGluIG91ciBkYXRhIHdoaWxlIHByaW5jaXBsZSBjb21wb25lbnQgMiAoUEMyKSBleHBsYWlucyB+MTIlIG9mIHRoZSB2YXJpYW5jZSwgd2hpY2ggZml0cyB0aGF0IGV4cGVjdGlvbnMuCgoqW1F1ZXN0aW9uXTogSG93IG1pZ2h0IHdlIGludGVycHJldCB0aGUgdmFyaWFuY2UgZXhwbGFpbmVkIGJ5IGVhY2ggcHJpbmNpcGxlIGNvbXBvbmVudCBpbiB0aGUgY29udGV4dCBvZiB0aGUgbGFiZWxlZCBzYW1wbGUgcG9pbnRzPyoKCgpGb3IgbW9yZSBpbmZvcm1hdGlvbiwgdGhpcyBbaGVscGZ1bCBvdmVydmlldyBvZiBQQ0EgYmFzaWNzXShodHRwczovL2Jsb2cuYmlvdHVyaW5nLmNvbS8yMDE4LzA2LzE0L3ByaW5jaXBhbC1jb21wb25lbnQtYW5hbHlzaXMtZXhwbGFpbmVkLXNpbXBseS8pIHdhbGtzIHRocm91Z2ggYm90aCB0aGUgZ2VuZXJhdGlvbiBhbmQgaW50ZXJwcmV0YXRpb24gb2YgUENBIHBsb3RzLgoKIyMjIEV2YWx1YXRpbmcgYmF0Y2ggZWZmZWN0cyBvciBjb25mb3VuZGVycwoKUENBIHBsb3RzIGFyZSBhbHNvIHVzZWZ1bCBmb3IgZXZhbHVhdGluZyB0aGUgaW1wYWN0IG9mIGZhY3RvcnMgb3RoZXIgdGhhbiB0aGUgZXhwZXJpbWVudGFsIHRyZWF0bWVudCBvciBncm91cC4KCkF0IHRpbWVzLCBiYXRjaCBlZmZlY3RzIGNhbiBiZSBxdWl0ZSBvYnZpb3VzLCBzdWNoIGFzIHRoaXMgZXhhbXBsZSBmcm9tIHRoZSBbREVTZXEyIHZpZ25ldHRlXShodHRwOi8vYmlvY29uZHVjdG9yLm9yZy9wYWNrYWdlcy9kZXZlbC9iaW9jL3ZpZ25ldHRlcy9ERVNlcTIvaW5zdC9kb2MvREVTZXEyLmh0bWwpLCB3aGVyZSBzYW1wbGVzIHdpdGhpbiBlYWNoIHRyZWF0bWVudCBncm91cCBsb29rIHN0YWdnZXJlZCBpbnRvIHR3byBzdWJncm91cHMuCgohW10oLi9pbWFnZXMvUENBMV9ERVNlcTJWaWduZXR0ZS5wbmcpCgpJZiB3ZSBjb2xvciBvbmx5IGJ5IHNlcXVlbmNpbmcgcnVuIHR5cGUgKHBhaXJlZC1lbmQgdnMuIHNpbmdsZS1lbmQpLCB3ZSBzZWUgdGhhdCBQQzIgKDI5JSBvZiB2YXJpYW5jZSkgaXMgcHJpbWFyaWx5IGV4cGxhaW5lZCBieSB0aGlzIHRlY2huaWNhbCBjb3ZhcmlhdGUuCgohW10oLi9pbWFnZXMvUENBMl9ERVNlcTJWaWduZXR0ZS5wbmcpCgpIb3dldmVyLCB0aGUgc2FtcGxlcyBhcmUgY2xlYXJseSBzZXBlcmF0ZWQgYnkgZXhwZXJpbWVudGFsIGNvbmRpdGlvbiBvbiBQQzEgKiphbmQqKiBzaW5jZSB3ZSBoYXZlIG5vbi1jb25mb3VuZGVkIGJhdGNoZXMsIGlmIHdlIHNhdyB0aGlzIHBhdHRlcm4gaW4gb3VyIGRhdGEgd2UgY291bGQgaW5jb3Jwb3JhdGUgdGhlIHRlY2huaWNhbCBjb3ZhcmlhdGUgaW50byBvdXIgbW9kZWwgZGVzaWduLCBzdWNoIGFzIG91dGxpbmVkIGluIHRoZSBbREVTZXEyIHZpZ25ldHRlXShodHRwOi8vYmlvY29uZHVjdG9yLm9yZy9wYWNrYWdlcy9kZXZlbC9iaW9jL3ZpZ25ldHRlcy9ERVNlcTIvaW5zdC9kb2MvREVTZXEyLmh0bWwjbXVsdGktZmFjdG9yLWRlc2lnbnMpLgoKPGRldGFpbHM+CiAgICA8c3VtbWFyeT4qQ2xpY2sgZm9yIGNvbXBsZXggZGVzaWduIGRpc2N1c3Npb24qPC9zdW1tYXJ5PgogICAgSW4gZXhwZXJpbWVudHMgd2l0aCBtb3JlIGNvbXBsZXggZGVzaWducywgc3VjaCBhcyB3aGVuIHRoZXJlIGFyZSBpbnRlcmVzZWN0aW5nL211bHRpcGxlIHRyZWF0bWVudCBjb25kaXRpb25zLCBpdCBjYW4gYmUgbGVzcyBjbGVhciB3aGF0IGNvdmFyaWFudHMgYXJlIGluZmx1ZW5jaW5nIGV4cHJlc3Npb24sIHN1Y2ggYXMgaWxsdXN0cmF0ZWQgZnJvbSBbdGhpcyBkb2N1bWVuYXRpb24gZm9yIGEgbWljcm9hcnJheSBhbmFseXNpcyB0b29sXShodHRwOi8vd3d3Lm1vbG1pbmUuY29tL21hZ21hL2dsb2JhbF9hbmFseXNpcy9iYXRjaF9lZmZlY3QuaHRtbCkuCiAgICBGcm9tIHRoZSBQQ0EgbGFiZWxlZCBieSBleHBlcmltZW50YWwgdHJlYXRtZW50LCB3ZSBzZWUgdGhhdCBzYW1wbGVzIGZyb20gdGhlIHRyZWF0bWVudCBncm91cCBkbyBub3QgY2x1c3RlciB0b2dldGhlciBhbmQgdGhhdCB0aGVyZSBpcyBoaWdoIHZhcmlhbmNlIGFjcm9zcyBhbGwgdHJlYXRtZW50IGdyb3Vwcy4KICAgICFbXSguL2ltYWdlcy9iYXRjaF9leDFiLmpwZykKICAgIEhvd2V2ZXIsIHdoZW4gdGhlIHBsb3QgaXMgY29sb3IgY29kZWQgYnkgdGhlIHRlY2huaWNhbCBiYXRjaGVzIG9mIHByb2JlIGxhYmVsaW5nLCB3ZSBzZWUgdGhhdCB0aGUgcGF0dGVybnMgaW4gdGhlIGRhdGEgYXJlIGJldHRlciBleHBsYWluZWQgYnkgYmF0Y2ggdGhhbiB0aGUgZXhwZXJpbWVudGFsIGNvbmRpdGlvbnMuCiAgICAhW10oLi9pbWFnZXMvYmF0Y2hfZXgxYy5qcGcpCjwvZGV0YWlscz4KCgojIyBQbG90IFNldHVwCgpXZSd2ZSBhbHJlYWR5IGxvYWRlZCB0aGUgbGlicmFyaWVzIHdlIG5lZWQgZm9yIHRoaXMgbW9kdWxlLiBXZSBoYXZlIGFsc28gdGhvdWdodCBhaGVhZCBpbiB0aGUgcHJldmlvdXMgbW9kdWxlIGFuZCBjcmVhdGVkIHRoZSBgb3V0cHV0cy9maWd1cmVzYCBhbmQgYG91dHB1dHMvdGFibGVzYCBkaXJlY3Rvcmllcy4KCiMjIFBDQSBQbG90IGluaXRpYWxpemF0aW9uCgpCZWxvdywgd2Ugd2lsbCBwbG90IHRoZSBybG9nIG5vcm1hbGl6ZWQgZGF0YSBhbmQgZ2VuZXJhdGUgdGhlIFBDQSBwcm9qZWN0aW9ucyBmb3IgdGhlIHRvcCA1MDAgdXNpbmcgdGhlIGBwbG90UENBYCBmdW5jdGlvbiBmcm9tIERFU2VxMiwgc3BlY2lmeWluZyBgY29uZGl0aW9uYCBhcyB0aGUgY29uZGl0aW9uIG9mIGludGVyZXN0LCBhbmQgdmlldyB0aGUgc2ltcGxlIHBsb3QgZ2VuZXJhdGVkIGJ5IHRoZSBmdW5jdGlvbi4KCmBgYHtyIFBDQXJsb2czfQpwY2FfcGxvdCA9IHBsb3RQQ0EocmxkLCBpbnRncm91cCA9IGMoJ2NvbmRpdGlvbicpLCBudG9wID0gNTAwKQpwY2FfcGxvdApgYGAKClRoZSBzYW1wbGVzIGRvbid0IGFwcGVhciB0byBjbHVzdGVyIHRvbyB0aWdodGx5IG9uIHRoZWlyIGBjb25kaXRpb25gLCBidXQgd2UgZG8gb2JzZXJ2ZSB0aGF0IHRoZXkgZG8gc2VwYXJhdGUgaW4gUEMyLiBXaXRoIHJlYWwgZGF0YSwgaXQgaXMgb2Z0ZW4gdGhlIGNhc2UgdGhhdCBkYXRhIGRvZXNuJ3QgY2x1c3RlciBhcyB3ZWxsIGFzIHlvdSdkIGV4cGVjdCwgb3IgdGhhdCB0aGUgY292YXJpYXRlIG9mIGludGVyZXN0IGlzIG5vdCBhc3NvY2lhdGVkIHdpdGggdGhlIGZpcnN0IChvciBzb21ldGltZXMgc2Vjb25kIG9yIHRoaXJkKSBwcmluY2lwYWwgY29tcG9uZW50LiBUaGF0IGRvZXNuJ3QgbmVjZXNzYXJpbHkgbWVhbiB0aGUgZXhwZXJpbWVudCBpcyBhIGZhaWx1cmUsIGJ1dCBpdCBkb2VzIHJhaXNlIHF1ZXN0aW9ucyBzdWNoIGFzICJXaGF0IGlzIGFzc29jaWF0ZWQgd2l0aCBQQzE/IiBTb21ldGltZXMgd2UgY2FuJ3QgYW5zd2VyIGEgcXVlc3Rpb24gbGlrZSB0aGlzIGlmIHdlIGRvbid0IGhhdmUgYW55IHNhbXBsZSBtZWFzdXJlIHRvIGNvbG9yIG9uIGluIHRoZSBQQ0EuCgpOZXh0LCBsZXQncyBzYXZlIHRoaXMgcGxvdCBhcyBhIGZpbGUgaW4gb3VyIGBvdXRwdXRzL2ZpZ3VyZXNgIGZvbGRlci4KCmBgYHtyIHNhdmVfcGNhX2Jhc2UsIGV2YWwgPSBGQUxTRX0KcGRmKGZpbGUgPSBmaWxlLnBhdGgoJ291dHB1dHMnLCAnZmlndXJlcycsICdQQ0FfcmxvZ19jb25kaXRpb24ucGRmJykpCnBjYV9wbG90CmRldi5vZmYoKQpgYGAKCkFsdGVybmF0aXZlbHksIHNpbmNlIGBwY2FfcGxvdGAgaXMgYSBgZ2dwbG90YCwgd2UgY2FuIGFsc28gdXNlIGBnZ3NhdmUoKWAuCgpgYGB7ciBzYXZlX3BjYV9nZ3NhdmUsIGV2YWwgPSBGQUxTRX0KZ2dzYXZlKAogICAgZmlsZW5hbWUgPSBmaWxlLnBhdGgoJ291dHB1dHMnLCAnZmlndXJlcycsICdQQ0FfcmxvZ19jb25kaXRpb24ucGRmJyksCiAgICBwbG90ID0gcGNhX3Bsb3QsCiAgICB3aWR0aCA9IDYsIGhlaWdodCA9IDYsIHVuaXRzID0gJ2luJykKYGBgCgo+ICMgRXhlcmNpc2UgLSBDdXN0b21pemUgdGhlIFBDQSB7LnVubGlzdGVkIC51bm51bWJlcmVkfQo+Cj4gSXQgdHVybnMgb3V0IHRoYXQgYHBjYV9wbG90YCBvYmplY3QgaXMgYSBgZ2dwbG90YC4gWW91IGNhbiBzZWUgdGhpcyB3aXRoIGBjbGFzcyhwY2FfcGxvdClgLiBUaGlzIG1lYW5zIHdlIGNhbiB1c2Ugd2hhdCB3ZSBsZWFybmVkIGF0IHRoZSBlbmQgb2YgdGhlIENvbXB1dGF0aW9uYWwgRm91bmRhdGlvbnMgV29ya3Nob3AgdG8gbW9kaWZ5IHRoaXMgcGxvdCBhcyB3ZSBtaWdodCBzZWUgbmVjZXNzYXJ5LiBUcnkgZG9pbmcgdGhlIGZvbGxvd2luZyB0byB0aGUgYHBjYV9wbG90YDoKPgo+IDEuIEFkZCBhIHRpdGxlIGFuZCBzdWJ0aXRsZSB0byB0aGUgcGxvdCB1c2luZyB0aGUgYGxhYnMoKWAgZnVuY3Rpb24uCj4gMi4gQ2hhbmdlIHRoZSB0aGVtZSBvZiB0aGUgcGxvdCB3aXRoIGB0aGVtZV9idygpYC4KPiAzLiBDaGFsbGVuZ2U6IENoYW5nZSB0aGUgbGVnZW5kIHRpdGxlIHRvICJDb25kaXRpb24iLiBIaW50LCB5b3UgY2FuIGRvIHRoaXMgd2l0aCB0aGUgYGxhYnMoKWAgZnVuY3Rpb24gdG9vLCB1c2luZyB0aGUgY29ycmVzcG9uZGluZyBhZXN0aGV0aWMgbWFwcGluZyAoZS5nLiAiY29sb3IiKS4KPgo+IFJlbWVtYmVyIGBnZ3Bsb3QyYCBhZGRzIHBsb3QgY29tcG9uZW50cyBpbiBsYXllcnMsIGFuZCB5b3UgY2FuIGFkZCBhZGRpdGlvbmFsIGxheWVycyB3aXRoIHRoZSBgK2Agc2lnbi4gU28gaWYgdGhlIHBsb3QgYWxyZWFkeSBleGlzdHMgYXMgYW4gb2JqZWN0LCBhcyBgcGNhX3Bsb3RgIGRvZXMgaW4gdGhpcyBjYXNlLCB5b3UgY2FuIGFkZCB0byBpdCBsaWtlIGBwY2FfcGxvdCArIC4uLmAKCjxkZXRhaWxzPgo8c3VtbWFyeT5Tb2x1dGlvbjwvc3VtbWFyeT4KCkhlcmUgaXMgb25lIHBvc3NpYmxlIGFuc3dlcjoKYGBge3IgY3VzdG9taXplX3BjYV9leGVyY2lzZX0KcGNhX3Bsb3QgKwogICAgbGFicygKICAgICAgICB0aXRsZSA9ICdQQ0EgUGxvdCcsCiAgICAgICAgc3VidGl0bGUgPSAnVG9wIDUwMCB2YXJpYWJsZSBnZW5lcycsCiAgICAgICAgY29sb3IgPSAnQ29uZGl0aW9uJykgKwogICAgdGhlbWVfYncoKQpgYGAKPC9kZXRhaWxzPgo8YnI+CgoKKipDaGVja3BvaW50Kio6ICpJZiBnZW5lcmF0ZWQgYW5kIHNhdmVkIHRoZSBgcGNhX3Bsb3RgIFBDQSBwbG90LCBwbGVhc2UgaW5kaWNhdGUgd2l0aCB0aGUgZ3JlZW4gJ2NoZWNrJyBidXR0b24uIE90aGVyd2lzZSwgcGxlYXNlIHVzZSAgdXNlIHRoZSByZWQgJ3gnIGJ1dHRvbiBpbiB5b3VyIHpvb20gcmVhY3Rpb24gcGFuZWwgdG8gaGF2ZSB0aGlzIHN0ZXAgcmVwZWF0ZWQuKgoKPiAjIFtCcmVha291dCBFeGVyY2lzZSAxXSAtIEltYWdpbmUgYSBoZWF0bWFwIHsudW5saXN0ZWQgLnVubnVtYmVyZWR9Cj4KPiBQbG90dGluZyB0aGUgZXhwcmVzc2lvbiB2YWx1ZXMgYWNyb3NzIGFsbCBzYW1wbGVzIGZvciB0aGUgdG9wIHZhcmlhYmxlIGdlbmVzIGluIGFuIGV4cGVyaW1lbnQgY2FuIGhlbHAgdG8gdmlzdWFsaXplIGhvdyBzYW1wbGVzIGNsdXN0ZXIgdG9nZXRoZXIgYnkgdGhlaXIgZXhwcmVzc2lvbiBwcm9maWxlcy4gV2hlbiBjb21iaW5lZCB3aXRoIHBoZW5vdHlwaWMgZGF0YSwgaXQgY2FuIGhlbHAgc2hvdyBob3cgc2FtcGxlcyB3aXRoIGRpZmZlcmVudCB0cmVhdG1lbnRzIGJlaGF2ZSByZWxhdGl2ZSB0byBvbmUgYW5vdGhlci4gTGV0J3Mgd29yayB0aHJvdWdoIHRoaXMgZXhlcmNpc2UgaW4gc21hbGwgZ3JvdXBzIGFuZCBnZW5lcmF0ZSBhIGhlYXRtYXAgb2YgdGhlIGRhdGEgd2UndmUgYmVlbiB3b3JraW5nIHdpdGguCj4KPiBbTGluayB0byBleGVyY2lzZV0oaHR0cHM6Ly91bWljaC1icmNmLWJpb2luZi5naXRodWIuaW8vMjAyMi0wMy0xNC11bWljaC1ybmFzZXEtZGVteXN0aWZpZWQvaHRtbC9Nb2R1bGUwOWFfYnJlYWtvdXQuaHRtbCkKCgojIyBUcmFuc2ZlcnJpbmcgb3VyIHBsb3QgdG8gb3VyIGxvY2FsIGNvbXB1dGVyCgpSc3R1ZGlvIHNlcnZlciBhbGxvd3MgdXMgdG8gZG93bmxvYWQgZmlsZXMgdGhyb3VnaCB0aGUgaW50ZXJhY3RpdmUgZmlsZSBwYW5lbCBvbiB0aGUgcmlnaHQgc2lkZS4gSWYgd2UgbmF2aWdhdGUgaW50byB0aGUgcGxvdCBzdWJmb2xkZXIgYW5kIHNlbGVjdCB0aGUgYFBDQXBsb3RfcmxvZ19jb25kaXRpb24ucGRmYCBvciB0aGUgIGZpbGUsIHdlIGNhbiB0aGVuIGNsaWNrIHRoZSBibHVlIGdlYXIgc3ltYm9sIGxhYmVsZWQgYE1vcmVgIGFuZCBzZWxlY3QgYEV4cG9ydC4uLmAuIFdlIHNob3VsZCBzZWUgYSBwcm9tcHQgcmVnYXJkaW5nIHRoZSBuYW1lIG9mIHRoZSBmaWxlIGFuZCBpZiB3ZSBjbGljayBgRG93bmxvYWRgIHRoZSBmaWxlIHNob3VsZCBzaG93IHVwIGluIHlvdXIgbG9jYWwgIkRvd25sb2FkcyIgZm9sZGVyLgoKIyMjIE9wdGlvbmFsIC0gU2NyZWUgUGxvdCBleGFtcGxlCgo8ZGV0YWlscz4KICAgIDxzdW1tYXJ5PipCb251czogQ2xpY2sgZm9yIGV4YW1wbGUgY29kZSBmb3IgZ2VuZXJhdGluZyBhIFNjcmVlUGxvdCo8L3N1bW1hcnk+CiAgICAgQSBzY3JlZXBsb3QgaXMgYSB3YXkgdG8gdmlzdWFsaXplIHRoZSB2YXJpYW5jZSBleHBsYWluZWQgYnkgYWxsIHByaW5jaXBsZSBjb21wb25lbnRzLgogICAgIFRvIGdlbmVyYXRlIGEgc2NyZWUgcGxvdCwgdGhlIFBDQSByZXN1bHRzIG5lZWQgdG8gYmUgdXNlZCBpbmRlcGVuZGVudGx5IG9mIHBsb3R0aW5nLCBzdWNoIGFzIGRlc2NyaWJlZCBieSBbdGhpcyBzdGF0cXVlc3QgcG9zdF0oaHR0cHM6Ly9zdGF0cXVlc3Qub3JnL3BjYS1jbGVhcmx5LWV4cGxhaW5lZC8pIGFuZCByZXBsaWNhdGVkIGJlbG93LgoKYGBge3IgU2NyZWVQbG90fQojIGdlbmVyYXRlIFBDQSBsb2FkaW5ncwpwY2EgPSBwcmNvbXAodChhc3NheShybGQpKSwgc2NhbGU9VFJVRSkKCiMjIGdldCB0aGUgc2NyZWUgaW5mb3JtYXRpb24KcGNhLnZhciA9IHBjYSRzZGV2XjIKc2NyZWUgPSBwY2EudmFyL3N1bShwY2EudmFyKQpwID0gYmFycGxvdCgoc2NyZWVbMToxMF0qMTAwKSwgbWFpbj0iU2NyZWUgUGxvdCIsIHhsYWI9IlByaW5jaXBhbCBDb21wb25lbnQiLCB5bGFiPSJQZXJjZW50IFZhcmlhdGlvbiIpCnByaW50KHApCmBgYAoKICAgIFdlIGNhbiBzZWUgdGhhdCB0aGUgbWFqb3JpdHkgKH42NSUpIG9mIHRoZSB2YXJpYW5jZSBhY3Jvc3Mgb3VyIHNhbXBsZXMgaXMgZXhwbGFpbmVkIGJ5IHRoZSBmaXJzdCB0aHJlZSBwcmluY2lwbGUgY29tcG9uZW50cywgZ2l2aW5nIHVzIHNvbWUgYWRkaXRpb25hbCBjb25maWRlbmNlIHJlZ2FyZGluZyB0aGUgcXVhbGl0eSBvZiBvdXIgZGF0YS4KICAgIEluIHRoZXNlIHNjcmVlIHBsb3QgZXhhbXBsZXMgZnJvbSBCaW9UdXJpbmcsIHRoZSBwbG90IG9uIHRoZSBsZWZ0IGZpdHMgd2hhdCB3ZSB3b3VsZCBleHBlY3QgZm9yIGEgZGF0YXNldCB3aXRoIGhpZ2ggc2lnbmFsIGZyb20gdGhlIGV4cGVyaW1lbnRhbCB0cmVhdG1lbnQsIHdoZXJlIHRoZSBtYWpvcml0eSBvZiB0aGUgdmFyaWFuY2UgaXMgZXhwbGFpbmVkIGJ5IHRoZSBmaXJzdCBmZXcgcHJpbmNpcGxlIGNvbXBvbmVudHMuIFRoZSBwbG90IG9uIHRoZSByaWdodCBpbGx1c3RyYXRlcyBhIHNjZW5hcmlvIHdoZXJlIHRoZSB2YXJpYW5jZSBpcyBkaXN0cmlidXRlZCBhY3Jvc3MgbWFueSBjb21wb25lbnRzLCB3aGljaCBjb3VsZCBiZSBkdWUgdG8gbG93IHNpZ25hbCBmcm9tIHRoZSBleHBlcmltZW50YWwgdHJlYXRtZW50LCBjb21wbGV4IGV4cGVyaW1lbnRhbCBkZXNpZ24sIG9yIGNvbmZvdW5kaW5nIGZhY3RvcnMuCmltYWdlOiAhW10oLi9pbWFnZXMvcHJvcG9ydGlvbi1vZi12YXJpYW5jZS1ibG9nLWhvcnouanBnKQo8L2RldGFpbHM+Cjxicj4KCiMgU3VtbWFyeQoKSW4gdGhpcyBzZWN0aW9uLCB3ZToKCiogRGlzY3Vzc2VkIHZhcmlhbmNlIHdpdGhpbiB0cmVhdG1lbnQgZ3JvdXBzCiogRGlzY3Vzc2VkIHRlY2huaWNhbCBhcnRpZmFjdHMsIGluY2x1ZGluZyBiYXRjaGVzCiogTGVhcm5lZCB0byBnZW5lcmF0ZSBQQ0EgcGxvdHMKCi0tLQoKIyBTb3VyY2VzCgoqIEhCQyBRQyB0dXRvcmlhbDogaHR0cHM6Ly9oYmN0cmFpbmluZy5naXRodWIuaW8vREdFX3dvcmtzaG9wL2xlc3NvbnMvMDNfREdFX1FDX2FuYWx5c2lzLmh0bWwKKiBEZXRhaWxlZCBIZWF0bWFwIHR1dG9yaWFsIGZyb20gR2FsYXh5OiBodHRwczovL3RyYWluaW5nLmdhbGF4eXByb2plY3Qub3JnL3RyYWluaW5nLW1hdGVyaWFsL3RvcGljcy90cmFuc2NyaXB0b21pY3MvdHV0b3JpYWxzL3JuYS1zZXEtdml6LXdpdGgtaGVhdG1hcDIvdHV0b3JpYWwuaHRtbAoqIFBDQSBPdmVydmlldzogaHR0cHM6Ly9ibG9nLmJpb3R1cmluZy5jb20vMjAxOC8wNi8xNC9wcmluY2lwYWwtY29tcG9uZW50LWFuYWx5c2lzLWV4cGxhaW5lZC1zaW1wbHkvCgoKCmBgYHtyIFdyaXRlT3V0LlJEYXRhLCBldmFsPUZBTFNFLCBlY2hvPUZBTFNFLCBtZXNzYWdlPUZBTFNFLCB3YXJuaW5nPUZBTFNFfQojSGlkZGVuIGNvZGUgYmxvY2sgdG8gd3JpdGUgb3V0IGRhdGEgZm9yIGtuaXR0aW5nCnNhdmUuaW1hZ2UoZmlsZSA9ICJyZGF0YS9SdW5uaW5nRGF0YS5SRGF0YSIpCmBgYAoKCgotLS0KCgpUaGVzZSBtYXRlcmlhbHMgaGF2ZSBiZWVuIGFkYXB0ZWQgYW5kIGV4dGVuZGVkIGZyb20gbWF0ZXJpYWxzIGxpc3RlZCBhYm92ZS4gVGhlc2UgYXJlIG9wZW4gYWNjZXNzIG1hdGVyaWFscyBkaXN0cmlidXRlZCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIFtDcmVhdGl2ZSBDb21tb25zIEF0dHJpYnV0aW9uIGxpY2Vuc2UgKENDIEJZIDQuMCldKGh0dHA6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LzQuMC8pLCB3aGljaCBwZXJtaXRzIHVucmVzdHJpY3RlZCB1c2UsIGRpc3RyaWJ1dGlvbiwgYW5kIHJlcHJvZHVjdGlvbiBpbiBhbnkgbWVkaXVtLCBwcm92aWRlZCB0aGUgb3JpZ2luYWwgYXV0aG9yIGFuZCBzb3VyY2UgYXJlIGNyZWRpdGVkLgo=</div>
 
 
 </div>

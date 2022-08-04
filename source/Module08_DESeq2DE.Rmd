@@ -1,5 +1,5 @@
 ---
-title: "Day 2 - Module 08: Count normalizations and DESeq2 model fitting"
+title: "Module 08: Normalization and Model Fitting"
 author: "UM Bioinformatics Core"
 date: "`r Sys.Date()`"
 output:
@@ -10,31 +10,30 @@ output:
             toc: true
             toc_depth: 4
             toc_float: true
-            number_sections: true
+            number_sections: false
             fig_caption: true
             markdown: GFM
             code_download: true
 ---
+
 <style type="text/css">
-body{ /* Normal  */
-      font-size: 14pt;
-  }
-pre {
-  font-size: 12pt
+body, td {
+   font-size: 18px;
 }
 code.r{
-  font-size: 12pt;
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
 }
 </style>
 
-<!--- Allow the page to be wider --->
-<style>
-    body .main-container {
-        max-width: 1200px;
-    }
-</style>
+```{r, include = FALSE}
+source("../bin/chunk-options.R")
+knitr_fig_path("08-")
+```
 
-> # Objectives:
+> # Objectives {.unlisted .unnumbered}
 > * Discuss count normalizations
 > * Execute model fitting for differential expression comparisons
 
@@ -42,7 +41,6 @@ code.r{
 library(DESeq2)
 load("rdata/RunningData.RData")
 ```
-
 
 # Differential Expression Workflow
 
@@ -64,9 +62,7 @@ Two common factors that need to be accounted for during normalization are **sequ
 
 ![*Note that each pink or green rectangle represents an aligned read, with reads spanning an intron connected by a dashed line. Figure from [HBC  training materials](https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html)*](./images/normalization_methods_depth.png)
 
-
 * **Gene length** normalization may also be necessary if comparing between different genes, since genes of different lengths have different probabilities of generating fragments that end up in the library.
-
 
 > **Note**: The above figure was originally from a [HBC  tutorial](https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html) that also includes a detailed comparison of different normalization (CPM, TPM, FPKM) approaches and their best uses.
 
@@ -78,17 +74,18 @@ DESeq2 has an [internal normalization process](https://genomebiology.biomedcentr
 
 For data exploration and visualizations, it is helpful to generate an object of independently normalized counts. We will use the [rlog transformation](http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#count-data-transformations) from DESeq2 that accounts for sequencing depth for each sample and RNA composition for the downstream quality control visualizations.
 
-The rlog transformation produces log2 scale data that has also been normalized to overall library size as well as variance across genes at different mean expression levels. For larger numbers of samples, there is an alternative transformation method, [vst](http://www.bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#count-data-transformations) that can be used instead for count normalizations.
-
+The rlog transformation produces log2 scaled data that has also been normalized to overall library size as well as variance across genes at different mean expression levels. For larger numbers of samples, there is an alternative transformation method, [vst](http://www.bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#count-data-transformations) that can be used instead for count normalizations.
 
 The command to generate the normalized count object has a few parts, including `dds` as an input and providing a value to the option `blind`.
+
 ```{r CountNorm}
-rld <- rlog(dds, blind = TRUE)
+rld = rlog(dds, blind = TRUE)
 ```
 
-*Note: We might see a message that our data did not fit the default 'parametric' dispersion model so a local regression was substituted. If we had more time, we might look at a dispersion plot with the `plotDispEsts(dds)` function, but as [this bioconductor thread](https://support.bioconductor.org/p/107937/) discusses, other visualizations of our data might be more helpful and/or easier to interpret.
+Note: We might see a message that our data did not fit the default 'parametric' dispersion model so a local regression was substituted. If we had more time, we might look at a dispersion plot with the `plotDispEsts(dds)` function, but as [this bioconductor thread](https://support.bioconductor.org/p/107937/) discusses, other visualizations of our data might be more helpful and/or easier to interpret.
 
 Next, we'll look at the results of the transformation.
+
 ```{r CountNormCheck}
 head(assay(rld), 2)
 ```
@@ -97,46 +94,41 @@ Looking at the rld values, we can see that they are now in log scale. Since we s
 
 # DESeq2 Model Fitting
 
-Next, we'll fit our standard model using the `DESeq` function and take a look at the objects we generate.
+Next, we'll fit our standard model using the `DESeq` function and take a look at the objects we generate. This command applies the model to our data, using the sample information supplied when generating the `dds` object so it takes some time to run.
+
 ```{r FitModelStandard, message=FALSE}
-dds <- DESeq(dds)
+dds = DESeq(dds)
+dds
 ```
 
-This command applies the model to our data, using the sample information supplied when generating the `dds` object so it takes some time to run.
+Notice that there is now more information in the `DESeqDataSet` object than there was prior to our normalization. There is information about the model fit and about the library size normalization. DESeq2 will use this information when we perform the test for differential expression.
 
 ```{r FitModelStandardCheck1, eval=TRUE}
 resultsNames(dds)
 ```
 
-The results include three pairwise comparisons to the specified control as default, but other information is now stored in the `dds` object so we can generate additional pairwise comparisons of interest.
-
-```{r FitModelStandardCheck2, eval=FALSE}
-head(dds)
-```
+The results include the single comparison representing the two levels of `condition`. If there were more levels in the `condition` column, there would be more results listed here because DESeq2 would implicitly compare all other levels to the reference level.
 
 **Checkpoint**: *If you see the same results when you execute `resultsNames(dds)`, please indicate with the green 'yes' button. Otherwise, please use the red 'x' button to get help before the break*
-
-
 
 #### [Optional Exercise] {.unlisted .unnumbered}
 
 If you executed the commands in the option exercise from Module 07, you can fit a seperate DESeq2 model for the patient sample example, which included a covariate in our model.
 
 <details>
-    <summary>*Click for fitting a model that includes a covariate*</summary>
+<summary>*Click for fitting a model that includes a covariate*</summary>
 ```{r FitModelCovariate, eval= FALSE, message=FALSE}
-dds_patient <- DESeq(dds_patient)
+dds_patient = DESeq(dds_patient)
 ```
+
 ```{r FitModelCovariateCheck1,eval=FALSE}
 resultsNames(dds_patient)
 ```
-    If you run through the optional exercises, you can explore the impact of adding a covariate by substituting `dds_patient` for `dds` and re-running those commands since both DESeq2 objects have their data organized in the same way.
+
+If you run through the optional exercises, you can explore the impact of adding a covariate by substituting `dds_patient` for `dds` and re-running those commands since both DESeq2 objects have their data organized in the same way.
 </details>
 
 <br>
-<br>
-<br>
-
 
 # Summary
 
@@ -146,8 +138,6 @@ In this section, we:
 * Generated a normalized count table
 * Fit two DESeq2 models for our data
 * Saw the impact of including a covariate in our model
-
-
 
 ---
 
@@ -161,13 +151,9 @@ Training resources used to develop materials
 * DESeq2 beginners vignette: https://bioc.ism.ac.jp/packages/2.14/bioc/vignettes/DESeq2/inst/doc/beginner.pdf
 * Bioconductor RNA-seq Workflows: https://www.bioconductor.org/help/course-materials/2015/LearnBioconductorFeb2015/B02.1_RNASeq.html
 
-
-
 ```{r WriteOut.RData, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
 #Hidden code block to write out data for knitting
 save.image(file = "rdata/RunningData.RData")
-
 ```
-
 
 These materials have been adapted and extended from materials listed above. These are open access materials distributed under the terms of the [Creative Commons Attribution license (CC BY 4.0)](http://creativecommons.org/licenses/by/4.0/), which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.

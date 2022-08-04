@@ -1,5 +1,5 @@
 ---
-title: "Day 2 - Module 06: Analysis Setup & Introduction to DESeq2"
+title: "Module 06: Introduction"
 author: "UM Bioinformatics Core"
 date: "`r Sys.Date()`"
 output:
@@ -17,7 +17,6 @@ output:
 ---
 
 <style type="text/css">
-
 body, td {
    font-size: 18px;
 }
@@ -27,7 +26,6 @@ code.r{
 pre {
   font-size: 12px
 }
-
 </style>
 
 ```{r, include = FALSE}
@@ -47,17 +45,13 @@ Today we will proceed through key steps in a differential expression analysis, s
 
 <img src="images/wayfinder/wayfinder-07.png" alt="wayfinder" style="width: 1000px;"/>
 
-# Reproducible Research
-
-Today we'll be exploring some RNA-seq data that is fairly representative of what we see in the core and start with input files similar to the count table you generated in the previous steps and similar to one of the outputs currently being delivered by the Advanced Sequencing Core.
-
-## Warm-up {.unlisted .unnumbered}
-
-To get started, let's get a sense of what approaches you already use to compare gene expression:
-
-* If you've run a qPCR assay and enjoyed all the pipetting, put up a green 'check'. If you've run a qPCR assay and needed some time away from the multichannels, put up a red 'x' from the reaction panel.
-* If cloning a gene reporter construct (ie: promoter + GFP), worked for you the first time, put up a green check. If you have a freezer box full of cloning attempts, put up a red 'x'.
-* If you are ready to learn about bioinformatic tools for comparing gene expression, put up a green check. If you have some questions that should be addressed before we get started, use the 'raise hand' reaction.
+> ## Warm-up {.unlisted .unnumbered}
+>
+> To get started, let's get a sense of what approaches you already use to compare gene expression:
+>
+> * If you've run a qPCR assay and enjoyed all the pipetting, put up a green 'check'. If you've run a qPCR assay and needed some time away from the multichannels, put up a red 'x' from the reaction panel.
+> * If cloning a gene reporter construct (ie: promoter + GFP), worked for you the first time, put up a green check. If you have a freezer box full of cloning attempts, put up a red 'x'.
+> * If you are ready to learn about bioinformatic tools for comparing gene expression, put up a green check. If you have some questions that should be addressed before we get started, use the 'raise hand' reaction.
 
 # Getting Started
 
@@ -102,7 +96,11 @@ Let's create an R script file to store all the code we're going to run in the fo
 
 The new script **diffex.R** is now in the `scripts` folder. You can see that by clicking the `scripts` folder in the "Files" pane. And you can go back up to the main project folder by clicking the `..` to the right of the up arrow in the "Files" pane. By convention, R scripts end with the file extension **.R**.
 
-## Best practices for file organization
+# Reproducible research
+
+Today we'll be exploring some RNA-seq data that is fairly representative of what we see in the core and start with input files similar to the count table you generated in the previous steps and similar to one of the outputs currently being delivered by the Advanced Sequencing Core.
+
+## File organization
 
 As widely discussed, including in a review by [Nobel, 2009](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1000424), file organization and data stewardship are an important parts of reproducible research.
 
@@ -119,16 +117,16 @@ Such as illustrated in this figure from the Noble review:
 To organize our files for our analysis today, we'll create some directories in the `RSD_R` folder which is now our project root and current working directory. We can already see that there a `data/` folder and we just created the `scripts/` folder with the RStudio GUI. Let's create an `outputs/` folder using the `dir.create()` function in R.
 
 ```{r create_dirs, eval = FALSE}
-dir.create("outputs")
+dir.create('outputs')
+dir.create('outputs/figures')
+dir.create('outputs/tables')
 ```
 
 **Checkpoint**: *Please use the green 'check' if you have saved your code file and see the `data`, `scripts`, and `outputs` directories in the `RSD_R` folder and the red 'x' if you do not.*
 
-> # Reminder: Code execution shortcut {.unlisted .unnumbered}
+> # Reminder: RStudio code execution {.unlisted .unnumbered}
 >
-> **Ctrl-Enter** is a standard shortcut in Rstudio to send the current line (or selected lines) to the console. If you see an `>`, then R has executed the command. If you see a `+`, this means that the command is not complete and R is waiting (usually for a `)`).
->
-<br>
+> <kbd>Ctrl</kbd>+<kbd>Enter</kbd> is a standard shortcut in Rstudio to send the current line (or selected lines) to the console. If you see an `>`, then R has executed the command. If you see a `+`, this means that the command is not complete and R is waiting (usually for a `)`).
 
 > # Reminder: Object naming conventions {.unlisted .unnumbered}
 > * Cannot start with numbers
@@ -139,9 +137,9 @@ dir.create("outputs")
 
 ---
 
-## Check package installations
+# Load Packages
 
-Several  packages have already been installed on the server, so we can load them into our R session now. To do that we'll use the `library` function to load the required packages.
+Several packages have already been installed on the server, so we can load them into our R session now. To do that we'll use the `library` function to load the required packages.
 
 ```{r Modules, message=FALSE, warning= FALSE, eval=TRUE}
 library(DESeq2)
@@ -201,7 +199,6 @@ A frequent question for RNA-seq projects is "How many replicates do I need?".
 
 The general goal of our analyses is to separate the “interesting” biological contributions from the “uninteresting” technical or other contributions that either cannot be or were not controlled in the experimental design. The more sources of variation, such as samples coming from heterogenous tissues or experiments with incomplete knockdowns, the more replicates (>3) are recommended.
 
-
 ![Image of technical, biological, and experimental contributors to gene expression, from HBC training materials](images/de_variation.png){width=75%}
 
 
@@ -216,14 +213,13 @@ A related experimental design consideration is how much sequencing depth should 
 
 Generally, for the human and mouse genomes, the recommendation is 30-40 million reads per sample for polyA library preps to capture both highly expressed (abundant) and more lowly expressed (rarer) transcripts, assuming that ~25,000 protein-coding genes would be measured. However, as the image above shows, sequencing depth has less of an impact than number of replicates in detecting differentially expressed genes (DEGs).
 
-#### [Exercise]: Building a better understanding of differential expression analysis
+#### [Exercise]: Building a better understanding of differential expression analysis {.unlisted .unnumbered}
 
-1) Post a comment below regarding what key question/misconception regarding designing an RNA-seq experiment we were able to address **OR**
-1) Post a question that that was NOT addressed but that you hope we will address in the later modules **OR**
-1) Add a thumbs up to your favorite comment(s) to upvote it
+1. Post a comment below regarding what key question/misconception regarding designing an RNA-seq experiment we were able to address **OR**
+2. Post a question that that was NOT addressed but that you hope we will address in the later modules **OR**
+3. Add a thumbs up to your favorite comment(s) to upvote it
 
 ----
-
 
 ### Raw data as input
 
@@ -233,11 +229,11 @@ To begin our analysis, we'll read in the **raw** count data file, `gene_expected
 
 ```{r DataTable, eval=TRUE, echo=FALSE}
 ## need to include paths relative to site build locations but keep code block hidden
-count_table <- read.table("../data/gene_expected_count.txt", header = TRUE, row.names = 1)
+count_table = read.table("../data/gene_expected_count.txt", header = TRUE, row.names = 1)
 ```
 
 ```{r DataTable2, eval=FALSE}
-count_table <- read.table("data/gene_expected_count.txt", header = TRUE, row.names = 1)
+count_table = read.table("data/gene_expected_count.txt", header = TRUE, row.names = 1)
 ```
 ```{r DataTableCheck, eval=TRUE}
 head(count_table, n=2) # look at the top of the table
@@ -245,7 +241,7 @@ head(count_table, n=2) # look at the top of the table
 
 Now that the file is read into R, note that we've created a data frame that includes 'gene ids' in ENSEMBL format as rownames and count data from twelve different samples.
 
-#### [Exercise]: RSEM outputs versus DESeq2 input requirements
+#### [Exercise]: RSEM outputs versus DESeq2 input requirements {.unlisted .unnumbered}
 
 If we think back to the RSEM outputs, the 'expected_counts' table may include fractions due to how the alignment tool resolves reads that map to multiple locuses). Since DESeq2 requires whole numbers, if we try to use the RSEM ouputs directly, DESeq2 will give us an error.
 
@@ -258,7 +254,7 @@ tail(count_table, n=2)
 
 To round down all the columns of our `count_table` that include count data (all columns since we set the gene names to be our row names), we can use the `round`()` function.
 ```{r RoundRawCounts}
-count_table <- round(count_table)
+count_table = round(count_table)
 tail(count_table, n=2) # now whole numbers
 ```
 
@@ -290,7 +286,6 @@ How to get session information to aid in a search:
 ```{r Session info, eval = FALSE, message = FALSE}
 sessionInfo()
 ```
-
 
 Highly recommend using resources like [Bioconductor Support](https://support.bioconductor.org/), [Biostars](https://www.biostars.org/), and [Stack Overflow](https://stackoverflow.com/questions/tagged/r), including threads on specific packages or common bioinformatic tasks.
 
