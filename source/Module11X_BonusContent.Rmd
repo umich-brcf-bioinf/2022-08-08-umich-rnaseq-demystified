@@ -56,25 +56,25 @@ We can also generate a customized plot using the `ggplot2` package that will inc
 First, create some objects to store the sample and group information.
 ```{r PCAexerciseA}
 #PCA plot for Rlog-Normalized counts for all samples
-CombinatoricGroup <- factor(MetaInfo$Gtype.Tx)
-SampleName <- factor(row.names(MetaInfo))
+CombinatoricGroup <- factor(samplesheet$condition)
+SampleName <- factor(row.names(samplesheet))
 ```
 Take a look at `CombinatoricGroup` and `SampleName` - what information is now stored in these objects?
-  
-  Next, look at the documentation for `plotPCA` function from DESeq2. Then write a command to store the PCA results for the top 500 genes for `intgroup` = 'Gtype.Tx', using the normalized data, as an object named `p.all`.
+
+  Next, look at the documentation for `plotPCA` function from DESeq2. Then write a command to store the PCA results for the top 500 genes for `intgroup` = 'condition', using the normalized data, as an object named `p.all`.
 
 <details>
   <summary>*Click for solution*</summary>
 ```{r PCAexerciseB}
 #Generate the PCA projections using the `plotPCA` function from DESeq2.
-p.all <- plotPCA(rld, intgroup = c('Gtype.Tx'), ntop = 500)
+p.all <- plotPCA(rld, intgroup = c('condition'), ntop = 500)
 ```
 </details>
-  
+
   Next, look at the possible slots of the `p.all` object to determine where the PCA data is stored. Then, create a ggplot2 object called `gp`, specifying PC1 as the x-axis and PC2 as the y-axis and setting the color to correspond to the samples and the shape to correspond to the `CombinatoricGroup`. Add a primary title 'All samples Rlog-Normalized'
 
 *Hint: Use aesthetics, e.g.: aes() and search for how to add a title to a ggplot figure*
-  
+
   <details>
   <summary>*Click for solution*</summary>
 ```{r PCAexerciseC}
@@ -83,21 +83,21 @@ gp <- ggplot(p.all$data, aes(x = PC1, y = PC2, color = SampleName, shape = Combi
   ggtitle(label = as.character('All samples Rlog-Normalized'))
 ```
 </details>
-  
-Finally, output the plot to file  
+
+Finally, output the plot to file
 ```{r ExerciseOutput}
 pdf(file = paste0(plotPath, 'PCAplot_Fancy_rlog_', Comparison, '.pdf'), onefile = TRUE)
 plot(gp)
 dev.off()
-```  
-  
-  
+```
+
+
 Additionally, we can generated customized PCA plot of raw data to compare to the normalized data.
 ```{r PCAraw}
 pdf(file = paste0(plotPath, 'PCAplot_raw_', Comparison, '.pdf'), onefile = TRUE)
 #PCA for Raw counts for all samples
 RC <- SummarizedExperiment(log2(counts(dds, normalized = FALSE)), colData=colData(dds))
-p.RC <- plotPCA(DESeqTransform(RC), intgroup = 'Gtype.Tx')
+p.RC <- plotPCA(DESeqTransform(RC), intgroup = 'condition')
 
 gpRC <- ggplot(p.RC$data, aes(x = PC1, y = PC2, color = SampleName, shape = CombinatoricGroup)) +     xlab(p.RC$labels[2]) + ylab(p.RC$labels[1]) + scale_shape_manual(values=1:nlevels(CombinatoricGroup), name = 'Combinatoric Group') + geom_point(size=2) + ggtitle(label = as.character('All samples Raw Data')) + theme(plot.title = element_text(hjust = 0.5)) + guides(colour=guide_legend(nrow=12, title = 'Sample'), legend.key = element_rect(size = 1), legend.key.size = unit(0, 'cm')) + theme_classic(base_size = 10) + theme(legend.margin=margin(t = 0, unit='mm'))
 plot(gpRC)
@@ -106,7 +106,7 @@ dev.off()
 
 # embedd example of plot (rlog only)
 plot(gpRC)
-```  
+```
 
 # Count boxplots
 
@@ -150,7 +150,7 @@ box_plot
 
 After generating the plot with ggplot, we can save it as a file in the directory we set up.
 ```{r BoxplotsRawSave, eval = FALSE}
-ggsave(filename = paste0(plotPath, "BoxPlot_Gtype.Tx_raw.pdf"), plot = box_plot, height = 8, width = 8, dpi = 300)
+ggsave(filename = paste0(plotPath, "BoxPlot_condition_raw.pdf"), plot = box_plot, height = 8, width = 8, dpi = 300)
 ```
 
 To understand how the rlog normalization impacted the distributions of counts for each sample, we can plot boxplots for the normalized data and compare that to our plot of the raw data.
@@ -182,7 +182,7 @@ box_plot
 ```
 
 ```{r BoxplotsRlogSave, eval = FALSE}
-ggsave(filename = paste0(plotPath, "BoxPlot_Gtype.Tx_rlog.pdf"), plot = box_plot, height = 8, width = 8, dpi = 300)
+ggsave(filename = paste0(plotPath, "BoxPlot_condition_rlog.pdf"), plot = box_plot, height = 8, width = 8, dpi = 300)
 ```
 
 
@@ -199,7 +199,7 @@ colors <- colorRampPalette(brewer.pal(9, 'Blues'))(255)
 First, we'll select the top 500 expressed genes across all our samples to prioritize this set of genes and allow for patterns to be more easily ovbserved.
 ```{r TopExpression}
 select <- order(rowMeans(assay(rld)), decreasing=TRUE)[1:500]
-df <- data.frame(Group = colData(rld)[,c('Gtype.Tx')], row.names = rownames(colData(dds)))
+df <- data.frame(Group = colData(rld)[,c('condition')], row.names = rownames(colData(dds)))
 ```
 
 Next, we'll set up a PDF file and plot our heatmap. Saving the plot as an object allows us to view the figure within our session as well as writing the plot to file.
@@ -245,7 +245,7 @@ Another informative heatmap is for the top most variably expressed genes in the 
 colors <- colorRampPalette(brewer.pal(9, 'Blues'))(255)
 
 select <- order(rowVars(assay(rld)), decreasing=TRUE)[1:500]
-df <- data.frame(Group = colData(rld)[,c('Gtype.Tx')], row.names = rownames(colData(dds)))
+df <- data.frame(Group = colData(rld)[,c('condition')], row.names = rownames(colData(dds)))
 
 pdf(file = paste0(plotPath,'Heatmap_TopVar_', Comparison, '.pdf'), onefile = FALSE, width=10, height=20)
 pheatmap(assay(rld)[select,], scale="row",  cluster_rows=TRUE, show_rownames=FALSE, cluster_cols=TRUE, annotation_col=df, fontsize = 7, las = 2, fontsize_row = 7, color = colors, main = '500 Top Variably Expressed Genes Heatmap')
@@ -254,13 +254,13 @@ dev.off()
 ```
 
 
-# Sources Used    
-* HBC QC tutorial: https://hbctraining.github.io/DGE_workshop/lessons/03_DGE_QC_analysis.html    
-* Detailed Heatmap tutorial from Galaxy: https://training.galaxyproject.org/training-material/topics/transcriptomics/tutorials/rna-seq-viz-with-heatmap2/tutorial.html  
+# Sources Used
+* HBC QC tutorial: https://hbctraining.github.io/DGE_workshop/lessons/03_DGE_QC_analysis.html
+* Detailed Heatmap tutorial from Galaxy: https://training.galaxyproject.org/training-material/topics/transcriptomics/tutorials/rna-seq-viz-with-heatmap2/tutorial.html
 
 ---
 
-# Session Info    
+# Session Info
 ```{r SessionInfo}
 sessionInfo()
 ```

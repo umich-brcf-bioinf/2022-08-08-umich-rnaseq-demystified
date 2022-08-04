@@ -28,8 +28,8 @@ In this exercise, generate a customized plot using the `ggplot2` package that wi
 First, create some objects to store the sample and group information.
 ```{r PCAexercise1}
 #PCA plot for Rlog-Normalized counts for all samples
-CombinatoricGroup <- factor(MetaInfo$Gtype.Tx)
-SampleName <- factor(row.names(MetaInfo))
+CombinatoricGroup <- factor(samplesheet$condition)
+SampleName <- factor(row.names(samplesheet))
 ```
 Take a look at `CombinatoricGroup` and `SampleName` - what information is now stored in these objects?
 
@@ -40,7 +40,7 @@ Next, look at the documentation for `plotPCA` function from DESeq2.
 ?plotPCA
 ```
 
-Then write a command to generate the PCA projections using the `plotPCA` function from DESeq2. for the top 500 genes for `intgroup` = 'Gtype.Tx', using the normalized data, as an object named `p.all`. 
+Then write a command to generate the PCA projections using the `plotPCA` function from DESeq2. for the top 500 genes for `intgroup` = 'condition', using the normalized data, as an object named `p.all`. 
 
 *Hint: add additional arguments to the code below*
 ```{r PCAexercise2}

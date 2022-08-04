@@ -34,7 +34,7 @@ code.r{
     }
 </style>
 
-> # Objectives:    
+> # Objectives:
 > * 'Unblind' our sample IDs
 > * Understand possible confounding factors
 > * Understand the impact of batches or additional covariates
@@ -77,10 +77,10 @@ For this representative dataset, we have somewhat limited information from [publ
 
 Our next step will be to describe the samples within our R session, so that we make the proper comparisons with DESeq2. The first step is to check the sample names from the count table.
 ```{r ColumnNames}
-colnames(CountTable)
+colnames(count_table)
 ```
 
-When we looked at our `CountTable`, our samples are blinded, e.g. the sample names don't correspond to any of the expected treatment groups. So we will need to specify which sample IDs connect to which experimental conditions.
+When we looked at our `count_table`, our samples are blinded, e.g. the sample names don't correspond to any of the expected treatment groups. So we will need to specify which sample IDs connect to which experimental conditions.
 
 Since there are a large number of samples (and to increase the reproduciblity of our code), we would generate a sample information table in excel and exported it as a '.csv' file so that it is in a 'plain text' format that can be easily loaded into our R session.
 
@@ -92,37 +92,41 @@ Since there are a large number of samples (and to increase the reproduciblity of
 
 </details>
 
-We'll load our 'pre-made' sample information sheet, `SampleInfo_trimmed.csv`, to unblind our samples.
-```{r SampleInfo1, eval=TRUE, echo=FALSE}
-MetaInfo <- read.table("../data/SampleInfo_trimmed.csv", sep = ",", header = TRUE, row.names = 1)
-```
-```{r SampleInfo2, eval=FALSE}
-MetaInfo <- read.table("data/SampleInfo_trimmed.csv", 
-                       sep = ",", 
-                       header = TRUE, 
+We'll load our 'pre-made' sample information sheet, `samplesheet.csv`, to unblind our samples.
+
+```{r SampleInfo}
+samplesheet <- read.table("../data/samplesheet.csv",
+                       sep = ",",
+                       header = TRUE,
                        row.names = 1)
 ```
-```{r CheckSampleInfo}
-head(MetaInfo)
+
+```{r SampleInfo2, eval = FALSE}
+samplesheet <- read.table("data/samplesheet.csv",
+                       sep = ",",
+                       header = TRUE,
+                       row.names = 1)
+head(samplesheet)
 ```
 
-**Checkpoint**: *If you have loaded `MetaInfo`, please indicate with the green 'check' button. Otherwise, please use the red 'x' button to have the command repeated*
-
+**Checkpoint**: *If you have loaded `samplesheet`, please indicate with the green 'check' button. Otherwise, please use the red 'x' button to have the command repeated*
 
 How are the treatment groups encoded in the table we just loaded?
+
 ```{r TreatmentGroupTable}
-unique(MetaInfo$Gtype.Tx)
+unique(samplesheet$condition)
 ```
 
+Next, we'll format our table so that we have the appropriate data type (an ordered [factor](https://swcarpentry.github.io/r-novice-inflammation/12-supp-factors/)) for DESeq2 to recognize our treatment groups and appropriately compare samples.
 
-Next, we'll format our table so that we have the appropriate data type (a ordered [factor](https://swcarpentry.github.io/r-novice-inflammation/12-supp-factors/)) for DESeq2 to recognize our treatment groups and appropriately compare samples.
 ```{r SampleInfoFactor}
 
-MetaInfo$Gtype.Tx <- factor(MetaInfo$Gtype.Tx, 
-                            levels = c( "wt.Tx", "ko.Tx", "ko.control", "wt.control" ))
+samplesheet$condition <- factor(samplesheet$condition,
+                            levels = c('minus', 'plus'))
 
-unique(MetaInfo$Gtype.Tx)
+unique(samplesheet$condition)
 ```
+
 Notice that we set the levels in a particular order. This is important for setting the 'Control' group as the denominator in our comparisons when we setup our DESeq2 model. The group name should be last if there are only two groups & first if there are only three groups to generate default pair-wise comparisons.
 
 Before we proceed, we need to make sure that the sample labels (column names) in the count table match the sample information table (row names), including the order.
@@ -130,15 +134,15 @@ Before we proceed, we need to make sure that the sample labels (column names) in
 If the sample labels don't match, then we will see an error and need to correct the labels prior to proceeding. Checking the sample information table is extremely important to ensure that the correct samples are grouped together for comparisons.
 
 ```{r CheckSampleInfos}
-all(colnames(data) == rownames(MetaInfo))
+all(colnames(count_table) == rownames(samplesheet))
 ```
-This line of code checks if both the identity and order match between our `data` table and our `MetaInfo`.
+This line of code checks if both the identity and order match between our `count_table` and our `samplesheet`. If, in the course of using your own data, this ever returns `FALSE`, try using the `match()` function to rearrange the columns of `count_table` (or the rows of `samplesheet`) to get them to match.
 
 **Checkpoint**: *If you your sample info check returns `TRUE`, please indicate with the green 'yes' button. Otherwise, please use the red 'x' button to have the command repeated*
 
 # Creating DESeq2 object
 
-To create the DESeqDataSet we will need the count matrix, the "MetaInfo" sample data table, and we will also need a **design formula** to specify our model.
+To create the `DESeqDataSet` we will need the `count_table` and the `samplesheet`. We will also need a **design formula** to specify our model.
 
 ## Making model choices
 
@@ -152,13 +156,13 @@ In this case, we aren't aware of any [**covariates**](https://methods-sagepub-co
     More complex questions, including determining if a fold-change due to treatment is different across groups, such as patient samples, "interaction terms" can be included in the design formula, such as outlined in [this support thread](https://support.bioconductor.org/p/98628/).
 </details>
 
-The design formula specifies the column(s) in the metadata table and how they should be used in the analysis. For our dataset we only have one column we are interested in, that is `Gtype.Tx`. This column has three factor levels, which tells DESeq2 that for each gene we want to evaluate gene expression change with respect to these different levels.
+The design formula specifies the column(s) in the metadata table and how they should be used in the analysis. For our dataset we only have one column we are interested in, that is `condition`. This column has three factor levels, which tells DESeq2 that for each gene we want to evaluate gene expression change with respect to these different levels.
 
 ```{r DESeq2Object}
 ## Create DESeq object, line by line
-dds <- DESeqDataSetFromMatrix(countData = CountTable,
-                              colData = MetaInfo,
-                              design = ~ Gtype.Tx)
+dds <- DESeqDataSetFromMatrix(countData = count_table,
+                              colData = samplesheet,
+                              design = ~ condition)
 ```
 
 **Checkpoint**: *If you see `dds` in your environment panel, please indicate with the green 'check' button. Otherwise, please use  use the red 'x' button in your zoom reaction panel to have this step repeated. You can use the red 'x' to be put in a breakout room for help*
@@ -166,20 +170,22 @@ dds <- DESeqDataSetFromMatrix(countData = CountTable,
 
 <details>
     <summary>*Click for how to model batch effects with DESeq2*</summary>
-    Differences between samples can also be due to technical reasons, such as collection on different days or different sequencing runs. Differences between samples that are not due to biological factors as called **batch effects**. We can include batch effects in our design model in the same way as covariates, as long as the technical groups do not overlap, or **confound**, the biological treatment groups.  
+    Differences between samples can also be due to technical reasons, such as collection on different days or different sequencing runs. Differences between samples that are not due to biological factors as called **batch effects**. We can include batch effects in our design model in the same way as covariates, as long as the technical groups do not overlap, or **confound**, the biological treatment groups.
     Let's try add some additional meta-data information where we have counfounding batch effects and create another DESeq2 object.
+
 ```{r Confounders, eval=FALSE}
-#MetaInfo
-MetaInfo$batch <- factor(c(rep(c("Day1"), 3),
+#samplesheet
+samplesheet$batch <- factor(c(rep(c("Day1"), 3),
                        rep(c("Day2"), 3),
                        rep(c("Day3"), 3),
                        rep(c("Day4"), 3)),
                      levels = c("Day1", "Day2", "Day3", "Day4"))
 
-dds_batch <- DESeqDataSetFromMatrix(countData = CountTable,
-                      colData = MetaInfo,
-                      design = ~ batch + Gtype.Tx)
+dds_batch <- DESeqDataSetFromMatrix(countData = count_table,
+                      colData = samplesheet,
+                      design = ~ batch + condition)
 ```
+
     Notice that if you run the above command, the error indicates that variables in the design formula "are linear combinations" which means that batch and condition are correlated and the function is unable to fill in a required 'slot' in the DESeq2 object.
     So if batches are **not balanced** by including both case and controls (like in the patient covariate example) then we cannot control for those technical effects through statistical modeling.
 </details>
@@ -192,6 +198,7 @@ dds_batch <- DESeqDataSetFromMatrix(countData = CountTable,
 While not necessary, [pre-filtering](http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#pre-filtering) the count table helps to not only reduce the size of the DESeq2 object, but also gives you a sense of how many genes were reasonably measured at the sequencing depth generated for your samples.
 
 Here we will filter out any genes that have less than 10 counts across any of the samples. This is a fairly standard level of filtering, but can filter data less/more depending on quality control metrics from alignments and sequencing depth or total number of samples.
+
 ```{r PreFilter}
 keep <- rowSums(counts(dds)) >= 10
 dds <- dds[keep,]
@@ -203,46 +210,44 @@ Notice how the `dds` object now has less elements after filtering, so there were
 
 #### [Optional exercise]: Adding covariates to sample information
 
-You can test out manually adding a covariate to our `MetaInfo` data table and then create a new DESeq2 object.
+You can test out manually adding a covariate to our `samplesheet` data table and then create a new DESeq2 object.
 
 <details>
     <summary>*Click for how to add a covariate to sample information*</summary>
+
 ```{r Covariates, eval=FALSE}
-head(MetaInfo)
-MetaInfo$patient <- factor(rep(c("P1", "P2", "P3"), 4), levels = c("P1", "P2", "P3"))
-head(MetaInfo)
+head(samplesheet)
+samplesheet$patient <- factor(rep(c("P1", "P2", "P3"), 4), levels = c("P1", "P2", "P3"))
+head(samplesheet)
 ```
+
     Notice how we avoid starting with a number our patient covariate labels since R doesn't like that.
 
 ```{r CovariateDESeq2Object, eval=FALSE}
-dds_patient <- DESeqDataSetFromMatrix(countData = CountTable,
-                          colData = MetaInfo,
-                          design = ~ patient + Gtype.Tx)
+dds_patient <- DESeqDataSetFromMatrix(countData = count_table,
+                          colData = samplesheet,
+                          design = ~ patient + condition)
 ```
+
     Now we have specified for DESeq2 that we want to test for the effect of the condition (the last factor) while controlling for the effect of the patient origin (the first factor).
 </details>
-
-
 
 # Summary
 
 In this section, we:
 
-* Loaded the necessary input files into our R session    
-* Discussed model design for DESeq2    
-* Initialized a DESeq2 data set     
-* Filtered our count data     
-
+* Loaded the necessary input files into our R session
+* Discussed model design for DESeq2
+* Initialized a DESeq2 data set
+* Filtered our count data
 
 Now that we've created our DESeq2 objects, including specifying what model is appropriate for our data, and filtered our data, we can proceed with assessing the impact of the experimental conditions on gene expression across our samples.
-
-
-
 
 ---
 
 # Sources
-## Training resources used to develop materials
+Training resources used to develop materials:
+
 * HBC DGE setup: https://hbctraining.github.io/DGE_workshop/lessons/01_DGE_setup_and_overview.html
 * HBC Count Normalization: https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html
 * DESeq2 standard vignette: http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html
