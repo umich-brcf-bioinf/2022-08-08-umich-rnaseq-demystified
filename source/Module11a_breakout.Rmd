@@ -1,7 +1,7 @@
 ---
-title: "Day 3 - Module 11 Gene Annotations"
-author: "UM Bioinformatics Core"
-date: "`r Sys.Date()`"
+title: 'Breakout Exercise 2 - Gene Annotations'
+author: 'UM Bioinformatics Core'
+date: '`r Sys.Date()`'
 output:
         html_document:
             includes:
@@ -10,36 +10,28 @@ output:
             toc: true
             toc_depth: 4
             toc_float: true
-            number_sections: true
+            number_sections: false
             fig_caption: true
             markdown: GFM
             code_download: true
 ---
-<style type="text/css">
-body{ /* Normal  */
-      font-size: 14pt;
-  }
-pre {
-  font-size: 12pt
+
+<style type='text/css'>
+body, td {
+   font-size: 18px;
 }
 code.r{
-  font-size: 12pt;
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
 }
 </style>
 
-<!--- Allow the page to be wider --->
-<style>
-    body .main-container {
-        max-width: 1200px;
-    }
-</style>
-
-<br>
-
-# [Breakout Exercise 2] - Finding annotations
-
-<br>
-
+```{r, include = FALSE}
+source('../bin/chunk-options.R')
+knitr_fig_path('11a-')
+```
 
 ```{r Modules, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
 library(DESeq2)
@@ -50,74 +42,113 @@ library(matrixStats)
 library(ggrepel)
 library(pheatmap)
 library(RColorBrewer)
-load("rdata/RunningData.RData")
 ```
 
+Estimated time: **15 Minutes**
 
-**15 Minutes**
+# Motivation
 
-<br>
+The data from from our differential expression test (`result_plus_vs_minus`) is an important result from our analysis.
 
+```{r result_preview}
+head(results_plus_vs_minus)
+```
 
+Looking at the first few rows, we notice that the genes are labelled with their ENSEMBL identifiers, e.g. ENSMUSG00000000056. It is quite rare that anyone will know off the top of their head which gene is associated with any given ENSEMBL identifier; we tend to think of genes by their symbols, e.g. Tp53.
 
-<br>
+# Exercise
 
-### Instructions:
+Using the `biomaRt` package, to map ENSEMBL IDs to gene symnbols, add a column with the gene symbols to `results_plus_vs_minus`.
 
-<br>
+# Instructions
 
 - One group member should share their screen in the breakout room. If nobody volunteers, a helper may randomly select someone.
 - The group members should discuss the exercise and work together to find a solution.
 - If there is time after a solution is found, allow all members to complete the exercise.
 
-<br>
+# Preliminaries
 
-- Add the gene symbols stored in the `GeneKey` object to the DE results table `res_WT` and store the new table in an object named `res_WT_anno`.
+First, let's download the mapping of ENSEMBL IDs to gene symbols **together**. Then we'll split into small groups to add the gene symbol column we want. We'll start by loading the `biomaRt` library and calling the `useEnsembl()` function to select the database we'll use to extract the information we need.
 
-
-> Hint:
-> 
-> Look at the documentation for either the `merge` function or the tidyverse `join` function for ideas on how to combine the `GeneKey` and `res_WT` tables
->
-
-```{r CheckKey}
-## check the biomaRt key we created to remember the structure
-head(GeneKey)
+```{r Pullmart, warning=FALSE}
+library('biomaRt')
+ensembl = useEnsembl(dataset = 'mmusculus_gene_ensembl', biomart='ensembl')
 ```
 
-<br>
+*Note that this process takes some time and will take up a larger amount of working memory so proceed with caution if you try to run these commands on a laptop with less than 4G of memory*
 
+To identify possible **filters** to restrict our data, we can use the `listFilters` function. To identify the **attributes** we want to retrive, we can use the `listAttributes` function. The best approach is to use [list or search functions](https://bioconductor.org/packages/release/bioc/vignettes/biomaRt/inst/doc/accessing_ensembl.html#how-to-build-a-biomart-query) to help narrow down the available options.
+
+```{r AddAnnotations2, warning=FALSE, eval=FALSE}
+head(listFilters(mart = ensembl), n = 20)
+head(listAttributes(ensembl), n = 30)
+```
+
+We can access additional genomic annotations using the [`bioMart` package](https://bioconductor.org/packages/release/bioc/html/biomaRt.html). To identify  we'll structure our 'query' or search of the bioMart resources to use the [ENSEMBL id](https://m.ensembl.org/info/genome/genebuild/gene_names.html) from our alignment to add the gene symbols and gene description for each gene.
+
+```{r AddAnotation3, warning=FALSE}
+id_mapping = getBM(attributes=c('ensembl_gene_id', 'external_gene_name'),
+      filters = 'ensembl_gene_id',
+      values = row.names(assay(dds)),
+      mart = ensembl)
+# will take some time to run
+
+# Preview the result
+head(id_mapping)
+```
+
+Now that we have the ENSEMBL information and a gene symbol to match to our results, we can proceed in the smaller groups. As with the previous exercise, we have broken it into small steps with hints as needed.
+
+**Note**: For additional information regarding bioMart, please consult the [ENSEMBL bioMart vignette](https://bioconductor.org/packages/release/bioc/vignettes/biomaRt/inst/doc/accessing_ensembl.html) or the broader [Bioconductor Annotation Resources vignette ](http://bioconductor.org/packages/devel/workflows/vignettes/annotation/inst/doc/Annotation_Resources.html).
+
+# Steps
+
+1. Look at the two data frames that are going to be needed for the exercise: `id_mapping` and `results_plus_vs_minus`.
 
 <details>
-    <summary>*Click for solution for adding annotations*</summary>
-    First, create a new table called `res_WT_anno` that includes a column with the ENSEMBL ids named `genes` using the `mutate` function. Then use the `left_join` function to combine the `GeneKey` table with the `res_WT` DE results.
-```{r updateDETableTidyr}
-res_WT_anno <- as.data.frame(res_WT) %>%
-  mutate(genes = row.names(res_WT)) %>%
-  left_join(GeneKey, by =c("genes" = "ensembl_gene_id")) %>%
-  relocate(c("genes", "external_gene_name")) # optionally, re-order columns to make output more readable
-
-head(res_WT_anno)
+<summary>Answer</summary>
+```{r preview_tables}
+head(id_mapping)
+head(results_plus_vs_minus)
 ```
-    Alternatively, if you are more familiar with base functions:
-```{r updateDETableBase}
-res_WT_anno <- res_WT # copy table
-res_WT_anno <- cbind(genes=row.names(res_WT_anno), res_WT_anno[ ,c(1:6)])
-res_WT_anno <- as.data.frame(res_WT_anno)
-
-# combine the two tables using the merge function (similar to join from `tidyverse`)
-res_WT_anno <- merge(GeneKey, res_WT_anno, by.x = "ensembl_gene_id", by.y="genes", all.x = FALSE, all.y = TRUE)
-
-head(res_WT_anno)
-```
-    Notice that not all genes were annotated with an ENSEMBl gene id or gene description. While we are able to annotate our results, this is a helpful reminder that gene symbol is often not a good unique identifier.
-
 </details>
+<br>
 
-  
-```{r WriteOut.RData, eval=FALSE, echo=FALSE, message=FALSE, warning=FALSE}
-#Hidden code block to write out data for knitting
-save.image(file = "rdata/RunningData.RData")
+2. Think about what column of `results_plus_vs_minus` we want to match to `id_mapping`, and then what column we want to extract values from in `id_mapping`.
+
+<details>
+<summary>Answer</summary>
+We want to match the `id` column of `results_plus_vs_minus` to the `ensembl_gene_id` column of `id_mapping`, and once that match is found, we want to extract the `external_gene_name` column of `id_mapping` to get the gene symbol.
+</details>
+<br>
+
+3. Look at the documentation for `dplyr::left_join()` and try to merge the `id_mapping` table into the `results_plus_vs_minus` table on the columns you identified above.
+
+<details>
+<summary>Answer</summary>
+```{r left_join}
+results_plus_vs_minus_annotated = results_plus_vs_minus %>%
+    left_join(id_mapping, by = c('id' = 'ensembl_gene_id'))
+head(results_plus_vs_minus_annotated)
 ```
+</details>
+<br>
+
+4. Optionally, how could we use some of the `tidyverse` functions we've encountered previously to rename the `external_gene_name` column to `symbol` and to move it into the second column position? Hint: Because of the order of the packages we may have loaded, consider using `dplyr::select()` instead of just the `select()` function. We can discuss why this is the case together.
+
+<details>
+<summary>Answer</summary>
+```{r rename_rearrange}
+results_plus_vs_minus_annotated = results_plus_vs_minus_annotated %>%
+    rename('symbol' = 'external_gene_name') %>%
+    dplyr::select(id, symbol, everything())
+results_plus_vs_minus_annotated
+```
+</details>
+<br>
 
 
+```{r WriteOut.RData, eval=FALSE, echo=FALSE, message=FALSE, warning=FALSE}
+# Hidden code block to write out data for knitting
+# save.image(file = 'rdata/RunningData.RData')
+```

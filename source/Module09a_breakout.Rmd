@@ -1,5 +1,5 @@
 ---
-title: "Day 3 - Module 09 Heatmap"
+title: "Breakout Exercise 1 - Expression Heatmap"
 author: "UM Bioinformatics Core"
 date: "`r Sys.Date()`"
 output:
@@ -10,36 +10,28 @@ output:
             toc: true
             toc_depth: 4
             toc_float: true
-            number_sections: true
+            number_sections: false
             fig_caption: true
             markdown: GFM
             code_download: true
 ---
+
 <style type="text/css">
-body{ /* Normal  */
-      font-size: 14pt;
-  }
-pre {
-  font-size: 12pt
+body, td {
+   font-size: 18px;
 }
 code.r{
-  font-size: 12pt;
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
 }
 </style>
 
-<!--- Allow the page to be wider --->
-<style>
-    body .main-container {
-        max-width: 1200px;
-    }
-</style>
-
-<br>
-
-# [Breakout Exercise 1] - Heatmap of top genes
-
-<br>
-
+```{r, include = FALSE}
+source("../bin/chunk-options.R")
+knitr_fig_path("09a-")
+```
 
 ```{r Modules, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
 library(DESeq2)
@@ -50,113 +42,124 @@ library(matrixStats)
 library(ggrepel)
 library(pheatmap)
 library(RColorBrewer)
-load("rdata/RunningData.RData")
+# load("rdata/RunningData.RData")
 ```
 
+Estimated time: **15 Minutes**
 
-**15 Minutes**
+# Motivation
 
-<br>
+Plotting the expression values across all samples for the top variable genes in an experiment can help to visualize how samples cluster together by their expression profiles. When combined with phenotypic data, it can help show how samples with different treatments behave relative to one another.
 
-It can be useful to visualize to visualize how our samples organize along with the expression pattern of individual genes. We will create a heatmap of the top most variable genes using the `pheatmap` function.
+# Exercise
 
-<br>
+Create a heatmap of the top 50 most variable genes using the `pheatmap()` function.
 
-### Instructions:
-
-<br>
+# Instructions
 
 - One group member should share their screen in the breakout room. If nobody volunteers, a helper may randomly select someone.
 - The group members should discuss the exercise and work together to find a solution.
 - If there is time after a solution is found, allow all members to complete the exercise.
 
-<br>
+# Example
 
-- First, create a object named `topVarGenes` that stores the top **50** most variable genes from our rlog normalized data (note that each row of `rld` corresponds to a gene).
-- Work from the inside to the outside when stringing together commands and test out each part to ensure the commands you enter are having the expected behavior.
+To get an idea of what we expect to see at the end, let's look at a toy example from the `pheatmap()` help examples. There's no need to run this code, we just want to illustrate the form of the result.
 
-> Hint:
-> 
-> The command `rowVars(assay(rld))` will return the row variance values, the command `base::order` will return an index of the input re-arranged into accending or decending order, and the `head` command or index referencing can be used to select the firstor last part of several data types. 
+```{r test_heatmap}
+# Copied from the pheatmap documentation
 
+# Create matrix with random normally distributed values
+test = matrix(rnorm(200), 20, 10)
 
-<br>
+# Impose some structure so the heatmap appears interesting
+test[1:10, seq(1, 10, 2)] = test[1:10, seq(1, 10, 2)] + 3
+test[11:20, seq(2, 10, 2)] = test[11:20, seq(2, 10, 2)] + 2
+test[15:20, seq(2, 10, 2)] = test[15:20, seq(2, 10, 2)] + 4
+
+# Name the rows and columns
+colnames(test) = paste("Test", 1:10, sep = "")
+rownames(test) = paste("Gene", 1:20, sep = "")
+
+# Draw the heatmap
+pheatmap(test)
+```
+
+# Steps
+
+1. Look at the documentation for the `pheatmap()` function and determine what the most important parameter is. Hint: It's usually the first or first few parameters. This is telling us what we'll have to get for the next step.
 
 <details>
-    <summary>*Click for solution*</summary>
-    Helpers - it may be helpful to guide learners through testing the steps needed to select the top 50 most variable genes. The below example is one possible solution.
-```{r TestSampleHeatmap}
-topVarGenes = rowVars(assay(rld))
-head(topVarGenes)
-
-orderedVars = order(topVarGenes)
-head(orderedVars)
-
-sortedVars = sort(topVarGenes)
-head(sortedVars)
-tail(sortedVars)
-
-?order
-orderedVars = order(topVarGenes, decreasing = TRUE)
-head(topVarGenes[orderedVars])
-
-orderedMat = assay(rld)[orderedVars, ]
-head(orderedMat)
-
-# 
-orderedMat = orderedMat[1:50, ]
-
-## Alternatively
-orderedMat = head(orderedMat, 50)
-
+<summary>Answer</summary>
+```{r pheatmap_help, eval = FALSE}
+?pheatmap
 ```
+
+For this exercise, we'll only need to use the `mat` parameter, giving the numeric matrix to be plotted.
 </details>
-
 <br>
 
-
-- Next, use `pheatmap` to plot the selected `topVarGenes` from `rld`. If you have time, try to scale by row to enhance any clusters of genes with similar expression across samples.  
-
-<br> 
-
-> Hint:
->
-> We can use `assay(rld)` to access the matrix of normalized data and we can use bracket notation ([rows,]) and the list of rows stored in `topVarGene` to only provide data for the 50 genes of interest.
-> 
-
-<br>
+2. Extract the rlog normalized expression values for the experiment. Hint: We created an `rld` object earlier. The `assay()` function pulls out the values.
 
 <details>
-    <summary>*Click for solution*</summary>
-```{r TestPheatmap}
-# plot with no arguments
-pheatmap(orderedMat)
-
-# plots with row scaled and assigned to 'p' to make writing to file easier
-p <- pheatmap(assay(rld)[topVarGenes,], scale = "row")
+<summary>Answer</summary>
+```{r extract_rld_expression}
+exp_mat = assay(rld)
+head(exp_mat)
 ```
 </details>
-
 <br>
 
-*Note, as mentioned in this [Biostars post](https://support.bioconductor.org/p/130336/), scaling by row in `pheatmap` will automatically scale the data to Z-scores.*
+3. Calculate the variance for each gene in the expression matrix we just extracted. Hint: Look at the help for `matrixStats::rowVars()` and decide if that's a reasonable function to use.
 
-<br>
-
-Finally, to **output** the plot to file, use the `pdf()` function:
-```{r ExerciseOutput}
-if (!dir.exists(plotPath)) {dir.create(plotPath)}
-pdf(file = paste0(plotPath, 'Top_heatmap_rlog_', Comparison, '.pdf'), onefile = TRUE)
-p
-dev.off()
+<details>
+<summary>Answer</summary>
+```{r calc_row_vars}
+gene_vars = rowVars(exp_mat)
+head(gene_vars)
 ```
+</details>
+<br>
 
+4. Get the numerical indices for the top 50 most variable genes. Hint: Run the `order()` function on a toy example, like `order(c(-1.25, 1.3, 5.6, 2.1))`, and think about what is being returned. Note, it's not the values in the original vector. Then look at the help for `order()` and figure out how how to reverse what is returned.
 
+<details>
+<summary>Answer</summary>
+```{r order_vars}
+order(c(-1.25, 1.3, 5.6, 2.1))
+order(c(-1.25, 1.3, 5.6, 2.1), decreasing = TRUE)
 
-  
+ordered_idx = order(gene_vars, decreasing = TRUE)
+top_50_idx = ordered_idx[1:50]
+```
+</details>
+<br>
+
+5. Subset the expression matrix from step 2 using this index vector. Hint: Remember square-bracket notation, and that we want to subset the rows, while returning all the columns. Make sure the result has the number of rows you expect, that is, 50.
+
+<details>
+<summary>Answer</summary>
+```{r extract_top_exp}
+top_var_exp_mat = exp_mat[top_50_idx, ]
+dim(top_var_exp_mat)
+```
+</details>
+<br>
+
+6. Create a heatmap using this subsetted expression matrix using the `pheatmap()` function.
+
+<details>
+<summary>Answer</summary>
+```{r create_heatmap}
+pheatmap(top_var_exp_mat)
+```
+</details>
+<br>
+
+# Saving the result
+
+If time permits, discuss with your group how you might save this heatmap. Hint: Look at the parameters for the function in `?pheatmap`. Alternatively, consider how we saved the PCA in the previous module.
+
 ```{r WriteOut.RData, eval=FALSE, echo=FALSE, message=FALSE, warning=FALSE}
 #Hidden code block to write out data for knitting
-save.image(file = "rdata/RunningData.RData")
+# save.image(file = "rdata/RunningData.RData")
 ```
-
-

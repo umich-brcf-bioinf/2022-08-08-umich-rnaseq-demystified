@@ -51,9 +51,9 @@ render_site('source/Module08_DESeq2DE.Rmd')
 render_site('source/Module09_SampleQCViz.Rmd')
 render_site('source/Module09a_breakout.Rmd')
 render_site('source/Module10_DEComparisons.Rmd')
-render_site('source/Module11X_BonusContent.Rmd')
 render_site('source/Module11_DEVisualizations.Rmd')
 render_site('source/Module11a_breakout.Rmd')
+render_site('source/Module11X_BonusContent.Rmd')
 
 render_site('source/Module99_Wrap_up.md')
 

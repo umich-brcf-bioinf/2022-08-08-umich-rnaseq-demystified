@@ -11,9 +11,9 @@
 
 <meta name="author" content="UM Bioinformatics Core" />
 
-<meta name="date" content="2022-08-01" />
+<meta name="date" content="2022-08-04" />
 
-<title>Day 3 - Module 11 Gene Annotations</title>
+<title>Breakout Exercise 2 - Gene Annotations</title>
 
 <script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -459,42 +459,54 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Day 3 - Module 11 Gene Annotations</h1>
+<h1 class="title toc-ignore">Breakout Exercise 2 - Gene Annotations</h1>
 <h4 class="author">UM Bioinformatics Core</h4>
-<h4 class="date">2022-08-01</h4>
+<h4 class="date">2022-08-04</h4>
 
 </div>
 
 
-<style type="text/css">
-body{ /* Normal  */
-      font-size: 14pt;
-  }
-pre {
-  font-size: 12pt
+<style type='text/css'>
+body, td {
+   font-size: 18px;
 }
 code.r{
-  font-size: 12pt;
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
 }
 </style>
-<!--- Allow the page to be wider --->
-<style>
-    body .main-container {
-        max-width: 1200px;
-    }
-</style>
-<p><br></p>
-<div id="breakout-exercise-2---finding-annotations"
-class="section level1" number="1">
-<h1><span class="header-section-number">1</span> [Breakout Exercise 2] -
-Finding annotations</h1>
-<p><br></p>
-<p><strong>15 Minutes</strong></p>
-<p><br></p>
-<p><br></p>
-<div id="instructions" class="section level3" number="1.0.1">
-<h3><span class="header-section-number">1.0.1</span> Instructions:</h3>
-<p><br></p>
+<p>Estimated time: <strong>15 Minutes</strong></p>
+<div id="motivation" class="section level1">
+<h1>Motivation</h1>
+<p>The data from from our differential expression test
+(<code>result_plus_vs_minus</code>) is an important result from our
+analysis.</p>
+<pre class="r"><code>head(results_plus_vs_minus)</code></pre>
+<pre><code># A tibble: 6 × 7
+  id                 baseMean log2FoldChange lfcSE  stat   pvalue     padj
+  &lt;chr&gt;                 &lt;dbl&gt;          &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
+1 ENSMUSG00000032715   1178.          -3.64  0.450 -8.10 5.72e-16 7.08e-12
+2 ENSMUSG00000101645     77.3         10.1   1.33   7.58 3.42e-14 2.12e-10
+3 ENSMUSG00000027313    243.          -2.67  0.410 -6.50 7.96e-11 2.47e- 7
+4 ENSMUSG00000027889   3250.          -0.946 0.145 -6.52 7.00e-11 2.47e- 7
+5 ENSMUSG00000054136     92.6         -3.39  0.526 -6.44 1.19e-10 2.95e- 7
+6 ENSMUSG00000020142    625.          -1.72  0.287 -5.99 2.07e- 9 4.28e- 6</code></pre>
+<p>Looking at the first few rows, we notice that the genes are labelled
+with their ENSEMBL identifiers, e.g. ENSMUSG00000000056. It is quite
+rare that anyone will know off the top of their head which gene is
+associated with any given ENSEMBL identifier; we tend to think of genes
+by their symbols, e.g. Tp53.</p>
+</div>
+<div id="exercise" class="section level1">
+<h1>Exercise</h1>
+<p>Using the <code>biomaRt</code> package, to map ENSEMBL IDs to gene
+symnbols, add a column with the gene symbols to
+<code>results_plus_vs_minus</code>.</p>
+</div>
+<div id="instructions" class="section level1">
+<h1>Instructions</h1>
 <ul>
 <li>One group member should share their screen in the breakout room. If
 nobody volunteers, a helper may randomly select someone.</li>
@@ -503,89 +515,169 @@ find a solution.</li>
 <li>If there is time after a solution is found, allow all members to
 complete the exercise.</li>
 </ul>
-<p><br></p>
-<ul>
-<li>Add the gene symbols stored in the <code>GeneKey</code> object to
-the DE results table <code>res_WT</code> and store the new table in an
-object named <code>res_WT_anno</code>.</li>
-</ul>
-<blockquote>
-<p>Hint:</p>
-<p>Look at the documentation for either the <code>merge</code> function
-or the tidyverse <code>join</code> function for ideas on how to combine
-the <code>GeneKey</code> and <code>res_WT</code> tables</p>
-</blockquote>
-<pre class="r"><code>## check the biomaRt key we created to remember the structure
-head(GeneKey)</code></pre>
-<pre><code>##      ensembl_gene_id external_gene_name
-## 1 ENSMUSG00000000001              Gnai3
-## 2 ENSMUSG00000000028              Cdc45
-## 3 ENSMUSG00000000031                H19
-## 4 ENSMUSG00000000037              Scml2
-## 5 ENSMUSG00000000049               Apoh
-## 6 ENSMUSG00000000056               Narf</code></pre>
-<p><br></p>
+</div>
+<div id="preliminaries" class="section level1">
+<h1>Preliminaries</h1>
+<p>First, let’s download the mapping of ENSEMBL IDs to gene symbols
+<strong>together</strong>. Then we’ll split into small groups to add the
+gene symbol column we want. We’ll start by loading the
+<code>biomaRt</code> library and calling the <code>useEnsembl()</code>
+function to select the database we’ll use to extract the information we
+need.</p>
+<pre class="r"><code>library(&#39;biomaRt&#39;)
+ensembl = useEnsembl(dataset = &#39;mmusculus_gene_ensembl&#39;, biomart=&#39;ensembl&#39;)</code></pre>
+<p><em>Note that this process takes some time and will take up a larger
+amount of working memory so proceed with caution if you try to run these
+commands on a laptop with less than 4G of memory</em></p>
+<p>To identify possible <strong>filters</strong> to restrict our data,
+we can use the <code>listFilters</code> function. To identify the
+<strong>attributes</strong> we want to retrive, we can use the
+<code>listAttributes</code> function. The best approach is to use <a
+href="https://bioconductor.org/packages/release/bioc/vignettes/biomaRt/inst/doc/accessing_ensembl.html#how-to-build-a-biomart-query">list
+or search functions</a> to help narrow down the available options.</p>
+<pre class="r"><code>head(listFilters(mart = ensembl), n = 20)
+head(listAttributes(ensembl), n = 30)</code></pre>
+<p>We can access additional genomic annotations using the <a
+href="https://bioconductor.org/packages/release/bioc/html/biomaRt.html"><code>bioMart</code>
+package</a>. To identify we’ll structure our ‘query’ or search of the
+bioMart resources to use the <a
+href="https://m.ensembl.org/info/genome/genebuild/gene_names.html">ENSEMBL
+id</a> from our alignment to add the gene symbols and gene description
+for each gene.</p>
+<pre class="r"><code>id_mapping = getBM(attributes=c(&#39;ensembl_gene_id&#39;, &#39;external_gene_name&#39;),
+      filters = &#39;ensembl_gene_id&#39;,
+      values = row.names(assay(dds)),
+      mart = ensembl)
+# will take some time to run
+
+# Preview the result
+head(id_mapping)</code></pre>
+<pre><code>     ensembl_gene_id external_gene_name
+1 ENSMUSG00000000001              Gnai3
+2 ENSMUSG00000000028              Cdc45
+3 ENSMUSG00000000031                H19
+4 ENSMUSG00000000037              Scml2
+5 ENSMUSG00000000049               Apoh
+6 ENSMUSG00000000056               Narf</code></pre>
+<p>Now that we have the ENSEMBL information and a gene symbol to match
+to our results, we can proceed in the smaller groups. As with the
+previous exercise, we have broken it into small steps with hints as
+needed.</p>
+<p><strong>Note</strong>: For additional information regarding bioMart,
+please consult the <a
+href="https://bioconductor.org/packages/release/bioc/vignettes/biomaRt/inst/doc/accessing_ensembl.html">ENSEMBL
+bioMart vignette</a> or the broader <a
+href="http://bioconductor.org/packages/devel/workflows/vignettes/annotation/inst/doc/Annotation_Resources.html">Bioconductor
+Annotation Resources vignette</a>.</p>
+</div>
+<div id="steps" class="section level1">
+<h1>Steps</h1>
+<ol style="list-style-type: decimal">
+<li>Look at the two data frames that are going to be needed for the
+exercise: <code>id_mapping</code> and
+<code>results_plus_vs_minus</code>.</li>
+</ol>
 <details>
 <summary>
-<em>Click for solution for adding annotations</em>
+Answer
 </summary>
-<p>First, create a new table called <code>res_WT_anno</code> that
-includes a column with the ENSEMBL ids named <code>genes</code> using
-the <code>mutate</code> function. Then use the <code>left_join</code>
-function to combine the <code>GeneKey</code> table with the
-<code>res_WT</code> DE results.</p>
-<pre class="r"><code>res_WT_anno &lt;- as.data.frame(res_WT) %&gt;%
-  mutate(genes = row.names(res_WT)) %&gt;%
-  left_join(GeneKey, by =c(&quot;genes&quot; = &quot;ensembl_gene_id&quot;)) %&gt;%
-  relocate(c(&quot;genes&quot;, &quot;external_gene_name&quot;)) # optionally, re-order columns to make output more readable
-
-head(res_WT_anno)</code></pre>
-<pre><code>##                genes external_gene_name    baseMean log2FoldChange
-## 1 ENSMUSG00000000001              Gnai3 6255.632164   -0.014024321
-## 2 ENSMUSG00000000028              Cdc45 1337.874474    0.522421732
-## 3 ENSMUSG00000000031                H19    3.773571   -1.156597290
-## 4 ENSMUSG00000000037              Scml2   27.563275   -0.279611867
-## 5 ENSMUSG00000000049               Apoh    2.256350    4.010718329
-## 6 ENSMUSG00000000056               Narf 2194.251314   -0.008544091
-##        lfcSE        stat       pvalue        padj
-## 1 0.09301588 -0.15077341 0.8801544640 0.960702559
-## 2 0.13599465  3.84148730 0.0001222911 0.003948693
-## 3 1.60080258 -0.72251088 0.4699804359          NA
-## 4 0.47655119 -0.58674046 0.5573780290 0.804647138
-## 5 1.88912289  2.12305846 0.0337489531          NA
-## 6 0.17722204 -0.04821122 0.9615479086 0.987888734</code></pre>
-<p>Alternatively, if you are more familiar with base functions:</p>
-<pre class="r"><code>res_WT_anno &lt;- res_WT # copy table
-res_WT_anno &lt;- cbind(genes=row.names(res_WT_anno), res_WT_anno[ ,c(1:6)])
-res_WT_anno &lt;- as.data.frame(res_WT_anno)
-
-# combine the two tables using the merge function (similar to join from `tidyverse`)
-res_WT_anno &lt;- merge(GeneKey, res_WT_anno, by.x = &quot;ensembl_gene_id&quot;, by.y=&quot;genes&quot;, all.x = FALSE, all.y = TRUE)
-
-head(res_WT_anno)</code></pre>
-<pre><code>##      ensembl_gene_id external_gene_name    baseMean log2FoldChange
-## 1 ENSMUSG00000000001              Gnai3 6255.632164   -0.014024321
-## 2 ENSMUSG00000000028              Cdc45 1337.874474    0.522421732
-## 3 ENSMUSG00000000031                H19    3.773571   -1.156597290
-## 4 ENSMUSG00000000037              Scml2   27.563275   -0.279611867
-## 5 ENSMUSG00000000049               Apoh    2.256350    4.010718329
-## 6 ENSMUSG00000000056               Narf 2194.251314   -0.008544091
-##        lfcSE        stat       pvalue        padj
-## 1 0.09301588 -0.15077341 0.8801544640 0.960702559
-## 2 0.13599465  3.84148730 0.0001222911 0.003948693
-## 3 1.60080258 -0.72251088 0.4699804359          NA
-## 4 0.47655119 -0.58674046 0.5573780290 0.804647138
-## 5 1.88912289  2.12305846 0.0337489531          NA
-## 6 0.17722204 -0.04821122 0.9615479086 0.987888734</code></pre>
-<p>Notice that not all genes were annotated with an ENSEMBl gene id or
-gene description. While we are able to annotate our results, this is a
-helpful reminder that gene symbol is often not a good unique
-identifier.</p>
+<pre class="r"><code>head(id_mapping)</code></pre>
+<pre><code>     ensembl_gene_id external_gene_name
+1 ENSMUSG00000000001              Gnai3
+2 ENSMUSG00000000028              Cdc45
+3 ENSMUSG00000000031                H19
+4 ENSMUSG00000000037              Scml2
+5 ENSMUSG00000000049               Apoh
+6 ENSMUSG00000000056               Narf</code></pre>
+<pre class="r"><code>head(results_plus_vs_minus)</code></pre>
+<pre><code># A tibble: 6 × 7
+  id                 baseMean log2FoldChange lfcSE  stat   pvalue     padj
+  &lt;chr&gt;                 &lt;dbl&gt;          &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
+1 ENSMUSG00000032715   1178.          -3.64  0.450 -8.10 5.72e-16 7.08e-12
+2 ENSMUSG00000101645     77.3         10.1   1.33   7.58 3.42e-14 2.12e-10
+3 ENSMUSG00000027313    243.          -2.67  0.410 -6.50 7.96e-11 2.47e- 7
+4 ENSMUSG00000027889   3250.          -0.946 0.145 -6.52 7.00e-11 2.47e- 7
+5 ENSMUSG00000054136     92.6         -3.39  0.526 -6.44 1.19e-10 2.95e- 7
+6 ENSMUSG00000020142    625.          -1.72  0.287 -5.99 2.07e- 9 4.28e- 6</code></pre>
 </details>
-</div>
+<p><br></p>
+<ol start="2" style="list-style-type: decimal">
+<li>Think about what column of <code>results_plus_vs_minus</code> we
+want to match to <code>id_mapping</code>, and then what column we want
+to extract values from in <code>id_mapping</code>.</li>
+</ol>
+<details>
+<summary>
+Answer
+</summary>
+We want to match the <code>id</code> column of
+<code>results_plus_vs_minus</code> to the <code>ensembl_gene_id</code>
+column of <code>id_mapping</code>, and once that match is found, we want
+to extract the <code>external_gene_name</code> column of
+<code>id_mapping</code> to get the gene symbol.
+</details>
+<p><br></p>
+<ol start="3" style="list-style-type: decimal">
+<li>Look at the documentation for <code>dplyr::left_join()</code> and
+try to merge the <code>id_mapping</code> table into the
+<code>results_plus_vs_minus</code> table on the columns you identified
+above.</li>
+</ol>
+<details>
+<summary>
+Answer
+</summary>
+<pre class="r"><code>results_plus_vs_minus_annotated = results_plus_vs_minus %&gt;%
+    left_join(id_mapping, by = c(&#39;id&#39; = &#39;ensembl_gene_id&#39;))
+head(results_plus_vs_minus_annotated)</code></pre>
+<pre><code># A tibble: 6 × 8
+  id                 baseMean log2FoldChange lfcSE  stat   pvalue     padj external_gene_name
+  &lt;chr&gt;                 &lt;dbl&gt;          &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;             
+1 ENSMUSG00000032715   1178.          -3.64  0.450 -8.10 5.72e-16 7.08e-12 Trib3             
+2 ENSMUSG00000101645     77.3         10.1   1.33   7.58 3.42e-14 2.12e-10 Gm28635           
+3 ENSMUSG00000027313    243.          -2.67  0.410 -6.50 7.96e-11 2.47e- 7 Chac1             
+4 ENSMUSG00000027889   3250.          -0.946 0.145 -6.52 7.00e-11 2.47e- 7 Ampd2             
+5 ENSMUSG00000054136     92.6         -3.39  0.526 -6.44 1.19e-10 2.95e- 7 Adm2              
+6 ENSMUSG00000020142    625.          -1.72  0.287 -5.99 2.07e- 9 4.28e- 6 Slc1a4            </code></pre>
+</details>
+<p><br></p>
+<ol start="4" style="list-style-type: decimal">
+<li>Optionally, how could we use some of the <code>tidyverse</code>
+functions we’ve encountered previously to rename the
+<code>external_gene_name</code> column to <code>symbol</code> and to
+move it into the second column position? Hint: Because of the order of
+the packages we may have loaded, consider using
+<code>dplyr::select()</code> instead of just the <code>select()</code>
+function. We can discuss why this is the case together.</li>
+</ol>
+<details>
+<summary>
+Answer
+</summary>
+<pre class="r"><code>results_plus_vs_minus_annotated = results_plus_vs_minus_annotated %&gt;%
+    rename(&#39;symbol&#39; = &#39;external_gene_name&#39;) %&gt;%
+    dplyr::select(id, symbol, everything())
+results_plus_vs_minus_annotated</code></pre>
+<pre><code># A tibble: 16,249 × 8
+   id                 symbol   baseMean log2FoldChange lfcSE  stat   pvalue     padj
+   &lt;chr&gt;              &lt;chr&gt;       &lt;dbl&gt;          &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
+ 1 ENSMUSG00000032715 Trib3      1178.          -3.64  0.450 -8.10 5.72e-16 7.08e-12
+ 2 ENSMUSG00000101645 Gm28635      77.3         10.1   1.33   7.58 3.42e-14 2.12e-10
+ 3 ENSMUSG00000027313 Chac1       243.          -2.67  0.410 -6.50 7.96e-11 2.47e- 7
+ 4 ENSMUSG00000027889 Ampd2      3250.          -0.946 0.145 -6.52 7.00e-11 2.47e- 7
+ 5 ENSMUSG00000054136 Adm2         92.6         -3.39  0.526 -6.44 1.19e-10 2.95e- 7
+ 6 ENSMUSG00000020142 Slc1a4      625.          -1.72  0.287 -5.99 2.07e- 9 4.28e- 6
+ 7 ENSMUSG00000040280 Ndufa4l2     85.9         -3.62  0.628 -5.75 8.68e- 9 1.54e- 5
+ 8 ENSMUSG00000023951 Vegfa       350.          -2.44  0.432 -5.64 1.67e- 8 2.59e- 5
+ 9 ENSMUSG00000027737 Slc7a11     119.          -2.32  0.429 -5.41 6.47e- 8 8.02e- 5
+10 ENSMUSG00000115420 Rmrp         16.0         21.1   3.91   5.41 6.42e- 8 8.02e- 5
+# … with 16,239 more rows
+# ℹ Use `print(n = ...)` to see more rows</code></pre>
+</details>
+<p><br></p>
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiRGF5IDMgLSBNb2R1bGUgMTEgR2VuZSBBbm5vdGF0aW9ucyIKYXV0aG9yOiAiVU0gQmlvaW5mb3JtYXRpY3MgQ29yZSIKZGF0ZTogImByIFN5cy5EYXRlKClgIgpvdXRwdXQ6CiAgICAgICAgaHRtbF9kb2N1bWVudDoKICAgICAgICAgICAgaW5jbHVkZXM6CiAgICAgICAgICAgICAgICBpbl9oZWFkZXI6IGhlYWRlci5odG1sCiAgICAgICAgICAgIHRoZW1lOiBwYXBlcgogICAgICAgICAgICB0b2M6IHRydWUKICAgICAgICAgICAgdG9jX2RlcHRoOiA0CiAgICAgICAgICAgIHRvY19mbG9hdDogdHJ1ZQogICAgICAgICAgICBudW1iZXJfc2VjdGlvbnM6IHRydWUKICAgICAgICAgICAgZmlnX2NhcHRpb246IHRydWUKICAgICAgICAgICAgbWFya2Rvd246IEdGTQogICAgICAgICAgICBjb2RlX2Rvd25sb2FkOiB0cnVlCi0tLQo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgpib2R5eyAvKiBOb3JtYWwgICovCiAgICAgIGZvbnQtc2l6ZTogMTRwdDsKICB9CnByZSB7CiAgZm9udC1zaXplOiAxMnB0Cn0KY29kZS5yewogIGZvbnQtc2l6ZTogMTJwdDsKfQo8L3N0eWxlPgoKPCEtLS0gQWxsb3cgdGhlIHBhZ2UgdG8gYmUgd2lkZXIgLS0tPgo8c3R5bGU+CiAgICBib2R5IC5tYWluLWNvbnRhaW5lciB7CiAgICAgICAgbWF4LXdpZHRoOiAxMjAwcHg7CiAgICB9Cjwvc3R5bGU+Cgo8YnI+CgojIFtCcmVha291dCBFeGVyY2lzZSAyXSAtIEZpbmRpbmcgYW5ub3RhdGlvbnMKCjxicj4KCgpgYGB7ciBNb2R1bGVzLCBldmFsPVRSVUUsIGVjaG89RkFMU0UsIG1lc3NhZ2U9RkFMU0UsIHdhcm5pbmc9RkFMU0V9CmxpYnJhcnkoREVTZXEyKQpsaWJyYXJ5KGdncGxvdDIpCmxpYnJhcnkodGlkeXIpCmxpYnJhcnkoZHBseXIpCmxpYnJhcnkobWF0cml4U3RhdHMpCmxpYnJhcnkoZ2dyZXBlbCkKbGlicmFyeShwaGVhdG1hcCkKbGlicmFyeShSQ29sb3JCcmV3ZXIpCmxvYWQoInJkYXRhL1J1bm5pbmdEYXRhLlJEYXRhIikKYGBgCgoKKioxNSBNaW51dGVzKioKCjxicj4KCgoKPGJyPgoKIyMjIEluc3RydWN0aW9uczoKCjxicj4KCi0gT25lIGdyb3VwIG1lbWJlciBzaG91bGQgc2hhcmUgdGhlaXIgc2NyZWVuIGluIHRoZSBicmVha291dCByb29tLiBJZiBub2JvZHkgdm9sdW50ZWVycywgYSBoZWxwZXIgbWF5IHJhbmRvbWx5IHNlbGVjdCBzb21lb25lLgotIFRoZSBncm91cCBtZW1iZXJzIHNob3VsZCBkaXNjdXNzIHRoZSBleGVyY2lzZSBhbmQgd29yayB0b2dldGhlciB0byBmaW5kIGEgc29sdXRpb24uCi0gSWYgdGhlcmUgaXMgdGltZSBhZnRlciBhIHNvbHV0aW9uIGlzIGZvdW5kLCBhbGxvdyBhbGwgbWVtYmVycyB0byBjb21wbGV0ZSB0aGUgZXhlcmNpc2UuCgo8YnI+CgotIEFkZCB0aGUgZ2VuZSBzeW1ib2xzIHN0b3JlZCBpbiB0aGUgYEdlbmVLZXlgIG9iamVjdCB0byB0aGUgREUgcmVzdWx0cyB0YWJsZSBgcmVzX1dUYCBhbmQgc3RvcmUgdGhlIG5ldyB0YWJsZSBpbiBhbiBvYmplY3QgbmFtZWQgYHJlc19XVF9hbm5vYC4KCgo+IEhpbnQ6Cj4gCj4gTG9vayBhdCB0aGUgZG9jdW1lbnRhdGlvbiBmb3IgZWl0aGVyIHRoZSBgbWVyZ2VgIGZ1bmN0aW9uIG9yIHRoZSB0aWR5dmVyc2UgYGpvaW5gIGZ1bmN0aW9uIGZvciBpZGVhcyBvbiBob3cgdG8gY29tYmluZSB0aGUgYEdlbmVLZXlgIGFuZCBgcmVzX1dUYCB0YWJsZXMKPgoKYGBge3IgQ2hlY2tLZXl9CiMjIGNoZWNrIHRoZSBiaW9tYVJ0IGtleSB3ZSBjcmVhdGVkIHRvIHJlbWVtYmVyIHRoZSBzdHJ1Y3R1cmUKaGVhZChHZW5lS2V5KQpgYGAKCjxicj4KCgo8ZGV0YWlscz4KICAgIDxzdW1tYXJ5PipDbGljayBmb3Igc29sdXRpb24gZm9yIGFkZGluZyBhbm5vdGF0aW9ucyo8L3N1bW1hcnk+CiAgICBGaXJzdCwgY3JlYXRlIGEgbmV3IHRhYmxlIGNhbGxlZCBgcmVzX1dUX2Fubm9gIHRoYXQgaW5jbHVkZXMgYSBjb2x1bW4gd2l0aCB0aGUgRU5TRU1CTCBpZHMgbmFtZWQgYGdlbmVzYCB1c2luZyB0aGUgYG11dGF0ZWAgZnVuY3Rpb24uIFRoZW4gdXNlIHRoZSBgbGVmdF9qb2luYCBmdW5jdGlvbiB0byBjb21iaW5lIHRoZSBgR2VuZUtleWAgdGFibGUgd2l0aCB0aGUgYHJlc19XVGAgREUgcmVzdWx0cy4KYGBge3IgdXBkYXRlREVUYWJsZVRpZHlyfQpyZXNfV1RfYW5ubyA8LSBhcy5kYXRhLmZyYW1lKHJlc19XVCkgJT4lCiAgbXV0YXRlKGdlbmVzID0gcm93Lm5hbWVzKHJlc19XVCkpICU+JQogIGxlZnRfam9pbihHZW5lS2V5LCBieSA9YygiZ2VuZXMiID0gImVuc2VtYmxfZ2VuZV9pZCIpKSAlPiUKICByZWxvY2F0ZShjKCJnZW5lcyIsICJleHRlcm5hbF9nZW5lX25hbWUiKSkgIyBvcHRpb25hbGx5LCByZS1vcmRlciBjb2x1bW5zIHRvIG1ha2Ugb3V0cHV0IG1vcmUgcmVhZGFibGUKCmhlYWQocmVzX1dUX2Fubm8pCmBgYAogICAgQWx0ZXJuYXRpdmVseSwgaWYgeW91IGFyZSBtb3JlIGZhbWlsaWFyIHdpdGggYmFzZSBmdW5jdGlvbnM6CmBgYHtyIHVwZGF0ZURFVGFibGVCYXNlfQpyZXNfV1RfYW5ubyA8LSByZXNfV1QgIyBjb3B5IHRhYmxlCnJlc19XVF9hbm5vIDwtIGNiaW5kKGdlbmVzPXJvdy5uYW1lcyhyZXNfV1RfYW5ubyksIHJlc19XVF9hbm5vWyAsYygxOjYpXSkKcmVzX1dUX2Fubm8gPC0gYXMuZGF0YS5mcmFtZShyZXNfV1RfYW5ubykKCiMgY29tYmluZSB0aGUgdHdvIHRhYmxlcyB1c2luZyB0aGUgbWVyZ2UgZnVuY3Rpb24gKHNpbWlsYXIgdG8gam9pbiBmcm9tIGB0aWR5dmVyc2VgKQpyZXNfV1RfYW5ubyA8LSBtZXJnZShHZW5lS2V5LCByZXNfV1RfYW5ubywgYnkueCA9ICJlbnNlbWJsX2dlbmVfaWQiLCBieS55PSJnZW5lcyIsIGFsbC54ID0gRkFMU0UsIGFsbC55ID0gVFJVRSkKCmhlYWQocmVzX1dUX2Fubm8pCmBgYAogICAgTm90aWNlIHRoYXQgbm90IGFsbCBnZW5lcyB3ZXJlIGFubm90YXRlZCB3aXRoIGFuIEVOU0VNQmwgZ2VuZSBpZCBvciBnZW5lIGRlc2NyaXB0aW9uLiBXaGlsZSB3ZSBhcmUgYWJsZSB0byBhbm5vdGF0ZSBvdXIgcmVzdWx0cywgdGhpcyBpcyBhIGhlbHBmdWwgcmVtaW5kZXIgdGhhdCBnZW5lIHN5bWJvbCBpcyBvZnRlbiBub3QgYSBnb29kIHVuaXF1ZSBpZGVudGlmaWVyLgoKPC9kZXRhaWxzPgoKICAKYGBge3IgV3JpdGVPdXQuUkRhdGEsIGV2YWw9RkFMU0UsIGVjaG89RkFMU0UsIG1lc3NhZ2U9RkFMU0UsIHdhcm5pbmc9RkFMU0V9CiNIaWRkZW4gY29kZSBibG9jayB0byB3cml0ZSBvdXQgZGF0YSBmb3Iga25pdHRpbmcKc2F2ZS5pbWFnZShmaWxlID0gInJkYXRhL1J1bm5pbmdEYXRhLlJEYXRhIikKYGBgCgoK</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAnQnJlYWtvdXQgRXhlcmNpc2UgMiAtIEdlbmUgQW5ub3RhdGlvbnMnCmF1dGhvcjogJ1VNIEJpb2luZm9ybWF0aWNzIENvcmUnCmRhdGU6ICdgciBTeXMuRGF0ZSgpYCcKb3V0cHV0OgogICAgICAgIGh0bWxfZG9jdW1lbnQ6CiAgICAgICAgICAgIGluY2x1ZGVzOgogICAgICAgICAgICAgICAgaW5faGVhZGVyOiBoZWFkZXIuaHRtbAogICAgICAgICAgICB0aGVtZTogcGFwZXIKICAgICAgICAgICAgdG9jOiB0cnVlCiAgICAgICAgICAgIHRvY19kZXB0aDogNAogICAgICAgICAgICB0b2NfZmxvYXQ6IHRydWUKICAgICAgICAgICAgbnVtYmVyX3NlY3Rpb25zOiBmYWxzZQogICAgICAgICAgICBmaWdfY2FwdGlvbjogdHJ1ZQogICAgICAgICAgICBtYXJrZG93bjogR0ZNCiAgICAgICAgICAgIGNvZGVfZG93bmxvYWQ6IHRydWUKLS0tCgo8c3R5bGUgdHlwZT0ndGV4dC9jc3MnPgpib2R5LCB0ZCB7CiAgIGZvbnQtc2l6ZTogMThweDsKfQpjb2RlLnJ7CiAgZm9udC1zaXplOiAxMnB4Owp9CnByZSB7CiAgZm9udC1zaXplOiAxMnB4Cn0KPC9zdHlsZT4KCmBgYHtyLCBpbmNsdWRlID0gRkFMU0V9CnNvdXJjZSgnLi4vYmluL2NodW5rLW9wdGlvbnMuUicpCmtuaXRyX2ZpZ19wYXRoKCcxMWEtJykKYGBgCgpgYGB7ciBNb2R1bGVzLCBldmFsPVRSVUUsIGVjaG89RkFMU0UsIG1lc3NhZ2U9RkFMU0UsIHdhcm5pbmc9RkFMU0V9CmxpYnJhcnkoREVTZXEyKQpsaWJyYXJ5KGdncGxvdDIpCmxpYnJhcnkodGlkeXIpCmxpYnJhcnkoZHBseXIpCmxpYnJhcnkobWF0cml4U3RhdHMpCmxpYnJhcnkoZ2dyZXBlbCkKbGlicmFyeShwaGVhdG1hcCkKbGlicmFyeShSQ29sb3JCcmV3ZXIpCmBgYAoKRXN0aW1hdGVkIHRpbWU6ICoqMTUgTWludXRlcyoqCgojIE1vdGl2YXRpb24KClRoZSBkYXRhIGZyb20gZnJvbSBvdXIgZGlmZmVyZW50aWFsIGV4cHJlc3Npb24gdGVzdCAoYHJlc3VsdF9wbHVzX3ZzX21pbnVzYCkgaXMgYW4gaW1wb3J0YW50IHJlc3VsdCBmcm9tIG91ciBhbmFseXNpcy4KCmBgYHtyIHJlc3VsdF9wcmV2aWV3fQpoZWFkKHJlc3VsdHNfcGx1c192c19taW51cykKYGBgCgpMb29raW5nIGF0IHRoZSBmaXJzdCBmZXcgcm93cywgd2Ugbm90aWNlIHRoYXQgdGhlIGdlbmVzIGFyZSBsYWJlbGxlZCB3aXRoIHRoZWlyIEVOU0VNQkwgaWRlbnRpZmllcnMsIGUuZy4gRU5TTVVTRzAwMDAwMDAwMDU2LiBJdCBpcyBxdWl0ZSByYXJlIHRoYXQgYW55b25lIHdpbGwga25vdyBvZmYgdGhlIHRvcCBvZiB0aGVpciBoZWFkIHdoaWNoIGdlbmUgaXMgYXNzb2NpYXRlZCB3aXRoIGFueSBnaXZlbiBFTlNFTUJMIGlkZW50aWZpZXI7IHdlIHRlbmQgdG8gdGhpbmsgb2YgZ2VuZXMgYnkgdGhlaXIgc3ltYm9scywgZS5nLiBUcDUzLgoKIyBFeGVyY2lzZQoKVXNpbmcgdGhlIGBiaW9tYVJ0YCBwYWNrYWdlLCB0byBtYXAgRU5TRU1CTCBJRHMgdG8gZ2VuZSBzeW1uYm9scywgYWRkIGEgY29sdW1uIHdpdGggdGhlIGdlbmUgc3ltYm9scyB0byBgcmVzdWx0c19wbHVzX3ZzX21pbnVzYC4KCiMgSW5zdHJ1Y3Rpb25zCgotIE9uZSBncm91cCBtZW1iZXIgc2hvdWxkIHNoYXJlIHRoZWlyIHNjcmVlbiBpbiB0aGUgYnJlYWtvdXQgcm9vbS4gSWYgbm9ib2R5IHZvbHVudGVlcnMsIGEgaGVscGVyIG1heSByYW5kb21seSBzZWxlY3Qgc29tZW9uZS4KLSBUaGUgZ3JvdXAgbWVtYmVycyBzaG91bGQgZGlzY3VzcyB0aGUgZXhlcmNpc2UgYW5kIHdvcmsgdG9nZXRoZXIgdG8gZmluZCBhIHNvbHV0aW9uLgotIElmIHRoZXJlIGlzIHRpbWUgYWZ0ZXIgYSBzb2x1dGlvbiBpcyBmb3VuZCwgYWxsb3cgYWxsIG1lbWJlcnMgdG8gY29tcGxldGUgdGhlIGV4ZXJjaXNlLgoKIyBQcmVsaW1pbmFyaWVzCgpGaXJzdCwgbGV0J3MgZG93bmxvYWQgdGhlIG1hcHBpbmcgb2YgRU5TRU1CTCBJRHMgdG8gZ2VuZSBzeW1ib2xzICoqdG9nZXRoZXIqKi4gVGhlbiB3ZSdsbCBzcGxpdCBpbnRvIHNtYWxsIGdyb3VwcyB0byBhZGQgdGhlIGdlbmUgc3ltYm9sIGNvbHVtbiB3ZSB3YW50LiBXZSdsbCBzdGFydCBieSBsb2FkaW5nIHRoZSBgYmlvbWFSdGAgbGlicmFyeSBhbmQgY2FsbGluZyB0aGUgYHVzZUVuc2VtYmwoKWAgZnVuY3Rpb24gdG8gc2VsZWN0IHRoZSBkYXRhYmFzZSB3ZSdsbCB1c2UgdG8gZXh0cmFjdCB0aGUgaW5mb3JtYXRpb24gd2UgbmVlZC4KCmBgYHtyIFB1bGxtYXJ0LCB3YXJuaW5nPUZBTFNFfQpsaWJyYXJ5KCdiaW9tYVJ0JykKZW5zZW1ibCA9IHVzZUVuc2VtYmwoZGF0YXNldCA9ICdtbXVzY3VsdXNfZ2VuZV9lbnNlbWJsJywgYmlvbWFydD0nZW5zZW1ibCcpCmBgYAoKKk5vdGUgdGhhdCB0aGlzIHByb2Nlc3MgdGFrZXMgc29tZSB0aW1lIGFuZCB3aWxsIHRha2UgdXAgYSBsYXJnZXIgYW1vdW50IG9mIHdvcmtpbmcgbWVtb3J5IHNvIHByb2NlZWQgd2l0aCBjYXV0aW9uIGlmIHlvdSB0cnkgdG8gcnVuIHRoZXNlIGNvbW1hbmRzIG9uIGEgbGFwdG9wIHdpdGggbGVzcyB0aGFuIDRHIG9mIG1lbW9yeSoKClRvIGlkZW50aWZ5IHBvc3NpYmxlICoqZmlsdGVycyoqIHRvIHJlc3RyaWN0IG91ciBkYXRhLCB3ZSBjYW4gdXNlIHRoZSBgbGlzdEZpbHRlcnNgIGZ1bmN0aW9uLiBUbyBpZGVudGlmeSB0aGUgKiphdHRyaWJ1dGVzKiogd2Ugd2FudCB0byByZXRyaXZlLCB3ZSBjYW4gdXNlIHRoZSBgbGlzdEF0dHJpYnV0ZXNgIGZ1bmN0aW9uLiBUaGUgYmVzdCBhcHByb2FjaCBpcyB0byB1c2UgW2xpc3Qgb3Igc2VhcmNoIGZ1bmN0aW9uc10oaHR0cHM6Ly9iaW9jb25kdWN0b3Iub3JnL3BhY2thZ2VzL3JlbGVhc2UvYmlvYy92aWduZXR0ZXMvYmlvbWFSdC9pbnN0L2RvYy9hY2Nlc3NpbmdfZW5zZW1ibC5odG1sI2hvdy10by1idWlsZC1hLWJpb21hcnQtcXVlcnkpIHRvIGhlbHAgbmFycm93IGRvd24gdGhlIGF2YWlsYWJsZSBvcHRpb25zLgoKYGBge3IgQWRkQW5ub3RhdGlvbnMyLCB3YXJuaW5nPUZBTFNFLCBldmFsPUZBTFNFfQpoZWFkKGxpc3RGaWx0ZXJzKG1hcnQgPSBlbnNlbWJsKSwgbiA9IDIwKQpoZWFkKGxpc3RBdHRyaWJ1dGVzKGVuc2VtYmwpLCBuID0gMzApCmBgYAoKV2UgY2FuIGFjY2VzcyBhZGRpdGlvbmFsIGdlbm9taWMgYW5ub3RhdGlvbnMgdXNpbmcgdGhlIFtgYmlvTWFydGAgcGFja2FnZV0oaHR0cHM6Ly9iaW9jb25kdWN0b3Iub3JnL3BhY2thZ2VzL3JlbGVhc2UvYmlvYy9odG1sL2Jpb21hUnQuaHRtbCkuIFRvIGlkZW50aWZ5ICB3ZSdsbCBzdHJ1Y3R1cmUgb3VyICdxdWVyeScgb3Igc2VhcmNoIG9mIHRoZSBiaW9NYXJ0IHJlc291cmNlcyB0byB1c2UgdGhlIFtFTlNFTUJMIGlkXShodHRwczovL20uZW5zZW1ibC5vcmcvaW5mby9nZW5vbWUvZ2VuZWJ1aWxkL2dlbmVfbmFtZXMuaHRtbCkgZnJvbSBvdXIgYWxpZ25tZW50IHRvIGFkZCB0aGUgZ2VuZSBzeW1ib2xzIGFuZCBnZW5lIGRlc2NyaXB0aW9uIGZvciBlYWNoIGdlbmUuCgpgYGB7ciBBZGRBbm90YXRpb24zLCB3YXJuaW5nPUZBTFNFfQppZF9tYXBwaW5nID0gZ2V0Qk0oYXR0cmlidXRlcz1jKCdlbnNlbWJsX2dlbmVfaWQnLCAnZXh0ZXJuYWxfZ2VuZV9uYW1lJyksCiAgICAgIGZpbHRlcnMgPSAnZW5zZW1ibF9nZW5lX2lkJywKICAgICAgdmFsdWVzID0gcm93Lm5hbWVzKGFzc2F5KGRkcykpLAogICAgICBtYXJ0ID0gZW5zZW1ibCkKIyB3aWxsIHRha2Ugc29tZSB0aW1lIHRvIHJ1bgoKIyBQcmV2aWV3IHRoZSByZXN1bHQKaGVhZChpZF9tYXBwaW5nKQpgYGAKCk5vdyB0aGF0IHdlIGhhdmUgdGhlIEVOU0VNQkwgaW5mb3JtYXRpb24gYW5kIGEgZ2VuZSBzeW1ib2wgdG8gbWF0Y2ggdG8gb3VyIHJlc3VsdHMsIHdlIGNhbiBwcm9jZWVkIGluIHRoZSBzbWFsbGVyIGdyb3Vwcy4gQXMgd2l0aCB0aGUgcHJldmlvdXMgZXhlcmNpc2UsIHdlIGhhdmUgYnJva2VuIGl0IGludG8gc21hbGwgc3RlcHMgd2l0aCBoaW50cyBhcyBuZWVkZWQuCgoqKk5vdGUqKjogRm9yIGFkZGl0aW9uYWwgaW5mb3JtYXRpb24gcmVnYXJkaW5nIGJpb01hcnQsIHBsZWFzZSBjb25zdWx0IHRoZSBbRU5TRU1CTCBiaW9NYXJ0IHZpZ25ldHRlXShodHRwczovL2Jpb2NvbmR1Y3Rvci5vcmcvcGFja2FnZXMvcmVsZWFzZS9iaW9jL3ZpZ25ldHRlcy9iaW9tYVJ0L2luc3QvZG9jL2FjY2Vzc2luZ19lbnNlbWJsLmh0bWwpIG9yIHRoZSBicm9hZGVyIFtCaW9jb25kdWN0b3IgQW5ub3RhdGlvbiBSZXNvdXJjZXMgdmlnbmV0dGUgXShodHRwOi8vYmlvY29uZHVjdG9yLm9yZy9wYWNrYWdlcy9kZXZlbC93b3JrZmxvd3MvdmlnbmV0dGVzL2Fubm90YXRpb24vaW5zdC9kb2MvQW5ub3RhdGlvbl9SZXNvdXJjZXMuaHRtbCkuCgojIFN0ZXBzCgoxLiBMb29rIGF0IHRoZSB0d28gZGF0YSBmcmFtZXMgdGhhdCBhcmUgZ29pbmcgdG8gYmUgbmVlZGVkIGZvciB0aGUgZXhlcmNpc2U6IGBpZF9tYXBwaW5nYCBhbmQgYHJlc3VsdHNfcGx1c192c19taW51c2AuCgo8ZGV0YWlscz4KPHN1bW1hcnk+QW5zd2VyPC9zdW1tYXJ5PgpgYGB7ciBwcmV2aWV3X3RhYmxlc30KaGVhZChpZF9tYXBwaW5nKQpoZWFkKHJlc3VsdHNfcGx1c192c19taW51cykKYGBgCjwvZGV0YWlscz4KPGJyPgoKMi4gVGhpbmsgYWJvdXQgd2hhdCBjb2x1bW4gb2YgYHJlc3VsdHNfcGx1c192c19taW51c2Agd2Ugd2FudCB0byBtYXRjaCB0byBgaWRfbWFwcGluZ2AsIGFuZCB0aGVuIHdoYXQgY29sdW1uIHdlIHdhbnQgdG8gZXh0cmFjdCB2YWx1ZXMgZnJvbSBpbiBgaWRfbWFwcGluZ2AuCgo8ZGV0YWlscz4KPHN1bW1hcnk+QW5zd2VyPC9zdW1tYXJ5PgpXZSB3YW50IHRvIG1hdGNoIHRoZSBgaWRgIGNvbHVtbiBvZiBgcmVzdWx0c19wbHVzX3ZzX21pbnVzYCB0byB0aGUgYGVuc2VtYmxfZ2VuZV9pZGAgY29sdW1uIG9mIGBpZF9tYXBwaW5nYCwgYW5kIG9uY2UgdGhhdCBtYXRjaCBpcyBmb3VuZCwgd2Ugd2FudCB0byBleHRyYWN0IHRoZSBgZXh0ZXJuYWxfZ2VuZV9uYW1lYCBjb2x1bW4gb2YgYGlkX21hcHBpbmdgIHRvIGdldCB0aGUgZ2VuZSBzeW1ib2wuCjwvZGV0YWlscz4KPGJyPgoKMy4gTG9vayBhdCB0aGUgZG9jdW1lbnRhdGlvbiBmb3IgYGRwbHlyOjpsZWZ0X2pvaW4oKWAgYW5kIHRyeSB0byBtZXJnZSB0aGUgYGlkX21hcHBpbmdgIHRhYmxlIGludG8gdGhlIGByZXN1bHRzX3BsdXNfdnNfbWludXNgIHRhYmxlIG9uIHRoZSBjb2x1bW5zIHlvdSBpZGVudGlmaWVkIGFib3ZlLgoKPGRldGFpbHM+CjxzdW1tYXJ5PkFuc3dlcjwvc3VtbWFyeT4KYGBge3IgbGVmdF9qb2lufQpyZXN1bHRzX3BsdXNfdnNfbWludXNfYW5ub3RhdGVkID0gcmVzdWx0c19wbHVzX3ZzX21pbnVzICU+JQogICAgbGVmdF9qb2luKGlkX21hcHBpbmcsIGJ5ID0gYygnaWQnID0gJ2Vuc2VtYmxfZ2VuZV9pZCcpKQpoZWFkKHJlc3VsdHNfcGx1c192c19taW51c19hbm5vdGF0ZWQpCmBgYAo8L2RldGFpbHM+Cjxicj4KCjQuIE9wdGlvbmFsbHksIGhvdyBjb3VsZCB3ZSB1c2Ugc29tZSBvZiB0aGUgYHRpZHl2ZXJzZWAgZnVuY3Rpb25zIHdlJ3ZlIGVuY291bnRlcmVkIHByZXZpb3VzbHkgdG8gcmVuYW1lIHRoZSBgZXh0ZXJuYWxfZ2VuZV9uYW1lYCBjb2x1bW4gdG8gYHN5bWJvbGAgYW5kIHRvIG1vdmUgaXQgaW50byB0aGUgc2Vjb25kIGNvbHVtbiBwb3NpdGlvbj8gSGludDogQmVjYXVzZSBvZiB0aGUgb3JkZXIgb2YgdGhlIHBhY2thZ2VzIHdlIG1heSBoYXZlIGxvYWRlZCwgY29uc2lkZXIgdXNpbmcgYGRwbHlyOjpzZWxlY3QoKWAgaW5zdGVhZCBvZiBqdXN0IHRoZSBgc2VsZWN0KClgIGZ1bmN0aW9uLiBXZSBjYW4gZGlzY3VzcyB3aHkgdGhpcyBpcyB0aGUgY2FzZSB0b2dldGhlci4KCjxkZXRhaWxzPgo8c3VtbWFyeT5BbnN3ZXI8L3N1bW1hcnk+CmBgYHtyIHJlbmFtZV9yZWFycmFuZ2V9CnJlc3VsdHNfcGx1c192c19taW51c19hbm5vdGF0ZWQgPSByZXN1bHRzX3BsdXNfdnNfbWludXNfYW5ub3RhdGVkICU+JQogICAgcmVuYW1lKCdzeW1ib2wnID0gJ2V4dGVybmFsX2dlbmVfbmFtZScpICU+JQogICAgZHBseXI6OnNlbGVjdChpZCwgc3ltYm9sLCBldmVyeXRoaW5nKCkpCnJlc3VsdHNfcGx1c192c19taW51c19hbm5vdGF0ZWQKYGBgCjwvZGV0YWlscz4KPGJyPgoKCmBgYHtyIFdyaXRlT3V0LlJEYXRhLCBldmFsPUZBTFNFLCBlY2hvPUZBTFNFLCBtZXNzYWdlPUZBTFNFLCB3YXJuaW5nPUZBTFNFfQojSGlkZGVuIGNvZGUgYmxvY2sgdG8gd3JpdGUgb3V0IGRhdGEgZm9yIGtuaXR0aW5nCnNhdmUuaW1hZ2UoZmlsZSA9ICdyZGF0YS9SdW5uaW5nRGF0YS5SRGF0YScpCmBgYAo=</div>
 
 
 </div>

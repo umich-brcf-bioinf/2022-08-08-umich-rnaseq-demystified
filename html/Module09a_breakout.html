@@ -11,9 +11,9 @@
 
 <meta name="author" content="UM Bioinformatics Core" />
 
-<meta name="date" content="2022-08-01" />
+<meta name="date" content="2022-08-08" />
 
-<title>Day 3 - Module 09 Heatmap</title>
+<title>Breakout Exercise 1 - Expression Heatmap</title>
 
 <script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -459,46 +459,41 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Day 3 - Module 09 Heatmap</h1>
+<h1 class="title toc-ignore">Breakout Exercise 1 - Expression
+Heatmap</h1>
 <h4 class="author">UM Bioinformatics Core</h4>
-<h4 class="date">2022-08-01</h4>
+<h4 class="date">2022-08-08</h4>
 
 </div>
 
 
 <style type="text/css">
-body{ /* Normal  */
-      font-size: 14pt;
-  }
-pre {
-  font-size: 12pt
+body, td {
+   font-size: 18px;
 }
 code.r{
-  font-size: 12pt;
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
 }
 </style>
-<!--- Allow the page to be wider --->
-<style>
-    body .main-container {
-        max-width: 1200px;
-    }
-</style>
-<p><br></p>
-<div id="breakout-exercise-1---heatmap-of-top-genes"
-class="section level1" number="1">
-<h1><span class="header-section-number">1</span> [Breakout Exercise 1] -
-Heatmap of top genes</h1>
-<p><br></p>
-<p><strong>15 Minutes</strong></p>
-<p><br></p>
-<p>It can be useful to visualize to visualize how our samples organize
-along with the expression pattern of individual genes. We will create a
-heatmap of the top most variable genes using the <code>pheatmap</code>
-function.</p>
-<p><br></p>
-<div id="instructions" class="section level3" number="1.0.1">
-<h3><span class="header-section-number">1.0.1</span> Instructions:</h3>
-<p><br></p>
+<p>Estimated time: <strong>15 Minutes</strong></p>
+<div id="motivation" class="section level1">
+<h1>Motivation</h1>
+<p>Plotting the expression values across all samples for the top
+variable genes in an experiment can help to visualize how samples
+cluster together by their expression profiles. When combined with
+phenotypic data, it can help show how samples with different treatments
+behave relative to one another.</p>
+</div>
+<div id="exercise" class="section level1">
+<h1>Exercise</h1>
+<p>Create a heatmap of the top 50 most variable genes using the
+<code>pheatmap()</code> function.</p>
+</div>
+<div id="instructions" class="section level1">
+<h1>Instructions</h1>
 <ul>
 <li>One group member should share their screen in the breakout room. If
 nobody volunteers, a helper may randomly select someone.</li>
@@ -507,114 +502,140 @@ find a solution.</li>
 <li>If there is time after a solution is found, allow all members to
 complete the exercise.</li>
 </ul>
-<p><br></p>
-<ul>
-<li>First, create a object named <code>topVarGenes</code> that stores
-the top <strong>50</strong> most variable genes from our rlog normalized
-data (note that each row of <code>rld</code> corresponds to a
-gene).</li>
-<li>Work from the inside to the outside when stringing together commands
-and test out each part to ensure the commands you enter are having the
-expected behavior.</li>
-</ul>
-<blockquote>
-<p>Hint:</p>
-<p>The command <code>rowVars(assay(rld))</code> will return the row
-variance values, the command <code>base::order</code> will return an
-index of the input re-arranged into accending or decending order, and
-the <code>head</code> command or index referencing can be used to select
-the firstor last part of several data types.</p>
-</blockquote>
-<p><br></p>
+</div>
+<div id="example" class="section level1">
+<h1>Example</h1>
+<p>To get an idea of what we expect to see at the end, let’s look at a
+toy example from the <code>pheatmap()</code> help examples. There’s no
+need to run this code, we just want to illustrate the form of the
+result.</p>
+<pre class="r"><code># Copied from the pheatmap documentation
+
+# Create matrix with random normally distributed values
+test = matrix(rnorm(200), 20, 10)
+
+# Impose some structure so the heatmap appears interesting
+test[1:10, seq(1, 10, 2)] = test[1:10, seq(1, 10, 2)] + 3
+test[11:20, seq(2, 10, 2)] = test[11:20, seq(2, 10, 2)] + 2
+test[15:20, seq(2, 10, 2)] = test[15:20, seq(2, 10, 2)] + 4
+
+# Name the rows and columns
+colnames(test) = paste(&quot;Test&quot;, 1:10, sep = &quot;&quot;)
+rownames(test) = paste(&quot;Gene&quot;, 1:20, sep = &quot;&quot;)
+
+# Draw the heatmap
+pheatmap(test)</code></pre>
+<p><img src="fig/09a-test_heatmap-1.png" width="816" style="display: block; margin: auto;" /></p>
+</div>
+<div id="steps" class="section level1">
+<h1>Steps</h1>
+<ol style="list-style-type: decimal">
+<li>Look at the documentation for the <code>pheatmap()</code> function
+and determine what the most important parameter is. Hint: It’s usually
+the first or first few parameters. This is telling us what we’ll have to
+get for the next step.</li>
+</ol>
 <details>
 <summary>
-<em>Click for solution</em>
+Answer
 </summary>
-<p>Helpers - it may be helpful to guide learners through testing the
-steps needed to select the top 50 most variable genes. The below example
-is one possible solution.</p>
-<pre class="r"><code>topVarGenes = rowVars(assay(rld))
-head(topVarGenes)</code></pre>
-<pre><code>## [1] 0.008608561 1.734191622 0.037923016 0.114943172 0.019207105 0.149559602</code></pre>
-<pre class="r"><code>orderedVars = order(topVarGenes)
-head(orderedVars)</code></pre>
-<pre><code>## [1] 16161 18665 18695 18933 19009 19034</code></pre>
-<pre class="r"><code>sortedVars = sort(topVarGenes)
-head(sortedVars)</code></pre>
-<pre><code>## [1] 0.0005250999 0.0008457552 0.0008457552 0.0008457552 0.0008457552 0.0008457552</code></pre>
-<pre class="r"><code>tail(sortedVars)</code></pre>
-<pre><code>## [1] 11.10653 14.23099 14.42485 14.67978 15.49938 15.74445</code></pre>
-<pre class="r"><code>?order
-orderedVars = order(topVarGenes, decreasing = TRUE)
-head(topVarGenes[orderedVars])</code></pre>
-<pre><code>## [1] 15.74445 15.49938 14.67978 14.42485 14.23099 11.10653</code></pre>
-<pre class="r"><code>orderedMat = assay(rld)[orderedVars, ]
-head(orderedMat)</code></pre>
-<pre><code>##                    Sample_116498 Sample_116499 Sample_116500 Sample_116501 Sample_116502 Sample_116503 Sample_116504 Sample_116505 Sample_116506 Sample_116507 Sample_116508
-## ENSMUSG00000069917      7.386969      7.592002      7.421841      7.658291      9.096951      8.744320      16.24134      17.75598      17.41340     10.595285      9.845426
-## ENSMUSG00000052305      7.545034      7.866700      7.553335      7.999982      9.158207      8.866311      16.38642      17.87966      17.49616     10.639776     10.043313
-## ENSMUSG00000073940      5.660694      5.948358      5.642725      6.041644      6.784668      6.828258      14.15300      15.68239      15.25716      8.527179      8.288975
-## ENSMUSG00000006574      5.924567      6.076577      6.030227      5.926847      7.300111      6.957638      14.03874      15.81059      15.51719      8.937274      8.833479
-## ENSMUSG00000069919      6.208442      6.407137      6.469322      6.382475      7.472736      7.135661      14.57034      15.92302      15.70450      9.120502      8.615545
-## ENSMUSG00000032496      4.325376      4.451341      4.396189      4.708752      5.339877      4.540770      11.33823      12.53432      12.74284      6.293183      5.519366
-##                    Sample_116509
-## ENSMUSG00000069917     11.396878
-## ENSMUSG00000052305     11.651572
-## ENSMUSG00000073940      9.536873
-## ENSMUSG00000006574     10.522213
-## ENSMUSG00000069919     10.586671
-## ENSMUSG00000032496      8.619501</code></pre>
-<pre class="r"><code># 
-orderedMat = orderedMat[1:50, ]
-
-## Alternatively
-orderedMat = head(orderedMat, 50)</code></pre>
+<pre class="r"><code>?pheatmap</code></pre>
+For this exercise, we’ll only need to use the <code>mat</code>
+parameter, giving the numeric matrix to be plotted.
 </details>
 <p><br></p>
-<ul>
-<li>Next, use <code>pheatmap</code> to plot the selected
-<code>topVarGenes</code> from <code>rld</code>. If you have time, try to
-scale by row to enhance any clusters of genes with similar expression
-across samples.</li>
-</ul>
-<p><br></p>
-<blockquote>
-<p>Hint:</p>
-<p>We can use <code>assay(rld)</code> to access the matrix of normalized
-data and we can use bracket notation ([rows,]) and the list of rows
-stored in <code>topVarGene</code> to only provide data for the 50 genes
-of interest.</p>
-</blockquote>
-<p><br></p>
+<ol start="2" style="list-style-type: decimal">
+<li>Extract the rlog normalized expression values for the experiment.
+Hint: We created an <code>rld</code> object earlier. The
+<code>assay()</code> function pulls out the values.</li>
+</ol>
 <details>
 <summary>
-<em>Click for solution</em>
+Answer
 </summary>
-<pre class="r"><code># plot with no arguments
-pheatmap(orderedMat)</code></pre>
-<p><img src="Module09a_breakout_files/figure-html/TestPheatmap-1.png" width="672" /></p>
-<pre class="r"><code># plots with row scaled and assigned to &#39;p&#39; to make writing to file easier
-p &lt;- pheatmap(assay(rld)[topVarGenes,], scale = &quot;row&quot;)</code></pre>
-<img src="Module09a_breakout_files/figure-html/TestPheatmap-2.png" width="672" />
+<pre class="r"><code>exp_mat = assay(rld)
+head(exp_mat)</code></pre>
+<pre><code>                   SRR7777895 SRR7777896 SRR7777897 SRR7777898 SRR7777899 SRR7777900
+ENSMUSG00000000001  10.514813  10.366709  10.419463  10.840373  10.410449  10.578771
+ENSMUSG00000000028  10.604461  10.734506  10.735026  10.682714  10.820938  10.990999
+ENSMUSG00000000031  11.160276  10.498747  10.742763  11.861617  10.578156  10.298022
+ENSMUSG00000000037   4.642433   4.555500   4.578934   4.656950   4.719012   4.620204
+ENSMUSG00000000049   3.017478   2.820198   2.843894   2.936455   2.814833   2.811619
+ENSMUSG00000000056  14.321672  14.284652  14.337197  13.904238  14.393912  14.235971</code></pre>
 </details>
 <p><br></p>
-<p><em>Note, as mentioned in this <a
-href="https://support.bioconductor.org/p/130336/">Biostars post</a>,
-scaling by row in <code>pheatmap</code> will automatically scale the
-data to Z-scores.</em></p>
+<ol start="3" style="list-style-type: decimal">
+<li>Calculate the variance for each gene in the expression matrix we
+just extracted. Hint: Look at the help for
+<code>matrixStats::rowVars()</code> and decide if that’s a reasonable
+function to use.</li>
+</ol>
+<details>
+<summary>
+Answer
+</summary>
+<pre class="r"><code>gene_vars = rowVars(exp_mat)
+head(gene_vars)</code></pre>
+<pre><code>[1] 0.030341701 0.017700141 0.326567308 0.003409940 0.007135949 0.030863320</code></pre>
+</details>
 <p><br></p>
-<p>Finally, to <strong>output</strong> the plot to file, use the
-<code>pdf()</code> function:</p>
-<pre class="r"><code>if (!dir.exists(plotPath)) {dir.create(plotPath)}
-pdf(file = paste0(plotPath, &#39;Top_heatmap_rlog_&#39;, Comparison, &#39;.pdf&#39;), onefile = TRUE)
-p
-dev.off()</code></pre>
-<pre><code>## quartz_off_screen 
-##                 2</code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li>Get the numerical indices for the top 50 most variable genes. Hint:
+Run the <code>order()</code> function on a toy example, like
+<code>order(c(-1.25, 1.3, 5.6, 2.1))</code>, and think about what is
+being returned. Note, it’s not the values in the original vector. Then
+look at the help for <code>order()</code> and figure out how how to
+reverse what is returned.</li>
+</ol>
+<details>
+<summary>
+Answer
+</summary>
+<pre class="r"><code>order(c(-1.25, 1.3, 5.6, 2.1))</code></pre>
+<pre><code>[1] 1 2 4 3</code></pre>
+<pre class="r"><code>order(c(-1.25, 1.3, 5.6, 2.1), decreasing = TRUE)</code></pre>
+<pre><code>[1] 3 4 2 1</code></pre>
+<pre class="r"><code>ordered_idx = order(gene_vars, decreasing = TRUE)
+top_50_idx = ordered_idx[1:50]</code></pre>
+</details>
+<p><br></p>
+<ol start="5" style="list-style-type: decimal">
+<li>Subset the expression matrix from step 2 using this index vector.
+Hint: Remember square-bracket notation, and that we want to subset the
+rows, while returning all the columns. Make sure the result has the
+number of rows you expect, that is, 50.</li>
+</ol>
+<details>
+<summary>
+Answer
+</summary>
+<pre class="r"><code>top_var_exp_mat = exp_mat[top_50_idx, ]
+dim(top_var_exp_mat)</code></pre>
+<pre><code>[1] 50  6</code></pre>
+</details>
+<p><br></p>
+<ol start="6" style="list-style-type: decimal">
+<li>Create a heatmap using this subsetted expression matrix using the
+<code>pheatmap()</code> function.</li>
+</ol>
+<details>
+<summary>
+Answer
+</summary>
+<pre class="r"><code>pheatmap(top_var_exp_mat)</code></pre>
+<img src="fig/09a-create_heatmap-1.png" width="816" style="display: block; margin: auto;" />
+</details>
+<p><br></p>
 </div>
+<div id="saving-the-result" class="section level1">
+<h1>Saving the result</h1>
+<p>If time permits, discuss with your group how you might save this
+heatmap. Hint: Look at the parameters for the function in
+<code>?pheatmap</code>. Alternatively, consider how we saved the PCA in
+the previous module.</p>
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiRGF5IDMgLSBNb2R1bGUgMDkgSGVhdG1hcCIKYXV0aG9yOiAiVU0gQmlvaW5mb3JtYXRpY3MgQ29yZSIKZGF0ZTogImByIFN5cy5EYXRlKClgIgpvdXRwdXQ6CiAgICAgICAgaHRtbF9kb2N1bWVudDoKICAgICAgICAgICAgaW5jbHVkZXM6CiAgICAgICAgICAgICAgICBpbl9oZWFkZXI6IGhlYWRlci5odG1sCiAgICAgICAgICAgIHRoZW1lOiBwYXBlcgogICAgICAgICAgICB0b2M6IHRydWUKICAgICAgICAgICAgdG9jX2RlcHRoOiA0CiAgICAgICAgICAgIHRvY19mbG9hdDogdHJ1ZQogICAgICAgICAgICBudW1iZXJfc2VjdGlvbnM6IHRydWUKICAgICAgICAgICAgZmlnX2NhcHRpb246IHRydWUKICAgICAgICAgICAgbWFya2Rvd246IEdGTQogICAgICAgICAgICBjb2RlX2Rvd25sb2FkOiB0cnVlCi0tLQo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgpib2R5eyAvKiBOb3JtYWwgICovCiAgICAgIGZvbnQtc2l6ZTogMTRwdDsKICB9CnByZSB7CiAgZm9udC1zaXplOiAxMnB0Cn0KY29kZS5yewogIGZvbnQtc2l6ZTogMTJwdDsKfQo8L3N0eWxlPgoKPCEtLS0gQWxsb3cgdGhlIHBhZ2UgdG8gYmUgd2lkZXIgLS0tPgo8c3R5bGU+CiAgICBib2R5IC5tYWluLWNvbnRhaW5lciB7CiAgICAgICAgbWF4LXdpZHRoOiAxMjAwcHg7CiAgICB9Cjwvc3R5bGU+Cgo8YnI+CgojIFtCcmVha291dCBFeGVyY2lzZSAxXSAtIEhlYXRtYXAgb2YgdG9wIGdlbmVzCgo8YnI+CgoKYGBge3IgTW9kdWxlcywgZXZhbD1UUlVFLCBlY2hvPUZBTFNFLCBtZXNzYWdlPUZBTFNFLCB3YXJuaW5nPUZBTFNFfQpsaWJyYXJ5KERFU2VxMikKbGlicmFyeShnZ3Bsb3QyKQpsaWJyYXJ5KHRpZHlyKQpsaWJyYXJ5KGRwbHlyKQpsaWJyYXJ5KG1hdHJpeFN0YXRzKQpsaWJyYXJ5KGdncmVwZWwpCmxpYnJhcnkocGhlYXRtYXApCmxpYnJhcnkoUkNvbG9yQnJld2VyKQpsb2FkKCJyZGF0YS9SdW5uaW5nRGF0YS5SRGF0YSIpCmBgYAoKCioqMTUgTWludXRlcyoqCgo8YnI+CgpJdCBjYW4gYmUgdXNlZnVsIHRvIHZpc3VhbGl6ZSB0byB2aXN1YWxpemUgaG93IG91ciBzYW1wbGVzIG9yZ2FuaXplIGFsb25nIHdpdGggdGhlIGV4cHJlc3Npb24gcGF0dGVybiBvZiBpbmRpdmlkdWFsIGdlbmVzLiBXZSB3aWxsIGNyZWF0ZSBhIGhlYXRtYXAgb2YgdGhlIHRvcCBtb3N0IHZhcmlhYmxlIGdlbmVzIHVzaW5nIHRoZSBgcGhlYXRtYXBgIGZ1bmN0aW9uLgoKPGJyPgoKIyMjIEluc3RydWN0aW9uczoKCjxicj4KCi0gT25lIGdyb3VwIG1lbWJlciBzaG91bGQgc2hhcmUgdGhlaXIgc2NyZWVuIGluIHRoZSBicmVha291dCByb29tLiBJZiBub2JvZHkgdm9sdW50ZWVycywgYSBoZWxwZXIgbWF5IHJhbmRvbWx5IHNlbGVjdCBzb21lb25lLgotIFRoZSBncm91cCBtZW1iZXJzIHNob3VsZCBkaXNjdXNzIHRoZSBleGVyY2lzZSBhbmQgd29yayB0b2dldGhlciB0byBmaW5kIGEgc29sdXRpb24uCi0gSWYgdGhlcmUgaXMgdGltZSBhZnRlciBhIHNvbHV0aW9uIGlzIGZvdW5kLCBhbGxvdyBhbGwgbWVtYmVycyB0byBjb21wbGV0ZSB0aGUgZXhlcmNpc2UuCgo8YnI+CgotIEZpcnN0LCBjcmVhdGUgYSBvYmplY3QgbmFtZWQgYHRvcFZhckdlbmVzYCB0aGF0IHN0b3JlcyB0aGUgdG9wICoqNTAqKiBtb3N0IHZhcmlhYmxlIGdlbmVzIGZyb20gb3VyIHJsb2cgbm9ybWFsaXplZCBkYXRhIChub3RlIHRoYXQgZWFjaCByb3cgb2YgYHJsZGAgY29ycmVzcG9uZHMgdG8gYSBnZW5lKS4KLSBXb3JrIGZyb20gdGhlIGluc2lkZSB0byB0aGUgb3V0c2lkZSB3aGVuIHN0cmluZ2luZyB0b2dldGhlciBjb21tYW5kcyBhbmQgdGVzdCBvdXQgZWFjaCBwYXJ0IHRvIGVuc3VyZSB0aGUgY29tbWFuZHMgeW91IGVudGVyIGFyZSBoYXZpbmcgdGhlIGV4cGVjdGVkIGJlaGF2aW9yLgoKPiBIaW50Ogo+IAo+IFRoZSBjb21tYW5kIGByb3dWYXJzKGFzc2F5KHJsZCkpYCB3aWxsIHJldHVybiB0aGUgcm93IHZhcmlhbmNlIHZhbHVlcywgdGhlIGNvbW1hbmQgYGJhc2U6Om9yZGVyYCB3aWxsIHJldHVybiBhbiBpbmRleCBvZiB0aGUgaW5wdXQgcmUtYXJyYW5nZWQgaW50byBhY2NlbmRpbmcgb3IgZGVjZW5kaW5nIG9yZGVyLCBhbmQgdGhlIGBoZWFkYCBjb21tYW5kIG9yIGluZGV4IHJlZmVyZW5jaW5nIGNhbiBiZSB1c2VkIHRvIHNlbGVjdCB0aGUgZmlyc3RvciBsYXN0IHBhcnQgb2Ygc2V2ZXJhbCBkYXRhIHR5cGVzLiAKCgo8YnI+Cgo8ZGV0YWlscz4KICAgIDxzdW1tYXJ5PipDbGljayBmb3Igc29sdXRpb24qPC9zdW1tYXJ5PgogICAgSGVscGVycyAtIGl0IG1heSBiZSBoZWxwZnVsIHRvIGd1aWRlIGxlYXJuZXJzIHRocm91Z2ggdGVzdGluZyB0aGUgc3RlcHMgbmVlZGVkIHRvIHNlbGVjdCB0aGUgdG9wIDUwIG1vc3QgdmFyaWFibGUgZ2VuZXMuIFRoZSBiZWxvdyBleGFtcGxlIGlzIG9uZSBwb3NzaWJsZSBzb2x1dGlvbi4KYGBge3IgVGVzdFNhbXBsZUhlYXRtYXB9CnRvcFZhckdlbmVzID0gcm93VmFycyhhc3NheShybGQpKQpoZWFkKHRvcFZhckdlbmVzKQoKb3JkZXJlZFZhcnMgPSBvcmRlcih0b3BWYXJHZW5lcykKaGVhZChvcmRlcmVkVmFycykKCnNvcnRlZFZhcnMgPSBzb3J0KHRvcFZhckdlbmVzKQpoZWFkKHNvcnRlZFZhcnMpCnRhaWwoc29ydGVkVmFycykKCj9vcmRlcgpvcmRlcmVkVmFycyA9IG9yZGVyKHRvcFZhckdlbmVzLCBkZWNyZWFzaW5nID0gVFJVRSkKaGVhZCh0b3BWYXJHZW5lc1tvcmRlcmVkVmFyc10pCgpvcmRlcmVkTWF0ID0gYXNzYXkocmxkKVtvcmRlcmVkVmFycywgXQpoZWFkKG9yZGVyZWRNYXQpCgojIApvcmRlcmVkTWF0ID0gb3JkZXJlZE1hdFsxOjUwLCBdCgojIyBBbHRlcm5hdGl2ZWx5Cm9yZGVyZWRNYXQgPSBoZWFkKG9yZGVyZWRNYXQsIDUwKQoKYGBgCjwvZGV0YWlscz4KCjxicj4KCgotIE5leHQsIHVzZSBgcGhlYXRtYXBgIHRvIHBsb3QgdGhlIHNlbGVjdGVkIGB0b3BWYXJHZW5lc2AgZnJvbSBgcmxkYC4gSWYgeW91IGhhdmUgdGltZSwgdHJ5IHRvIHNjYWxlIGJ5IHJvdyB0byBlbmhhbmNlIGFueSBjbHVzdGVycyBvZiBnZW5lcyB3aXRoIHNpbWlsYXIgZXhwcmVzc2lvbiBhY3Jvc3Mgc2FtcGxlcy4gIAoKPGJyPiAKCj4gSGludDoKPgo+IFdlIGNhbiB1c2UgYGFzc2F5KHJsZClgIHRvIGFjY2VzcyB0aGUgbWF0cml4IG9mIG5vcm1hbGl6ZWQgZGF0YSBhbmQgd2UgY2FuIHVzZSBicmFja2V0IG5vdGF0aW9uIChbcm93cyxdKSBhbmQgdGhlIGxpc3Qgb2Ygcm93cyBzdG9yZWQgaW4gYHRvcFZhckdlbmVgIHRvIG9ubHkgcHJvdmlkZSBkYXRhIGZvciB0aGUgNTAgZ2VuZXMgb2YgaW50ZXJlc3QuCj4gCgo8YnI+Cgo8ZGV0YWlscz4KICAgIDxzdW1tYXJ5PipDbGljayBmb3Igc29sdXRpb24qPC9zdW1tYXJ5PgpgYGB7ciBUZXN0UGhlYXRtYXB9CiMgcGxvdCB3aXRoIG5vIGFyZ3VtZW50cwpwaGVhdG1hcChvcmRlcmVkTWF0KQoKIyBwbG90cyB3aXRoIHJvdyBzY2FsZWQgYW5kIGFzc2lnbmVkIHRvICdwJyB0byBtYWtlIHdyaXRpbmcgdG8gZmlsZSBlYXNpZXIKcCA8LSBwaGVhdG1hcChhc3NheShybGQpW3RvcFZhckdlbmVzLF0sIHNjYWxlID0gInJvdyIpCmBgYAo8L2RldGFpbHM+Cgo8YnI+CgoqTm90ZSwgYXMgbWVudGlvbmVkIGluIHRoaXMgW0Jpb3N0YXJzIHBvc3RdKGh0dHBzOi8vc3VwcG9ydC5iaW9jb25kdWN0b3Iub3JnL3AvMTMwMzM2LyksIHNjYWxpbmcgYnkgcm93IGluIGBwaGVhdG1hcGAgd2lsbCBhdXRvbWF0aWNhbGx5IHNjYWxlIHRoZSBkYXRhIHRvIFotc2NvcmVzLioKCjxicj4KCkZpbmFsbHksIHRvICoqb3V0cHV0KiogdGhlIHBsb3QgdG8gZmlsZSwgdXNlIHRoZSBgcGRmKClgIGZ1bmN0aW9uOgpgYGB7ciBFeGVyY2lzZU91dHB1dH0KaWYgKCFkaXIuZXhpc3RzKHBsb3RQYXRoKSkge2Rpci5jcmVhdGUocGxvdFBhdGgpfQpwZGYoZmlsZSA9IHBhc3RlMChwbG90UGF0aCwgJ1RvcF9oZWF0bWFwX3Jsb2dfJywgQ29tcGFyaXNvbiwgJy5wZGYnKSwgb25lZmlsZSA9IFRSVUUpCnAKZGV2Lm9mZigpCmBgYAoKCgogIApgYGB7ciBXcml0ZU91dC5SRGF0YSwgZXZhbD1GQUxTRSwgZWNobz1GQUxTRSwgbWVzc2FnZT1GQUxTRSwgd2FybmluZz1GQUxTRX0KI0hpZGRlbiBjb2RlIGJsb2NrIHRvIHdyaXRlIG91dCBkYXRhIGZvciBrbml0dGluZwpzYXZlLmltYWdlKGZpbGUgPSAicmRhdGEvUnVubmluZ0RhdGEuUkRhdGEiKQpgYGAKCgo=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiQnJlYWtvdXQgRXhlcmNpc2UgMSAtIEV4cHJlc3Npb24gSGVhdG1hcCIKYXV0aG9yOiAiVU0gQmlvaW5mb3JtYXRpY3MgQ29yZSIKZGF0ZTogImByIFN5cy5EYXRlKClgIgpvdXRwdXQ6CiAgICAgICAgaHRtbF9kb2N1bWVudDoKICAgICAgICAgICAgaW5jbHVkZXM6CiAgICAgICAgICAgICAgICBpbl9oZWFkZXI6IGhlYWRlci5odG1sCiAgICAgICAgICAgIHRoZW1lOiBwYXBlcgogICAgICAgICAgICB0b2M6IHRydWUKICAgICAgICAgICAgdG9jX2RlcHRoOiA0CiAgICAgICAgICAgIHRvY19mbG9hdDogdHJ1ZQogICAgICAgICAgICBudW1iZXJfc2VjdGlvbnM6IGZhbHNlCiAgICAgICAgICAgIGZpZ19jYXB0aW9uOiB0cnVlCiAgICAgICAgICAgIG1hcmtkb3duOiBHRk0KICAgICAgICAgICAgY29kZV9kb3dubG9hZDogdHJ1ZQotLS0KCjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+CmJvZHksIHRkIHsKICAgZm9udC1zaXplOiAxOHB4Owp9CmNvZGUucnsKICBmb250LXNpemU6IDEycHg7Cn0KcHJlIHsKICBmb250LXNpemU6IDEycHgKfQo8L3N0eWxlPgoKYGBge3IsIGluY2x1ZGUgPSBGQUxTRX0Kc291cmNlKCIuLi9iaW4vY2h1bmstb3B0aW9ucy5SIikKa25pdHJfZmlnX3BhdGgoIjA5YS0iKQpgYGAKCmBgYHtyIE1vZHVsZXMsIGV2YWw9VFJVRSwgZWNobz1GQUxTRSwgbWVzc2FnZT1GQUxTRSwgd2FybmluZz1GQUxTRX0KbGlicmFyeShERVNlcTIpCmxpYnJhcnkoZ2dwbG90MikKbGlicmFyeSh0aWR5cikKbGlicmFyeShkcGx5cikKbGlicmFyeShtYXRyaXhTdGF0cykKbGlicmFyeShnZ3JlcGVsKQpsaWJyYXJ5KHBoZWF0bWFwKQpsaWJyYXJ5KFJDb2xvckJyZXdlcikKIyBsb2FkKCJyZGF0YS9SdW5uaW5nRGF0YS5SRGF0YSIpCmBgYAoKRXN0aW1hdGVkIHRpbWU6ICoqMTUgTWludXRlcyoqCgojIE1vdGl2YXRpb24KClBsb3R0aW5nIHRoZSBleHByZXNzaW9uIHZhbHVlcyBhY3Jvc3MgYWxsIHNhbXBsZXMgZm9yIHRoZSB0b3AgdmFyaWFibGUgZ2VuZXMgaW4gYW4gZXhwZXJpbWVudCBjYW4gaGVscCB0byB2aXN1YWxpemUgaG93IHNhbXBsZXMgY2x1c3RlciB0b2dldGhlciBieSB0aGVpciBleHByZXNzaW9uIHByb2ZpbGVzLiBXaGVuIGNvbWJpbmVkIHdpdGggcGhlbm90eXBpYyBkYXRhLCBpdCBjYW4gaGVscCBzaG93IGhvdyBzYW1wbGVzIHdpdGggZGlmZmVyZW50IHRyZWF0bWVudHMgYmVoYXZlIHJlbGF0aXZlIHRvIG9uZSBhbm90aGVyLgoKIyBFeGVyY2lzZQoKQ3JlYXRlIGEgaGVhdG1hcCBvZiB0aGUgdG9wIDUwIG1vc3QgdmFyaWFibGUgZ2VuZXMgdXNpbmcgdGhlIGBwaGVhdG1hcCgpYCBmdW5jdGlvbi4KCiMgSW5zdHJ1Y3Rpb25zCgotIE9uZSBncm91cCBtZW1iZXIgc2hvdWxkIHNoYXJlIHRoZWlyIHNjcmVlbiBpbiB0aGUgYnJlYWtvdXQgcm9vbS4gSWYgbm9ib2R5IHZvbHVudGVlcnMsIGEgaGVscGVyIG1heSByYW5kb21seSBzZWxlY3Qgc29tZW9uZS4KLSBUaGUgZ3JvdXAgbWVtYmVycyBzaG91bGQgZGlzY3VzcyB0aGUgZXhlcmNpc2UgYW5kIHdvcmsgdG9nZXRoZXIgdG8gZmluZCBhIHNvbHV0aW9uLgotIElmIHRoZXJlIGlzIHRpbWUgYWZ0ZXIgYSBzb2x1dGlvbiBpcyBmb3VuZCwgYWxsb3cgYWxsIG1lbWJlcnMgdG8gY29tcGxldGUgdGhlIGV4ZXJjaXNlLgoKIyBFeGFtcGxlCgpUbyBnZXQgYW4gaWRlYSBvZiB3aGF0IHdlIGV4cGVjdCB0byBzZWUgYXQgdGhlIGVuZCwgbGV0J3MgbG9vayBhdCBhIHRveSBleGFtcGxlIGZyb20gdGhlIGBwaGVhdG1hcCgpYCBoZWxwIGV4YW1wbGVzLiBUaGVyZSdzIG5vIG5lZWQgdG8gcnVuIHRoaXMgY29kZSwgd2UganVzdCB3YW50IHRvIGlsbHVzdHJhdGUgdGhlIGZvcm0gb2YgdGhlIHJlc3VsdC4KCmBgYHtyIHRlc3RfaGVhdG1hcH0KIyBDb3BpZWQgZnJvbSB0aGUgcGhlYXRtYXAgZG9jdW1lbnRhdGlvbgoKIyBDcmVhdGUgbWF0cml4IHdpdGggcmFuZG9tIG5vcm1hbGx5IGRpc3RyaWJ1dGVkIHZhbHVlcwp0ZXN0ID0gbWF0cml4KHJub3JtKDIwMCksIDIwLCAxMCkKCiMgSW1wb3NlIHNvbWUgc3RydWN0dXJlIHNvIHRoZSBoZWF0bWFwIGFwcGVhcnMgaW50ZXJlc3RpbmcKdGVzdFsxOjEwLCBzZXEoMSwgMTAsIDIpXSA9IHRlc3RbMToxMCwgc2VxKDEsIDEwLCAyKV0gKyAzCnRlc3RbMTE6MjAsIHNlcSgyLCAxMCwgMildID0gdGVzdFsxMToyMCwgc2VxKDIsIDEwLCAyKV0gKyAyCnRlc3RbMTU6MjAsIHNlcSgyLCAxMCwgMildID0gdGVzdFsxNToyMCwgc2VxKDIsIDEwLCAyKV0gKyA0CgojIE5hbWUgdGhlIHJvd3MgYW5kIGNvbHVtbnMKY29sbmFtZXModGVzdCkgPSBwYXN0ZSgiVGVzdCIsIDE6MTAsIHNlcCA9ICIiKQpyb3duYW1lcyh0ZXN0KSA9IHBhc3RlKCJHZW5lIiwgMToyMCwgc2VwID0gIiIpCgojIERyYXcgdGhlIGhlYXRtYXAKcGhlYXRtYXAodGVzdCkKYGBgCgojIFN0ZXBzCgoxLiBMb29rIGF0IHRoZSBkb2N1bWVudGF0aW9uIGZvciB0aGUgYHBoZWF0bWFwKClgIGZ1bmN0aW9uIGFuZCBkZXRlcm1pbmUgd2hhdCB0aGUgbW9zdCBpbXBvcnRhbnQgcGFyYW1ldGVyIGlzLiBIaW50OiBJdCdzIHVzdWFsbHkgdGhlIGZpcnN0IG9yIGZpcnN0IGZldyBwYXJhbWV0ZXJzLiBUaGlzIGlzIHRlbGxpbmcgdXMgd2hhdCB3ZSdsbCBoYXZlIHRvIGdldCBmb3IgdGhlIG5leHQgc3RlcC4KCjxkZXRhaWxzPgo8c3VtbWFyeT5BbnN3ZXI8L3N1bW1hcnk+CmBgYHtyIHBoZWF0bWFwX2hlbHAsIGV2YWwgPSBGQUxTRX0KP3BoZWF0bWFwCmBgYAoKRm9yIHRoaXMgZXhlcmNpc2UsIHdlJ2xsIG9ubHkgbmVlZCB0byB1c2UgdGhlIGBtYXRgIHBhcmFtZXRlciwgZ2l2aW5nIHRoZSBudW1lcmljIG1hdHJpeCB0byBiZSBwbG90dGVkLgo8L2RldGFpbHM+Cjxicj4KCjIuIEV4dHJhY3QgdGhlIHJsb2cgbm9ybWFsaXplZCBleHByZXNzaW9uIHZhbHVlcyBmb3IgdGhlIGV4cGVyaW1lbnQuIEhpbnQ6IFdlIGNyZWF0ZWQgYW4gYHJsZGAgb2JqZWN0IGVhcmxpZXIuIFRoZSBgYXNzYXkoKWAgZnVuY3Rpb24gcHVsbHMgb3V0IHRoZSB2YWx1ZXMuCgo8ZGV0YWlscz4KPHN1bW1hcnk+QW5zd2VyPC9zdW1tYXJ5PgpgYGB7ciBleHRyYWN0X3JsZF9leHByZXNzaW9ufQpleHBfbWF0ID0gYXNzYXkocmxkKQpoZWFkKGV4cF9tYXQpCmBgYAo8L2RldGFpbHM+Cjxicj4KCjMuIENhbGN1bGF0ZSB0aGUgdmFyaWFuY2UgZm9yIGVhY2ggZ2VuZSBpbiB0aGUgZXhwcmVzc2lvbiBtYXRyaXggd2UganVzdCBleHRyYWN0ZWQuIEhpbnQ6IExvb2sgYXQgdGhlIGhlbHAgZm9yIGBtYXRyaXhTdGF0czo6cm93VmFycygpYCBhbmQgZGVjaWRlIGlmIHRoYXQncyBhIHJlYXNvbmFibGUgZnVuY3Rpb24gdG8gdXNlLgoKPGRldGFpbHM+CjxzdW1tYXJ5PkFuc3dlcjwvc3VtbWFyeT4KYGBge3IgY2FsY19yb3dfdmFyc30KZ2VuZV92YXJzID0gcm93VmFycyhleHBfbWF0KQpoZWFkKGdlbmVfdmFycykKYGBgCjwvZGV0YWlscz4KPGJyPgoKNC4gR2V0IHRoZSBudW1lcmljYWwgaW5kaWNlcyBmb3IgdGhlIHRvcCA1MCBtb3N0IHZhcmlhYmxlIGdlbmVzLiBIaW50OiBSdW4gdGhlIGBvcmRlcigpYCBmdW5jdGlvbiBvbiBhIHRveSBleGFtcGxlLCBsaWtlIGBvcmRlcihjKC0xLjI1LCAxLjMsIDUuNiwgMi4xKSlgLCBhbmQgdGhpbmsgYWJvdXQgd2hhdCBpcyBiZWluZyByZXR1cm5lZC4gTm90ZSwgaXQncyBub3QgdGhlIHZhbHVlcyBpbiB0aGUgb3JpZ2luYWwgdmVjdG9yLiBUaGVuIGxvb2sgYXQgdGhlIGhlbHAgZm9yIGBvcmRlcigpYCBhbmQgZmlndXJlIG91dCBob3cgaG93IHRvIHJldmVyc2Ugd2hhdCBpcyByZXR1cm5lZC4KCjxkZXRhaWxzPgo8c3VtbWFyeT5BbnN3ZXI8L3N1bW1hcnk+CmBgYHtyIG9yZGVyX3ZhcnN9Cm9yZGVyKGMoLTEuMjUsIDEuMywgNS42LCAyLjEpKQpvcmRlcihjKC0xLjI1LCAxLjMsIDUuNiwgMi4xKSwgZGVjcmVhc2luZyA9IFRSVUUpCgpvcmRlcmVkX2lkeCA9IG9yZGVyKGdlbmVfdmFycywgZGVjcmVhc2luZyA9IFRSVUUpCnRvcF81MF9pZHggPSBvcmRlcmVkX2lkeFsxOjUwXQpgYGAKPC9kZXRhaWxzPgo8YnI+Cgo1LiBTdWJzZXQgdGhlIGV4cHJlc3Npb24gbWF0cml4IGZyb20gc3RlcCAyIHVzaW5nIHRoaXMgaW5kZXggdmVjdG9yLiBIaW50OiBSZW1lbWJlciBzcXVhcmUtYnJhY2tldCBub3RhdGlvbiwgYW5kIHRoYXQgd2Ugd2FudCB0byBzdWJzZXQgdGhlIHJvd3MsIHdoaWxlIHJldHVybmluZyBhbGwgdGhlIGNvbHVtbnMuIE1ha2Ugc3VyZSB0aGUgcmVzdWx0IGhhcyB0aGUgbnVtYmVyIG9mIHJvd3MgeW91IGV4cGVjdCwgdGhhdCBpcywgNTAuCgo8ZGV0YWlscz4KPHN1bW1hcnk+QW5zd2VyPC9zdW1tYXJ5PgpgYGB7ciBleHRyYWN0X3RvcF9leHB9CnRvcF92YXJfZXhwX21hdCA9IGV4cF9tYXRbdG9wXzUwX2lkeCwgXQpkaW0odG9wX3Zhcl9leHBfbWF0KQpgYGAKPC9kZXRhaWxzPgo8YnI+Cgo2LiBDcmVhdGUgYSBoZWF0bWFwIHVzaW5nIHRoaXMgc3Vic2V0dGVkIGV4cHJlc3Npb24gbWF0cml4IHVzaW5nIHRoZSBgcGhlYXRtYXAoKWAgZnVuY3Rpb24uCgo8ZGV0YWlscz4KPHN1bW1hcnk+QW5zd2VyPC9zdW1tYXJ5PgpgYGB7ciBjcmVhdGVfaGVhdG1hcH0KcGhlYXRtYXAodG9wX3Zhcl9leHBfbWF0KQpgYGAKPC9kZXRhaWxzPgo8YnI+CgojIFNhdmluZyB0aGUgcmVzdWx0CgpJZiB0aW1lIHBlcm1pdHMsIGRpc2N1c3Mgd2l0aCB5b3VyIGdyb3VwIGhvdyB5b3UgbWlnaHQgc2F2ZSB0aGlzIGhlYXRtYXAuIEhpbnQ6IExvb2sgYXQgdGhlIHBhcmFtZXRlcnMgZm9yIHRoZSBmdW5jdGlvbiBpbiBgP3BoZWF0bWFwYC4gQWx0ZXJuYXRpdmVseSwgY29uc2lkZXIgaG93IHdlIHNhdmVkIHRoZSBQQ0EgaW4gdGhlIHByZXZpb3VzIG1vZHVsZS4KCmBgYHtyIFdyaXRlT3V0LlJEYXRhLCBldmFsPUZBTFNFLCBlY2hvPUZBTFNFLCBtZXNzYWdlPUZBTFNFLCB3YXJuaW5nPUZBTFNFfQojSGlkZGVuIGNvZGUgYmxvY2sgdG8gd3JpdGUgb3V0IGRhdGEgZm9yIGtuaXR0aW5nCiMgc2F2ZS5pbWFnZShmaWxlID0gInJkYXRhL1J1bm5pbmdEYXRhLlJEYXRhIikKYGBgCg==</div>
 
 
 </div>

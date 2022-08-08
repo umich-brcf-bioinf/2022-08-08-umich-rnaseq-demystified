@@ -7,9 +7,9 @@ getwd()
 dir.create("./data")
 
 # download files
-download.file("https://raw.githubusercontent.com/umich-brcf-bioinf/2021-04-26-umich-rnaseqDemystified/master/data/Day2Data/SampleInfo_trimmed.csv", "./data/SampleInfo_trimmed.csv")
+download.file("https://raw.githubusercontent.com/umich-brcf-bioinf/2021-04-26-umich-rnaseqDemystified/master/data/Day2Data/samplesheet.csv", "./data/samplesheet.csv")
 
-download.file("https://raw.githubusercontent.com/umich-brcf-bioinf/2021-04-26-umich-rnaseqDemystified/master/data/Day2Data/gene_expected_count_trimmed.txt", "./data/gene_expected_count_trimmed.txt")
+download.file("https://raw.githubusercontent.com/umich-brcf-bioinf/2021-04-26-umich-rnaseqDemystified/master/data/Day2Data/gene_expected_count.txt", "./data/gene_expected_count.txt")
 
 # check for packages
 missing <- setdiff(c("tidyr", "ggplot2", "pheatmap", "ggrepel", "formattable", "RColorBrewer", "matrixStats", "dplyr", "biomaRt", "DESeq2"), rownames(installed.packages()))
@@ -30,33 +30,33 @@ library('RColorBrewer', character.only=TRUE)
 
 # load raw count table
 ?read.table
-CountTable <- read.table("./data/gene_expected_count_trimmed.txt", header = TRUE, row.names = 1)
-head(CountTable)
-tail(CountTable)
+count_table <- read.table("./data/gene_expected_count.txt", header = TRUE, row.names = 1)
+head(count_table)
+tail(count_table)
 
 # round count table - need whole numbers
 ?floor
-CountTable <- floor(CountTable)
-tail(CountTable)
+count_table <- floor(count_table)
+tail(count_table)
 
 sessionInfo()
 
 # load sample info
-MetaInfo <- read.table("~/RNASeqDemystified/data/SampleInfo_trimmed.csv", sep = ",", header = TRUE, row.names = 1)
-head(MetaInfo)
-str(MetaInfo)
+samplesheet <- read.table("~/RNASeqDemystified/data/samplesheet.csv", sep = ",", header = TRUE, row.names = 1)
+head(samplesheet)
+str(samplesheet)
 
 # reorder factors
-MetaInfo$Gtype.Tx <- factor(MetaInfo$Gtype.Tx, levels = c( "wt.Tx", "ko.Tx", "ko.control", "wt.control" ))
-unique(MetaInfo$Gtype.Tx)
+samplesheet$condition <- factor(samplesheet$condition, levels = c( "wt.Tx", "ko.Tx", "ko.control", "wt.control" ))
+unique(samplesheet$condition)
 
-head(CountTable)
+head(count_table)
 
 # check that counts and sample info match
-all(colnames(CountTable) == rownames(MetaInfo))
+all(colnames(count_table) == rownames(samplesheet))
 
 # Create DESeq2 Dataset
-dds <- DESeqDataSetFromMatrix(countData = CountTable, colData = MetaInfo, design = ~ Gtype.Tx)
+dds <- DESeqDataSetFromMatrix(countData = count_table, colData = samplesheet, design = ~ condition)
 str(dds)
 
 # filter out very low expressed genes
@@ -87,7 +87,7 @@ Comparison <- "ko.Tx"
 
 # generate PCA projections for top 500 genes
 ?plotPCA
-p.all <- plotPCA(rld, intgroup = c('Gtype.Tx'), ntop = 500)
+p.all <- plotPCA(rld, intgroup = c('condition'), ntop = 500)
 head(p.all)
 p.all
 
@@ -100,11 +100,11 @@ dev.off()
 resultsNames(dds)
 
 # look at Tx ko comparison
-Comparison <- "Gtype.Tx_ko.Tx_vs_wt.Tx"  
+Comparison <- "condition_ko.Tx_vs_wt.Tx"  
 res_Tx <- results(dds, name=Comparison)
 
 # generate additional contrast
-res_WT <- results(dds, contrast=c("Gtype.Tx", "ko.control", "wt.control")) 
+res_WT <- results(dds, contrast=c("condition", "ko.control", "wt.control")) 
 head(res_WT)
 
 # set threshold 

@@ -1,5 +1,5 @@
 ---
-title: "Day 3 - Module 09: Sample Visualizations for Quality Control"
+title: "Module 09: QC Visualizations"
 author: "UM Bioinformatics Core"
 date: "`r Sys.Date()`"
 output:
@@ -10,36 +10,35 @@ output:
             toc: true
             toc_depth: 4
             toc_float: true
-            number_sections: true
+            number_sections: false
             fig_caption: true
             markdown: GFM
             code_download: true
 ---
+
 <style type="text/css">
-body{ /* Normal  */
-      font-size: 14pt;
-  }
-pre {
-  font-size: 12pt
+body, td {
+   font-size: 18px;
 }
 code.r{
-  font-size: 12pt;
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
 }
 </style>
 
-<!--- Allow the page to be wider --->
-<style>
-    body .main-container {
-        max-width: 1200px;
-    }
-</style>
+```{r, include = FALSE}
+source("../bin/chunk-options.R")
+knitr_fig_path("09-")
+```
 
-> # Objectives:     
-> * Generate common QC visualizations   
-> * Understand how to interpret QC visualizations    
-> * Understand when to revise the model used in the DESeq2 initialization    
-> * Understand the pitfalls of post-hoc analysis     
-> * Describe the causes and implications of batch effect or other QC issues in an RNA-Seq experiment     
+> # Objectives {.unlisted .unnumbered}
+> * Generate common QC visualizations
+> * Understand how to interpret QC visualizations
+> * Understand when to revise the model used in the DESeq2 initialization
+> * Understand the pitfalls of post-hoc analysis
+> * Describe the causes and implications of batch effect or other QC issues in an RNA-Seq experiment
 
 
 ```{r Modules, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
@@ -51,11 +50,10 @@ library(matrixStats)
 library(ggrepel)
 library(pheatmap)
 library(RColorBrewer)
-load("rdata/RunningData.RData")
+# load("rdata/RunningData.RData")
 ```
 
-
-# Differential Expression Workflow
+# Differential Expression Workflow {.unlisted .unnumbered}
 
 Prior to testing for differential expression between our comparisons of interest, we'll first generate plots that will assess how well our samples match up with our expectations (based on their treatment groups) and what we might expect to see from our differential expression comparisons.
 
@@ -63,50 +61,46 @@ Prior to testing for differential expression between our comparisons of interest
 
 ---
 
-# Sample Visualizatons for Quality Control     
+# QC Visualizations
 
-On Monday, we discussed aspects of quality control assessment at the sequencing data level. Today we will outline sample-level and gene-level quality control assessments to determine what we should expect for our differential expression comparisons.
+We have discussed some aspects of quality control assessment at the sequencing data level. Today we will outline sample-level and gene-level quality control assessments to determine what we might expect for our differential expression comparisons.
 
 To do this, we will first assess the similarity of our samples by using principal component analysis (PCA). This will allow us to determine how well patterns in the data fits our expectations from the experiments design and possible sources of variation.
 
 Other common visualizations that we generate for our analyses include expression heatmaps, sample correlation heatmaps, and boxplots of raw and/or normalized counts, the code for which (due to time restrictions) can be found as bonus content through the materials for today and in the bonus content module.
 
-## Principle Component Analysis (PCA) Plots
+# Principal Component Analysis
 
-A common and very useful plot for evaluating how well our samples cluster by treatment groups are Principle Component Analysis (PCA) plots. PCA is used to emphasize variation and bring out patterns in large datasets by using dimensionality redution.
+A common and very useful plot for evaluating how well our samples cluster by treatment groups are Principal Component Analysis (PCA) plots. PCA is used to emphasize variation and bring out patterns in large datasets by using dimensionality redution.
 
 This image from
-[a helpful step by step explaination of PCA](https://blog.bioturing.com/2018/06/14/principal-component-analysis-explained-simply/) helps to illustrate the principle component projections for two genes measured in approximately 60 mouse samples. Generally, this process is repeated and after each gene's contribution to a principle component or weight is determined, the expression and weight are summed across genes for each sample to calculate a value for each principle component.
-
+[a helpful step by step explaination of PCA](https://blog.bioturing.com/2018/06/14/principal-component-analysis-explained-simply/) helps to illustrate the principal component projections for two genes measured in approximately 60 mouse samples. Generally, this process is repeated and after each gene's contribution to a principal component or weight is determined, the expression and weight are summed across genes for each sample to calculate a value for each principal component.
 
 ![](./images/Blog_pca_6b.png)
 
 >**Note**: A more detailed overview of the PCA procedure is outlined in [a Harvard Chan Bioinformatic Core training module](https://hbctraining.github.io/DGE_workshop/lessons/principal_component_analysis.html) and is based on a more thorough description presented in a [StatQuest’s video](https://www.youtube.com/watch?v=_UVHneBUBW0). Additionally, this [TowardsDataScience blog post](https://towardsdatascience.com/principal-component-analysis-3c39fbf5cb9d) goes through the math behind PCAs.
 
-### Interpreting PCA plots
+## Interpreting PCA plots
 
-For most bulk RNA-seq experiments, we expect the majority of the total variance to be explained by the first two or three principle components.
+For most bulk RNA-seq experiments, we expect the majority of the total variance to be explained by the first two or three principal components.
 
 ![](images/PCAplot_Fancy_rlog_ko.Tx.png){width=75%}
 
-In this plot, which is similar to what we'll generate below for our data, where principle component 1 (PC1) explains ~80% of the variance in our data while principle component 2 (PC2) explains ~12% of the variance, which fits that expections.
+In this plot, which we will generate for our data later, principal component 1 (PC1) explains ~80% of the variance in our data while principal component 2 (PC2) explains ~12% of the variance, which fits that expections.
 
-*[Question]: How might we interpret the variance explained by each principle component in the context of the labeled sample points?*
+> # Question {.unlisted .unnumbered}
+>
+> How might we interpret the variance explained by each principal component in the context of the labeled sample points?
 
+For more information, this [helpful overview of PCA basics](https://blog.bioturing.com/2018/06/14/principal-component-analysis-explained-simply/) walks through both the generation and interpretation of PCA plots.
 
-For more information, this [helpful overview of PCA basics](https://blog.bioturing.com/2018/06/14/principal-component-analysis-explained-simply/) walks through both the generation and interpretation of PCA plots.    
+## Evaluating batch effects or confounders
 
-
-### Evaluating batch effects or confounders
-
-PCA plots are also useful for evaluating the impact of factors other than the experimental treatment or group.
-
-At times, batch effects can be quite obvious, such as this example from the [DESeq2 vignette](http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html), where samples within each treatment group look staggered into two subgroups.
-
+PCA plots are also useful for evaluating the impact of factors other than the experimental treatment or group. At times, batch effects can be quite obvious, such as this example from the [DESeq2 vignette](http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html), where samples within each treatment group look staggered into two subgroups.
 
 ![](./images/PCA1_DESeq2Vignette.png)
 
-If we color only by sequencing run type (paired-end vs. single-end), we see that PC2 (29% of variance) is primarily explained by this technical covariate.
+It turns out this experiment contained samples sequenced single-end and paired-end. If we color only by sequencing run type (paired-end vs. single-end), we see that PC2 (29% of variance) is primarily explained by this technical covariate.
 
 ![](./images/PCA2_DESeq2Vignette.png)
 
@@ -120,121 +114,133 @@ However, the samples are clearly seperated by experimental condition on PC1 **an
     However, when the plot is color coded by the technical batches of probe labeling, we see that the patterns in the data are better explained by batch than the experimental conditions.
     ![](./images/batch_ex1c.jpg)
 </details>
+<br>
 
+# Create a PCA
 
-## Plot Setup
+We've already loaded the libraries we need for this module. We have also thought ahead in the previous module and created the `outputs/figures` and `outputs/tables` directories.
 
-We've already loaded the libraries we need for this module. We'll follow best practices and create new a subdirectory to organize our output figures, as well as a variable to store a descriptor of the dataset we are looking at so we can more easily recycle our plotting functions.
-
-```{r Setupdirectory}
-plotPath = './DE_outputs/figures/'
-dir.create(plotPath, showWarnings = FALSE)
-Comparison <- "Gtype.Tx" # descriptor for the dataset we are looking at
-```
-
-## PCA Plot initialization
-
-Below, we will plot the rlog normalized data and generate the PCA projections for the top 500 using the `plotPCA` function from DESeq2, specifying `Gtype.Tx` as the condition of interest, and view the simple plot generated by the function.
+Below, we will plot the rlog normalized data and generate the PCA projections for the top 500 using the `plotPCA` function from DESeq2, specifying `condition` as the condition of interest, and view the simple plot generated by the function.
 
 ```{r PCArlog3}
-p.all <- plotPCA(rld, intgroup = c('Gtype.Tx'), ntop = 500)
-p.all
+pca_plot = plotPCA(rld, intgroup = c('condition'), ntop = 500)
+pca_plot
 ```
 
-We also see that samples in both `control` groups are fairly tightly grouped, while samples within each `Tx` group do not cluster as tightly. 
+The samples don't appear to cluster too tightly on their `condition`, but we do observe that they do separate in PC2. With real data, it is often the case that data doesn't cluster as well as you'd expect, or that the covariate of interest is not associated with the first (or sometimes second or third) principal component. That doesn't necessarily mean the experiment is a failure, but it does raise questions such as "What is associated with PC1?" Sometimes we can't answer a question like this if we don't have any sample phenotype to color in the PCA.
 
-*[Question]: What can we take away from this PCA plot? Does it look like there are batch effects? Would we expect more DE genes for comparisons between ko.control and wt.control samples OR wt.Tx and ko.Tx samples?*
+Next, let's save this plot as a file in our `outputs/figures` folder. The "base R" way is to:
 
-Next, we'll save this plot to file.
-```{r PCArlog1}
-pdf(file = paste0(plotPath, 'PCAplot_rlog_', Comparison, '.pdf'), onefile = TRUE)
-p.all
+```{r save_pca_base, eval = FALSE}
+pdf(file = file.path('outputs', 'figures', 'PCA_rlog_condition.pdf'), width = 6, height = 6)
+pca_plot
 dev.off()
 ```
 
-**Checkpoint**: *If generated and saved the `p.all` PCA plot, please indicate with the green 'check' button. Otherwise, please use  use the red 'x' button in your zoom reaction panel to have this step repeated.*
+Alternatively, since `pca_plot` is a `ggplot`, we can use `ggsave()`.
 
-## [Breakout Exercise 1] - Imagine a heatmap
-
-It can be useful to visualize to visualize how our samples organize along with the expression pattern of individual genes. We will create a heatmap of the top most variable genes using the `pheatmap` function.
-
-Before the exercise, let's look at the help page using the `?` symbol.
-```{r pheatDoc, eval=FALSE}
-?pheatmap
+```{r save_pca_ggsave, eval = FALSE}
+ggsave(
+    filename = file.path('outputs', 'figures', 'PCA_rlog_condition.pdf'),
+    plot = pca_plot,
+    width = 6, height = 6, units = 'in')
 ```
 
-If we scroll down to the examples, we can test some of them out:
-```{r testpheat}
-# copied from the pheatmap documentation
-test = matrix(rnorm(200), 20, 10)
-test[1:10, seq(1, 10, 2)] = test[1:10, seq(1, 10, 2)] + 3
-test[11:20, seq(2, 10, 2)] = test[11:20, seq(2, 10, 2)] + 2
-test[15:20, seq(2, 10, 2)] = test[15:20, seq(2, 10, 2)] + 4
-colnames(test) = paste("Test", 1:10, sep = "")
-rownames(test) = paste("Gene", 1:20, sep = "")
-
-
-pheatmap(test)
-```
-
-Now that we've gotten a sense of what `pheatmap` can generate, let' navigate to our first [breakout exercise](https://umich-brcf-bioinf.github.io/2022-03-14-umich-rnaseq-demystified/html/Module09a_breakout.html)
-<br>
-<br>
-
-## Transferring our plot to our local computer
-
-Rstudio server allows us to download files through the interactive file panel on the right side. If we navigate into the plot subfolder and select the `PCAplot_rlog_Gtype.Tx.pdf` or the  file, we can then click the blue gear symbol labeled `More` and select `Export...`. We should see a prompt regarding the name of the file and if we click `Download` the file should show up in your local "Downloads" folder.
-
-### Optional - Scree Plot example 
+> # Exercise - Customize the PCA {.unlisted .unnumbered}
+>
+> Since the `pca_plot` object is a `ggplot`--you can see this with `class(pca_plot)`--we can use what we learned at the end of the Computational Foundations Workshop to modify this plot as we might see necessary. Try doing the following to the `pca_plot`:
+>
+> 1. Add a title and subtitle to the plot using the `labs()` function.
+> 2. Change the theme of the plot with `theme_bw()`.
+> 3. Challenge: Change the legend title to "Condition". Hint, you can do this with the `labs()` function too, using the corresponding aesthetic mapping (e.g. "color").
+>
+> Remember `ggplot2` adds plot components in layers, and you can add additional layers with the `+` sign. So if the plot already exists as an object, as `pca_plot` does in this case, you can add to it like `pca_plot + ...`
 
 <details>
-    <summary>*Bonus: Click for example code for generating a ScreePlot*</summary>
-     A screeplot is a way to visualize the variance explained by all principle components.
+<summary>Solution</summary>
+
+Here is one possible answer:
+
+```{r customize_pca_exercise}
+pca_plot +
+    labs(
+        title = 'PCA Plot',
+        subtitle = 'Top 500 variable genes',
+        color = 'Condition') +
+    theme_bw()
+```
+</details>
+<br>
+
+**Checkpoint**: *If you generated and saved the `pca_plot` PCA plot, please indicate with the green 'check' button. Otherwise, please use  use the red 'x' button in your zoom reaction panel to have this step repeated.*
+
+> # [Breakout Exercise 1] - Imagine a heatmap {.unlisted .unnumbered}
+>
+> Plotting the expression values across all samples for the top variable genes in an experiment can help to visualize how samples cluster together by their expression profiles. When combined with phenotypic data, it can help show how samples with different treatments behave relative to one another. Let's work through this exercise in small groups and generate a heatmap of the data we've been working with.
+>
+> [Link to exercise](https://umich-brcf-bioinf.github.io/2022-03-14-umich-rnaseq-demystified/html/Module09a_breakout.html)
+
+
+# Download plots
+
+Rstudio server allows us to download files through the interactive file panel on the right side. If we navigate into the plot subfolder and select the `PCAplot_rlog_condition.pdf` or the  file, we can then click the blue gear symbol labeled `More` and select `Export...`. We should see a prompt regarding the name of the file and if we click `Download` the file should show up in your local "Downloads" folder.
+
+# Optional Content
+
+<details>
+    <summary>*Click for example code for generating a ScreePlot*</summary>
+     A screeplot is a way to visualize the variance explained by all principal components.
      To generate a scree plot, the PCA results need to be used independently of plotting, such as described by [this statquest post](https://statquest.org/pca-clearly-explained/) and replicated below.
+
 ```{r ScreePlot}
 # generate PCA loadings
-pca <- prcomp(t(assay(rld)), scale=TRUE)
+pca = prcomp(t(assay(rld)), scale=TRUE)
 
 ## get the scree information
-pca.var <- pca$sdev^2
-scree <- pca.var/sum(pca.var)
-p <- barplot((scree[1:10]*100), main="Scree Plot", xlab="Principal Component", ylab="Percent Variation")
+pca.var = pca$sdev^2
+scree = pca.var/sum(pca.var)
+p = barplot((scree[1:10]*100), main="Scree Plot", xlab="Principal Component", ylab="Percent Variation")
 print(p)
 ```
-    We can see that the majority (~65%) of the variance across our samples is explained by the first three principle components, giving us some additional confidence regarding the quality of our data.
-    In these scree plot examples from BioTuring, the plot on the left fits what we would expect for a dataset with high signal from the experimental treatment, where the majority of the variance is explained by the first few principle components. The plot on the right illustrates a scenario where the variance is distributed across many components, which could be due to low signal from the experimental treatment, complex experimental design, or confounding factors.
+
+    We can see that the majority (~65%) of the variance across our samples is explained by the first three principal components, giving us some additional confidence regarding the quality of our data.
+    In these scree plot examples from BioTuring, the plot on the left fits what we would expect for a dataset with high signal from the experimental treatment, where the majority of the variance is explained by the first few principal components. The plot on the right illustrates a scenario where the variance is distributed across many components, which could be due to low signal from the experimental treatment, complex experimental design, or confounding factors.
 image: ![](./images/proportion-of-variance-blog-horz.jpg)
 </details>
+<br>
 
+<details>
+    <summary>*Click for code for a plot of dispersion estimates*</summary>
+    We can visualize the **dispersion estimates** with the `plotDispEsts` function. This plot shows the the DESeq2 normalization results for our data, which centers on shrinking the variance across all genes to better fit the expected spread at a given expression level.
+```{r CheckDispersions}
+plotDispEsts(dds)
+```
+    Above is the raw data plotted in black, the fitted (or expected) dispersion in red, and the normalized data with scaled variance in blue. Since we have fairly small sample sizes for each condition, we see shrinkage for many genes but a reasonable correlation between the expression level and dispersions.
 
+    This [HBC tutorial](https://hbctraining.github.io/DGE_workshop/lessons/04_DGE_DESeq2_analysis.html) has a more detailed overview of estimating size factors, estimating gene dispersion, and the shrinkage procedure, as well as examples of concerning dispersion plots that may suggest reassessing quality of the experimental data.
+</details>
 <br>
 
 # Summary
 
-In this section, we:    
+In this section, we:
 
-* Discussed variance within treatment groups     
+* Discussed variance within treatment groups
 * Discussed technical artifacts, including batches
 * Learned to generate PCA plots
 
-
-
 ---
 
+# Sources
 
-# Sources Used    
-* HBC QC tutorial: https://hbctraining.github.io/DGE_workshop/lessons/03_DGE_QC_analysis.html    
-* Detailed Heatmap tutorial from Galaxy: https://training.galaxyproject.org/training-material/topics/transcriptomics/tutorials/rna-seq-viz-with-heatmap2/tutorial.html   
-* PCA Overview: https://blog.bioturing.com/2018/06/14/principal-component-analysis-explained-simply/     
-
-
+* HBC QC tutorial: https://hbctraining.github.io/DGE_workshop/lessons/03_DGE_QC_analysis.html
+* Detailed Heatmap tutorial from Galaxy: https://training.galaxyproject.org/training-material/topics/transcriptomics/tutorials/rna-seq-viz-with-heatmap2/tutorial.html
+* PCA Overview: https://blog.bioturing.com/2018/06/14/principal-component-analysis-explained-simply/
 
 ```{r WriteOut.RData, eval=FALSE, echo=FALSE, message=FALSE, warning=FALSE}
 #Hidden code block to write out data for knitting
-save.image(file = "rdata/RunningData.RData")
+# save.image(file = "rdata/RunningData.RData")
 ```
-
-
 
 ---
 
