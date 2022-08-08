@@ -174,7 +174,7 @@ pca_plot +
 
 **Checkpoint**: *If you generated and saved the `pca_plot` PCA plot, please indicate with the green 'check' button. Otherwise, please use  use the red 'x' button in your zoom reaction panel to have this step repeated.*
 
-> # [Breakout Exercise 1] - Imagine a heatmap {.unlisted .unnumbered}
+> # Breakout Exercise 1 - Imagine a heatmap {.unlisted .unnumbered}
 >
 > Plotting the expression values across all samples for the top variable genes in an experiment can help to visualize how samples cluster together by their expression profiles. When combined with phenotypic data, it can help show how samples with different treatments behave relative to one another. Let's work through this exercise in small groups and generate a heatmap of the data we've been working with.
 >
