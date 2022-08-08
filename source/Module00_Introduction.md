@@ -221,8 +221,12 @@ It is important that you can see:
    the workshop. But we hope you will have a familiarity with key concepts, data types,
    tools, and how they all connect to one another in the service of a biological question.
 
+## RNA-Seq Demystified: starting with the end in mind
+![](images/Module00_top_down.jpg)
+<br/>
+<br/>
 
-## Workshop topics at a glance
+### Workshop topics at a glance
 ![](images/wayfinder/wayfinder-01.png)
 
 # Any questions?

@@ -402,35 +402,25 @@ pre {
 <p><br></p>
 <p><strong>15 Minutes</strong></p>
 <p><br></p>
-<p>Now that we’ve learned the basics of running Cutadapt, we need to
-trim all the rest of our samples. If you remember from the Computational
-Foundations course, we learned about using bash variables. Let’s try an
-exercise where we use a bash variable to trim each one of our FASTQ
-files.</p>
+<p>Now that we’ve learned the basics of running Cutadapt, we need to trim all the rest of our samples. If you remember from the Computational Foundations course, we learned about using bash variables. Let’s try an exercise where we use a bash variable to trim each one of our FASTQ files.</p>
 <p><br></p>
 <div id="instructions" class="section level3">
 <h3>Instructions:</h3>
 <p><br></p>
 <ul>
-<li>One group member should share their screen in the breakout room. If
-nobody volunteers, a helper may randomly select someone.</li>
-<li>The group members should discuss the exercise and work together to
-find a solution.</li>
-<li>After a solution is found, allow time for all members to complete
-the exercise.</li>
+<li>One group member should share their screen in the breakout room. If nobody volunteers, a helper may randomly select someone.</li>
+<li>The group members should discuss the exercise and work together to find a solution.</li>
+<li>After a solution is found, allow time for all members to complete the exercise.</li>
 </ul>
 <p><br></p>
 <ul>
-<li>Review Cutadapt’s help page and choose the proper arguments for our
-Cutadapt command(s).</li>
-<li>Use a bash variable along with Cutadapt to trim all remaining FASTQ
-files.</li>
+<li>Review Cutadapt’s help page and choose the proper arguments for our Cutadapt command(s).</li>
+<li>Use a bash variable along with Cutadapt to trim all remaining FASTQ files.</li>
 <li>Confirm that we have all of our expected output files.</li>
 </ul>
 <p><br></p>
 <blockquote>
-<p>Hint: Using a bash variable allows us to quickly change some
-arguments in a repeated command, e.g. :</p>
+<p>Hint: Using a bash variable allows us to quickly change some arguments in a repeated command, e.g. :</p>
 <pre><code>noun=&quot;World&quot;
 echo &quot;Hello, $noun!&quot;
 noun=&quot;Class&quot;
@@ -438,49 +428,42 @@ echo &quot;Hello, $noun!&quot;</code></pre>
 </blockquote>
 <p><br></p>
 </div>
-<div id="solution---cutadapt-all-samples-exercise"
-class="section level3">
+<div id="solution---cutadapt-all-samples-exercise" class="section level3">
 <h3>Solution - Cutadapt All Samples Exercise</h3>
 <p><br></p>
-<p>One solution is to define a bash variable for the sample, use that
-variable in a Cutadapt command, and then redefine the variable before
-repeating the Cutadapt command for each change.</p>
+<p>One solution is to define a bash variable for the sample, use that variable in a Cutadapt command, and then redefine the variable before repeating the Cutadapt command for each change.</p>
 <pre><code># Define a variable $SAMPLE
 SAMPLE=SRR7777896
 # Create a command using the variable $SAMPLE
-cutadapt -q 15 -o out_trimmed/${SAMPLE}_R1.trimmed.fastq.gz ../reads/${SAMPLE}_R1.fastq.gz
+cutadapt -q 30 -m 20 -o out_trimmed/${SAMPLE}_R1.trimmed.fastq.gz ../reads/${SAMPLE}_R1.fastq.gz
 
 # Redefine the variable and run the command for each additional sample
 SAMPLE=SRR7777897
-cutadapt -q 15 -o out_trimmed/${SAMPLE}_R1.trimmed.fastq.gz ../reads/${SAMPLE}_R1.fastq.gz
+cutadapt -q 30 -m 20 -o out_trimmed/${SAMPLE}_R1.trimmed.fastq.gz ../reads/${SAMPLE}_R1.fastq.gz
 
 SAMPLE=SRR7777898
-cutadapt -q 15 -o out_trimmed/${SAMPLE}_R1.trimmed.fastq.gz ../reads/${SAMPLE}_R1.fastq.gz
+cutadapt -q 30 -m 20 -o out_trimmed/${SAMPLE}_R1.trimmed.fastq.gz ../reads/${SAMPLE}_R1.fastq.gz
 
 SAMPLE=SRR7777899
-cutadapt -q 15 -o out_trimmed/${SAMPLE}_R1.trimmed.fastq.gz ../reads/${SAMPLE}_R1.fastq.gz
+cutadapt -q 30 -m 20 -o out_trimmed/${SAMPLE}_R1.trimmed.fastq.gz ../reads/${SAMPLE}_R1.fastq.gz
 
 SAMPLE=SRR7777900
-cutadapt -q 15 -o out_trimmed/${SAMPLE}_R1.trimmed.fastq.gz ../reads/${SAMPLE}_R1.fastq.gz</code></pre>
+cutadapt -q 30 -m 20 -o out_trimmed/${SAMPLE}_R1.trimmed.fastq.gz ../reads/${SAMPLE}_R1.fastq.gz</code></pre>
 <p><br></p>
-<p>Another solution is to create a for-loop with our bash variable and
-Cutadapt command. E.g.</p>
+<p>Another solution is to create a for-loop with our bash variable and Cutadapt command. E.g.</p>
 <pre><code>for SAMPLE in SRR7777896 SRR7777897 SRR7777898 SRR7777899 SRR7777900
     do
-    cutadapt -q 15 -m 20 -o out_trimmed/${SAMPLE}_R1.trimmed.fastq.gz ../reads/${SAMPLE}_R1.fastq.gz
+    cutadapt -q 30 -m 20 -o out_trimmed/${SAMPLE}_R1.trimmed.fastq.gz ../reads/${SAMPLE}_R1.fastq.gz
 done</code></pre>
 <p><br></p>
 <blockquote>
-<p>Helper Hint: If suggesting a for-loop approach, it can be helpful to
-build up a “dry-run” command as a test case, to get learners to be more
-cognizant of what their code will do. Echoing filenames first might be a
-good suggestion.</p>
+<p>Helper Hint: If suggesting a for-loop approach, it can be helpful to build up a “dry-run” command as a test case, to get learners to be more cognizant of what their code will do. Echoing filenames first might be a good suggestion.</p>
 </blockquote>
 <p><br></p>
 </div>
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiRGF5IDEgLSBCcmVha291dCAwMSIKYXV0aG9yOiAiVU0gQmlvaW5mb3JtYXRpY3MgQ29yZSIKb3V0cHV0OgogICAgICAgIGh0bWxfZG9jdW1lbnQ6CiAgICAgICAgICAgIGluY2x1ZGVzOgogICAgICAgICAgICAgICAgaW5faGVhZGVyOiBoZWFkZXIuaHRtbAogICAgICAgICAgICB0aGVtZTogcGFwZXIKICAgICAgICAgICAgZmlnX2NhcHRpb246IHRydWUKICAgICAgICAgICAgbWFya2Rvd246IEdGTQogICAgICAgICAgICBjb2RlX2Rvd25sb2FkOiB0cnVlCi0tLQo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgpib2R5eyAvKiBOb3JtYWwgICovCiAgICAgIGZvbnQtc2l6ZTogMTRwdDsKICB9CnByZSB7CiAgZm9udC1zaXplOiAxMnB0Cn0KPC9zdHlsZT4KCjxicj4KCiMjIEN1dGFkYXB0IEFsbCBTYW1wbGVzIEV4ZXJjaXNlIChCcmVha291dCkKCjxicj4KCioqMTUgTWludXRlcyoqCgo8YnI+CgpOb3cgdGhhdCB3ZSd2ZSBsZWFybmVkIHRoZSBiYXNpY3Mgb2YgcnVubmluZyBDdXRhZGFwdCwgd2UgbmVlZCB0byB0cmltIGFsbCB0aGUgcmVzdCBvZiBvdXIgc2FtcGxlcy4gSWYgeW91IHJlbWVtYmVyIGZyb20gdGhlIENvbXB1dGF0aW9uYWwgRm91bmRhdGlvbnMgY291cnNlLCB3ZSBsZWFybmVkIGFib3V0IHVzaW5nIGJhc2ggdmFyaWFibGVzLiBMZXQncyB0cnkgYW4gZXhlcmNpc2Ugd2hlcmUgd2UgdXNlIGEgYmFzaCB2YXJpYWJsZSB0byB0cmltIGVhY2ggb25lIG9mIG91ciBGQVNUUSBmaWxlcy4KCjxicj4KCiMjIyBJbnN0cnVjdGlvbnM6Cgo8YnI+CgotIE9uZSBncm91cCBtZW1iZXIgc2hvdWxkIHNoYXJlIHRoZWlyIHNjcmVlbiBpbiB0aGUgYnJlYWtvdXQgcm9vbS4gSWYgbm9ib2R5IHZvbHVudGVlcnMsIGEgaGVscGVyIG1heSByYW5kb21seSBzZWxlY3Qgc29tZW9uZS4KLSBUaGUgZ3JvdXAgbWVtYmVycyBzaG91bGQgZGlzY3VzcyB0aGUgZXhlcmNpc2UgYW5kIHdvcmsgdG9nZXRoZXIgdG8gZmluZCBhIHNvbHV0aW9uLgotIEFmdGVyIGEgc29sdXRpb24gaXMgZm91bmQsIGFsbG93IHRpbWUgZm9yIGFsbCBtZW1iZXJzIHRvIGNvbXBsZXRlIHRoZSBleGVyY2lzZS4KCjxicj4KCi0gUmV2aWV3IEN1dGFkYXB0J3MgaGVscCBwYWdlIGFuZCBjaG9vc2UgdGhlIHByb3BlciBhcmd1bWVudHMgZm9yIG91ciBDdXRhZGFwdCBjb21tYW5kKHMpLgotIFVzZSBhIGJhc2ggdmFyaWFibGUgYWxvbmcgd2l0aCBDdXRhZGFwdCB0byB0cmltIGFsbCByZW1haW5pbmcgRkFTVFEgZmlsZXMuCi0gQ29uZmlybSB0aGF0IHdlIGhhdmUgYWxsIG9mIG91ciBleHBlY3RlZCBvdXRwdXQgZmlsZXMuCgo8YnI+CgoKPiBIaW50OiBVc2luZyBhIGJhc2ggdmFyaWFibGUgYWxsb3dzIHVzIHRvIHF1aWNrbHkgY2hhbmdlIHNvbWUgYXJndW1lbnRzIGluIGEgcmVwZWF0ZWQgY29tbWFuZCwgZS5nLiA6Cj4KPiB+fn4KPiBub3VuPSJXb3JsZCIKPiBlY2hvICJIZWxsbywgJG5vdW4hIgo+IG5vdW49IkNsYXNzIgo+IGVjaG8gIkhlbGxvLCAkbm91biEiCj4gfn5+Cgo8YnI+CgojIyMgU29sdXRpb24gLSBDdXRhZGFwdCBBbGwgU2FtcGxlcyBFeGVyY2lzZQoKPGJyPgoKT25lIHNvbHV0aW9uIGlzIHRvIGRlZmluZSBhIGJhc2ggdmFyaWFibGUgZm9yIHRoZSBzYW1wbGUsIHVzZSB0aGF0IHZhcmlhYmxlIGluIGEgQ3V0YWRhcHQgY29tbWFuZCwgYW5kIHRoZW4gcmVkZWZpbmUgdGhlIHZhcmlhYmxlIGJlZm9yZSByZXBlYXRpbmcgdGhlIEN1dGFkYXB0IGNvbW1hbmQgZm9yIGVhY2ggY2hhbmdlLgoKICAgICMgRGVmaW5lIGEgdmFyaWFibGUgJFNBTVBMRQogICAgU0FNUExFPVNSUjc3Nzc4OTYKICAgICMgQ3JlYXRlIGEgY29tbWFuZCB1c2luZyB0aGUgdmFyaWFibGUgJFNBTVBMRQogICAgY3V0YWRhcHQgLXEgMTUgLW8gb3V0X3RyaW1tZWQvJHtTQU1QTEV9X1IxLnRyaW1tZWQuZmFzdHEuZ3ogLi4vcmVhZHMvJHtTQU1QTEV9X1IxLmZhc3RxLmd6CgogICAgIyBSZWRlZmluZSB0aGUgdmFyaWFibGUgYW5kIHJ1biB0aGUgY29tbWFuZCBmb3IgZWFjaCBhZGRpdGlvbmFsIHNhbXBsZQogICAgU0FNUExFPVNSUjc3Nzc4OTcKICAgIGN1dGFkYXB0IC1xIDE1IC1vIG91dF90cmltbWVkLyR7U0FNUExFfV9SMS50cmltbWVkLmZhc3RxLmd6IC4uL3JlYWRzLyR7U0FNUExFfV9SMS5mYXN0cS5negoKICAgIFNBTVBMRT1TUlI3Nzc3ODk4CiAgICBjdXRhZGFwdCAtcSAxNSAtbyBvdXRfdHJpbW1lZC8ke1NBTVBMRX1fUjEudHJpbW1lZC5mYXN0cS5neiAuLi9yZWFkcy8ke1NBTVBMRX1fUjEuZmFzdHEuZ3oKCiAgICBTQU1QTEU9U1JSNzc3Nzg5OQogICAgY3V0YWRhcHQgLXEgMTUgLW8gb3V0X3RyaW1tZWQvJHtTQU1QTEV9X1IxLnRyaW1tZWQuZmFzdHEuZ3ogLi4vcmVhZHMvJHtTQU1QTEV9X1IxLmZhc3RxLmd6CgogICAgU0FNUExFPVNSUjc3Nzc5MDAKICAgIGN1dGFkYXB0IC1xIDE1IC1vIG91dF90cmltbWVkLyR7U0FNUExFfV9SMS50cmltbWVkLmZhc3RxLmd6IC4uL3JlYWRzLyR7U0FNUExFfV9SMS5mYXN0cS5negoKPGJyPgoKQW5vdGhlciBzb2x1dGlvbiBpcyB0byBjcmVhdGUgYSBmb3ItbG9vcCB3aXRoIG91ciBiYXNoIHZhcmlhYmxlIGFuZCBDdXRhZGFwdCBjb21tYW5kLiBFLmcuCgogICAgZm9yIFNBTVBMRSBpbiBTUlI3Nzc3ODk2IFNSUjc3Nzc4OTcgU1JSNzc3Nzg5OCBTUlI3Nzc3ODk5IFNSUjc3Nzc5MDAKICAgICAgICBkbwogICAgICAgIGN1dGFkYXB0IC1xIDE1IC1tIDIwIC1vIG91dF90cmltbWVkLyR7U0FNUExFfV9SMS50cmltbWVkLmZhc3RxLmd6IC4uL3JlYWRzLyR7U0FNUExFfV9SMS5mYXN0cS5negogICAgZG9uZQoKPGJyPgoKPiBIZWxwZXIgSGludDogSWYgc3VnZ2VzdGluZyBhIGZvci1sb29wIGFwcHJvYWNoLCBpdCBjYW4gYmUgaGVscGZ1bCB0byBidWlsZCB1cCBhICJkcnktcnVuIiBjb21tYW5kIGFzIGEgdGVzdCBjYXNlLCB0byBnZXQgbGVhcm5lcnMgdG8gYmUgbW9yZSBjb2duaXphbnQgb2Ygd2hhdCB0aGVpciBjb2RlIHdpbGwgZG8uIEVjaG9pbmcgZmlsZW5hbWVzIGZpcnN0IG1pZ2h0IGJlIGEgZ29vZCBzdWdnZXN0aW9uLgoKPGJyPgo=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiRGF5IDEgLSBCcmVha291dCAwMSIKYXV0aG9yOiAiVU0gQmlvaW5mb3JtYXRpY3MgQ29yZSIKb3V0cHV0OgogICAgICAgIGh0bWxfZG9jdW1lbnQ6CiAgICAgICAgICAgIGluY2x1ZGVzOgogICAgICAgICAgICAgICAgaW5faGVhZGVyOiBoZWFkZXIuaHRtbAogICAgICAgICAgICB0aGVtZTogcGFwZXIKICAgICAgICAgICAgZmlnX2NhcHRpb246IHRydWUKICAgICAgICAgICAgbWFya2Rvd246IEdGTQogICAgICAgICAgICBjb2RlX2Rvd25sb2FkOiB0cnVlCi0tLQo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgpib2R5eyAvKiBOb3JtYWwgICovCiAgICAgIGZvbnQtc2l6ZTogMTRwdDsKICB9CnByZSB7CiAgZm9udC1zaXplOiAxMnB0Cn0KPC9zdHlsZT4KCjxicj4KCiMjIEN1dGFkYXB0IEFsbCBTYW1wbGVzIEV4ZXJjaXNlIChCcmVha291dCkKCjxicj4KCioqMTUgTWludXRlcyoqCgo8YnI+CgpOb3cgdGhhdCB3ZSd2ZSBsZWFybmVkIHRoZSBiYXNpY3Mgb2YgcnVubmluZyBDdXRhZGFwdCwgd2UgbmVlZCB0byB0cmltIGFsbCB0aGUgcmVzdCBvZiBvdXIgc2FtcGxlcy4gSWYgeW91IHJlbWVtYmVyIGZyb20gdGhlIENvbXB1dGF0aW9uYWwgRm91bmRhdGlvbnMgY291cnNlLCB3ZSBsZWFybmVkIGFib3V0IHVzaW5nIGJhc2ggdmFyaWFibGVzLiBMZXQncyB0cnkgYW4gZXhlcmNpc2Ugd2hlcmUgd2UgdXNlIGEgYmFzaCB2YXJpYWJsZSB0byB0cmltIGVhY2ggb25lIG9mIG91ciBGQVNUUSBmaWxlcy4KCjxicj4KCiMjIyBJbnN0cnVjdGlvbnM6Cgo8YnI+CgotIE9uZSBncm91cCBtZW1iZXIgc2hvdWxkIHNoYXJlIHRoZWlyIHNjcmVlbiBpbiB0aGUgYnJlYWtvdXQgcm9vbS4gSWYgbm9ib2R5IHZvbHVudGVlcnMsIGEgaGVscGVyIG1heSByYW5kb21seSBzZWxlY3Qgc29tZW9uZS4KLSBUaGUgZ3JvdXAgbWVtYmVycyBzaG91bGQgZGlzY3VzcyB0aGUgZXhlcmNpc2UgYW5kIHdvcmsgdG9nZXRoZXIgdG8gZmluZCBhIHNvbHV0aW9uLgotIEFmdGVyIGEgc29sdXRpb24gaXMgZm91bmQsIGFsbG93IHRpbWUgZm9yIGFsbCBtZW1iZXJzIHRvIGNvbXBsZXRlIHRoZSBleGVyY2lzZS4KCjxicj4KCi0gUmV2aWV3IEN1dGFkYXB0J3MgaGVscCBwYWdlIGFuZCBjaG9vc2UgdGhlIHByb3BlciBhcmd1bWVudHMgZm9yIG91ciBDdXRhZGFwdCBjb21tYW5kKHMpLgotIFVzZSBhIGJhc2ggdmFyaWFibGUgYWxvbmcgd2l0aCBDdXRhZGFwdCB0byB0cmltIGFsbCByZW1haW5pbmcgRkFTVFEgZmlsZXMuCi0gQ29uZmlybSB0aGF0IHdlIGhhdmUgYWxsIG9mIG91ciBleHBlY3RlZCBvdXRwdXQgZmlsZXMuCgo8YnI+CgoKPiBIaW50OiBVc2luZyBhIGJhc2ggdmFyaWFibGUgYWxsb3dzIHVzIHRvIHF1aWNrbHkgY2hhbmdlIHNvbWUgYXJndW1lbnRzIGluIGEgcmVwZWF0ZWQgY29tbWFuZCwgZS5nLiA6Cj4KPiB+fn4KPiBub3VuPSJXb3JsZCIKPiBlY2hvICJIZWxsbywgJG5vdW4hIgo+IG5vdW49IkNsYXNzIgo+IGVjaG8gIkhlbGxvLCAkbm91biEiCj4gfn5+Cgo8YnI+CgojIyMgU29sdXRpb24gLSBDdXRhZGFwdCBBbGwgU2FtcGxlcyBFeGVyY2lzZQoKPGJyPgoKT25lIHNvbHV0aW9uIGlzIHRvIGRlZmluZSBhIGJhc2ggdmFyaWFibGUgZm9yIHRoZSBzYW1wbGUsIHVzZSB0aGF0IHZhcmlhYmxlIGluIGEgQ3V0YWRhcHQgY29tbWFuZCwgYW5kIHRoZW4gcmVkZWZpbmUgdGhlIHZhcmlhYmxlIGJlZm9yZSByZXBlYXRpbmcgdGhlIEN1dGFkYXB0IGNvbW1hbmQgZm9yIGVhY2ggY2hhbmdlLgoKICAgICMgRGVmaW5lIGEgdmFyaWFibGUgJFNBTVBMRQogICAgU0FNUExFPVNSUjc3Nzc4OTYKICAgICMgQ3JlYXRlIGEgY29tbWFuZCB1c2luZyB0aGUgdmFyaWFibGUgJFNBTVBMRQogICAgY3V0YWRhcHQgLXEgMzAgLW0gMjAgLW8gb3V0X3RyaW1tZWQvJHtTQU1QTEV9X1IxLnRyaW1tZWQuZmFzdHEuZ3ogLi4vcmVhZHMvJHtTQU1QTEV9X1IxLmZhc3RxLmd6CgogICAgIyBSZWRlZmluZSB0aGUgdmFyaWFibGUgYW5kIHJ1biB0aGUgY29tbWFuZCBmb3IgZWFjaCBhZGRpdGlvbmFsIHNhbXBsZQogICAgU0FNUExFPVNSUjc3Nzc4OTcKICAgIGN1dGFkYXB0IC1xIDMwIC1tIDIwIC1vIG91dF90cmltbWVkLyR7U0FNUExFfV9SMS50cmltbWVkLmZhc3RxLmd6IC4uL3JlYWRzLyR7U0FNUExFfV9SMS5mYXN0cS5negoKICAgIFNBTVBMRT1TUlI3Nzc3ODk4CiAgICBjdXRhZGFwdCAtcSAzMCAtbSAyMCAtbyBvdXRfdHJpbW1lZC8ke1NBTVBMRX1fUjEudHJpbW1lZC5mYXN0cS5neiAuLi9yZWFkcy8ke1NBTVBMRX1fUjEuZmFzdHEuZ3oKCiAgICBTQU1QTEU9U1JSNzc3Nzg5OQogICAgY3V0YWRhcHQgLXEgMzAgLW0gMjAgLW8gb3V0X3RyaW1tZWQvJHtTQU1QTEV9X1IxLnRyaW1tZWQuZmFzdHEuZ3ogLi4vcmVhZHMvJHtTQU1QTEV9X1IxLmZhc3RxLmd6CgogICAgU0FNUExFPVNSUjc3Nzc5MDAKICAgIGN1dGFkYXB0IC1xIDMwIC1tIDIwIC1vIG91dF90cmltbWVkLyR7U0FNUExFfV9SMS50cmltbWVkLmZhc3RxLmd6IC4uL3JlYWRzLyR7U0FNUExFfV9SMS5mYXN0cS5negoKPGJyPgoKQW5vdGhlciBzb2x1dGlvbiBpcyB0byBjcmVhdGUgYSBmb3ItbG9vcCB3aXRoIG91ciBiYXNoIHZhcmlhYmxlIGFuZCBDdXRhZGFwdCBjb21tYW5kLiBFLmcuCgogICAgZm9yIFNBTVBMRSBpbiBTUlI3Nzc3ODk2IFNSUjc3Nzc4OTcgU1JSNzc3Nzg5OCBTUlI3Nzc3ODk5IFNSUjc3Nzc5MDAKICAgICAgICBkbwogICAgICAgIGN1dGFkYXB0IC1xIDMwIC1tIDIwIC1vIG91dF90cmltbWVkLyR7U0FNUExFfV9SMS50cmltbWVkLmZhc3RxLmd6IC4uL3JlYWRzLyR7U0FNUExFfV9SMS5mYXN0cS5negogICAgZG9uZQoKPGJyPgoKPiBIZWxwZXIgSGludDogSWYgc3VnZ2VzdGluZyBhIGZvci1sb29wIGFwcHJvYWNoLCBpdCBjYW4gYmUgaGVscGZ1bCB0byBidWlsZCB1cCBhICJkcnktcnVuIiBjb21tYW5kIGFzIGEgdGVzdCBjYXNlLCB0byBnZXQgbGVhcm5lcnMgdG8gYmUgbW9yZSBjb2duaXphbnQgb2Ygd2hhdCB0aGVpciBjb2RlIHdpbGwgZG8uIEVjaG9pbmcgZmlsZW5hbWVzIGZpcnN0IG1pZ2h0IGJlIGEgZ29vZCBzdWdnZXN0aW9uLgoKPGJyPgo=</div>
 
 
 
