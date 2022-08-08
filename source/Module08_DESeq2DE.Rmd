@@ -39,10 +39,10 @@ knitr_fig_path("08-")
 
 ```{r LoadRunningData, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
 library(DESeq2)
-load("rdata/RunningData.RData")
+# load("rdata/RunningData.RData")
 ```
 
-# Differential Expression Workflow
+# Differential Expression Workflow {.unlisted .unnumbered}
 
 Here we will proceed with count normalizations and fit our DESeq2 model.
 
@@ -111,18 +111,16 @@ The results include the single comparison representing the two levels of `condit
 
 **Checkpoint**: *If you see the same results when you execute `resultsNames(dds)`, please indicate with the green 'yes' button. Otherwise, please use the red 'x' button to get help before the break*
 
-#### [Optional Exercise] {.unlisted .unnumbered}
-
-If you executed the commands in the option exercise from Module 07, you can fit a seperate DESeq2 model for the patient sample example, which included a covariate in our model.
+# Optional content
 
 <details>
 <summary>*Click for fitting a model that includes a covariate*</summary>
-```{r FitModelCovariate, eval= FALSE, message=FALSE}
-dds_patient = DESeq(dds_patient)
-```
 
-```{r FitModelCovariateCheck1,eval=FALSE}
-resultsNames(dds_patient)
+If you executed the commands in the additional content section from Module 07, you can fit a separate DESeq2 model for the batch example.
+
+```{r FitModelCovariate, eval= FALSE, message=FALSE}
+dds_batch = DESeq(dds_batch)
+resultsNames(dds_batch)
 ```
 
 If you run through the optional exercises, you can explore the impact of adding a covariate by substituting `dds_patient` for `dds` and re-running those commands since both DESeq2 objects have their data organized in the same way.
@@ -152,8 +150,8 @@ Training resources used to develop materials
 * Bioconductor RNA-seq Workflows: https://www.bioconductor.org/help/course-materials/2015/LearnBioconductorFeb2015/B02.1_RNASeq.html
 
 ```{r WriteOut.RData, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
-#Hidden code block to write out data for knitting
-save.image(file = "rdata/RunningData.RData")
+# Hidden code block to write out data for knitting
+# save.image(file = "rdata/RunningData.RData")
 ```
 
 These materials have been adapted and extended from materials listed above. These are open access materials distributed under the terms of the [Creative Commons Attribution license (CC BY 4.0)](http://creativecommons.org/licenses/by/4.0/), which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.

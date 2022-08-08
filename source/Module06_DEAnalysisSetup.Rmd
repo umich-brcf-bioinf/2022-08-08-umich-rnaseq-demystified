@@ -39,9 +39,9 @@ knitr_fig_path("06-")
 > * How to import and review gene count table
 
 
-# Differential Expression Workflow
+# Differential Expression Workflow {.unlisted .unnumbered}
 
-Today we will proceed through key steps in a differential expression analysis, starting from a count table that's similar to what you generated in the first half of the workshop and similar to the one of the outputs included in the [data that the Advanced Genomics Core delivers](https://brcf.medicine.umich.edu/cores/advanced-genomics/data-delivery/) for RNA-seq libraries.
+Today we will proceed through key steps in a differential expression analysis, starting from a count table that's similar to what you generated in the first half of the workshop and similar to one of the outputs included in the [data that the Advanced Genomics Core delivers](https://brcf.medicine.umich.edu/cores/advanced-genomics/data-delivery/) for RNA-seq libraries.
 
 <img src="images/wayfinder/wayfinder-07.png" alt="wayfinder" style="width: 1000px;"/>
 
@@ -53,7 +53,7 @@ Today we will proceed through key steps in a differential expression analysis, s
 > * If cloning a gene reporter construct (ie: promoter + GFP), worked for you the first time, put up a green check. If you have a freezer box full of cloning attempts, put up a red 'x'.
 > * If you are ready to learn about bioinformatic tools for comparing gene expression, put up a green check. If you have some questions that should be addressed before we get started, use the 'raise hand' reaction.
 
-# Getting Started
+# Getting Started in RStudio
 
 ## Log on to RStudio Server
 
@@ -124,20 +124,73 @@ dir.create('outputs/tables')
 
 **Checkpoint**: *Please use the green 'check' if you have saved your code file and see the `data`, `scripts`, and `outputs` directories in the `RSD_R` folder and the red 'x' if you do not.*
 
-> # Reminder: RStudio code execution {.unlisted .unnumbered}
+> ## Reminder: RStudio code execution {.unlisted .unnumbered}
 >
-> <kbd>Ctrl</kbd>+<kbd>Enter</kbd> is a standard shortcut in Rstudio to send the current line (or selected lines) to the console. If you see an `>`, then R has executed the command. If you see a `+`, this means that the command is not complete and R is waiting (usually for a `)`).
+> <kbd>Ctrl</kbd>+<kbd>Enter</kbd> is a standard shortcut in RStudio to send the current line (or selected lines) to the console. If you see `>` in the Console, then R has executed the command. If you see a `+`, this means that the command is not complete, R thinks there is more to your command. You can use the <kmd>esc</kmd> to get out of this state.
 
-> # Reminder: Object naming conventions {.unlisted .unnumbered}
+> ## Reminder: Object naming conventions {.unlisted .unnumbered}
 > * Cannot start with numbers
 > * Cannot include dashes
 > * Cannot have spaces
 > * Should not be identical to a named function
 > * Dots & underscores will work but are better to avoid
 
----
+----
 
-# Load Packages
+# Tools for Differential Gene Expression analysis
+
+As discussed during the webinar, a common application for bulk RNA-seq is to test for differential expression between conditions or treatments, using statistical approaches that are appropriate for biological data.
+
+While there are several tools that can be used for differential expression comparisons, we will use [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html) in our analysis today.
+
+DESeq2 is one of two tools, along with [edgeR](https://bioconductor.org/packages/release/bioc/html/edgeR.html), considered ['best practice'](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-14-91) for differential expression. Both tools apply similar methods that account for the distributions we expect to see for RNA-seq and are fairly stringent in calling differentially expressed genes, lowering the risk of investigating genes that were really false positives (e.g. don't really have different expression between treatment groups and therefore are not relevant to the biological process).
+
+Additionally, DESeq2 also has an excellent vignette [(link)](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html)
+from Love, Anders, and Huber, from which our workflow is partially adapted, and is a good resource when analyzing your own data
+(see also: [Love, Anders, and Huber. _Genome Biology_. 2014.](https://doi.org/10.1186/s13059-014-0550-8)).
+
+
+<details>
+    <summary>*Click for additional resources regarding statistical testing and tool comparison for RNA-seq data*</summary>
+    To learn more about statistical testing and what distributions best model the behavior of RNA-seq data, a good resource is this [EdX lecture by Rafael Irizarry](https://www.youtube.com/watch?v=HK7WKsL3c2w&feature=youtu.be) or this [lecture by Kasper Hansen](https://www.youtube.com/watch?v=C8RNvWu7pAw). Another helpful guide is this [Comparative Study for Differential Expression Analysis by Zhang et al.](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0103207) from 2014.
+</details>
+<br>
+
+## DESeq2 assumptions and requirements
+
+A key assumption of DESeq2 is that *biological variance is much greater than technical variance* (especially if [best practices](https://www.txgen.tamu.edu/faq/rna-isolation-best-practices/) for [quality RNA isolation](https://www.biocompare.com/Bench-Tips/128790-Four-Tips-for-Perfecting-RNA-Isolation/) are followed, including DNase treatment!).
+
+Since calculating variance is key to the statistical approach used for DESeq2, if we tried to compare two treatment groups with less than **two** replicates, we would get an error (as shown in [this blog post](https://support.bioconductor.org/p/89746/)). Without replicates, there can't be statistical significance (e.g. p-values), but *qualitative* approaches are an option, like looking at the top expressed genes after normalization.
+
+## Replicates in RNA-seq experiments
+
+A frequent question for RNA-seq projects is "How many replicates do I need?".
+
+The general goal of our analyses is to separate the “interesting” biological contributions from the “uninteresting” technical or other contributions that either cannot be or were not controlled in the experimental design. The more sources of variation, such as samples coming from heterogenous tissues or experiments with incomplete knockdowns, the more replicates (>3) are recommended.
+
+![Image of technical, biological, and experimental contributors to gene expression, from HBC training materials](images/de_variation.png){width=75%}
+
+For a more in depth discussion of experimental design considerations, particularly for the number of replicates, please read [A Beginner’s Guide to Analysis of RNA Sequencing Data](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6096346/) and papers like this one by [Hart et al](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3842884/) that focus on estimating statistical power for RNA-seq experiments.
+
+## Sequencing depth recommendations
+
+A related experimental design consideration is how much sequencing depth should be generated per sample. This figure shared by Illumina in their technical talks is helpful to understand the relative importance of replicates versus sequencing depth.
+
+![Illumina's differential expression recovery across replicate number and sequencing depth](images/de_replicates_img.png){width=75%}
+
+Generally, for human and mouse experiments, the recommendation is 30-40 million reads per sample for polyA library preps to capture both highly expressed (abundant) and lowly expressed (rarer) transcripts, assuming that ~25,000 protein-coding genes would be measured. However, as the image above shows, sequencing depth has less of an impact than number of replicates in detecting differentially expressed genes (DEGs).
+
+> ## Exercise: Building a better understanding of differential expression analysis {.unlisted .unnumbered}
+>
+> 1. Post a comment below regarding what key question/misconception regarding designing an RNA-seq experiment we were able to address **OR**
+> 2. Post a question that that was NOT addressed but that you hope we will address in the later modules **OR**
+> 3. Add a thumbs up to your favorite comment(s) to upvote it
+
+----
+
+# Getting started with analysis
+
+## Load Packages
 
 Several packages have already been installed on the server, so we can load them into our R session now. To do that we'll use the `library` function to load the required packages.
 
@@ -162,70 +215,13 @@ Since we loaded the libraries into our R session, we can see documentation out u
 ?`DESeq2-package`
 ```
 
-**Checkpoint**: *If you see the R documentation for `DESeq2` pop up in your 'help' panel on the right, please indicate with the green 'check' button. If not please use the red 'x' button.*
+**Checkpoint**: *If you see the R documentation for DESeq2 pop up in your 'help' panel on the right, please indicate with the green 'check' button. If not please use the red 'x' button.*
 
-----
-
-# Tools for Differential Gene Expression analysis
-
-As discussed during the webinar, a common application for bulk RNA-seq is to test for differential expression between conditions or treatments, using statistical approaches that are appropriate for biological data.
-
-While there are several tools that can be used for differential expression comparisons, we will use [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html) in our analysis today.
-
-DESeq2 is one of two tools, along with [EdgeR](https://bioconductor.org/packages/release/bioc/html/edgeR.html), considered ['best practice'](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-14-91) for differential expression. Both tools apply similar methods that account for the distributions we expect to see for RNA-seq and are fairly stringent in calling differentially expressed genes, lowering the risk of investigating genes that were really false positives (e.g. don't really have different expression between treatment groups and therefore are not relevant to the biological process).
-
-Additionally, `DESeq2` also has an
-[excellent vignette](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html) *click link to open*
-from Love, Anders, and Huber, from which our workflow is partially adapted, and is a good resource when analyzing your own data
-(see also: [Love, Anders, and Huber. _Genome Biology_. 2014.](https://doi.org/10.1186/s13059-014-0550-8)).
-
-
-<details>
-    <summary>*Click for additional resources regarding statistical testing and tool comparison for RNA-seq data*</summary>
-    To learn more about statistical testing and what distributions best model the behavior of RNA-seq data, a good resource is this [EdX lecture by Rafael Irizarry](https://www.youtube.com/watch?v=HK7WKsL3c2w&feature=youtu.be) or this [lecture by Kasper Hansen](https://www.youtube.com/watch?v=C8RNvWu7pAw). Another helpful guide is this [Comparative Study for Differential Expression Analysis by Zhang et al.](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0103207) from 2014.
-</details>
-
-
-## DESeq2 assumptions and requirements
-
-A key assumption of DESeq2 is that for most experiments *biological variance is much greater than technical variance* (especially if [best practices](https://www.txgen.tamu.edu/faq/rna-isolation-best-practices/) for [quality RNA isolation](https://www.biocompare.com/Bench-Tips/128790-Four-Tips-for-Perfecting-RNA-Isolation/) are followed, including DNase treatment!).
-
-
-Since calculating variance is key to the statistical approach used for DESeq2, if we tried to compare two treatment groups with less than **two** replicates, we would get an error (as shown in [this blog post](https://support.bioconductor.org/p/89746/)). Without replicates, there can't be statistical significance (e.g. p-values), but *qualitative* approaches are an option, like looking at the top expressed genes after normalization.
-
-### Replicates in RNA-seq experiments
-
-A frequent question for RNA-seq projects is "How many replicates do I need?".
-
-The general goal of our analyses is to separate the “interesting” biological contributions from the “uninteresting” technical or other contributions that either cannot be or were not controlled in the experimental design. The more sources of variation, such as samples coming from heterogenous tissues or experiments with incomplete knockdowns, the more replicates (>3) are recommended.
-
-![Image of technical, biological, and experimental contributors to gene expression, from HBC training materials](images/de_variation.png){width=75%}
-
-
-For a more in depth discussion of experimental design considerations, particularly for the number of replicates, please read [A Beginner’s Guide to Analysis of RNA Sequencing Data](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6096346/) and papers like this one by [Hart et al](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3842884/) that focus on estimating statistical power for RNA-seq experiments.
-
-#### Sequencing depth recommendations
-
-A related experimental design consideration is how much sequencing depth should be generated per sample. This figure shared by Illumina in their technical talks is helpful to understand the relative importance of replicates versus sequencing depth.
-
-
-![Illumina's differential expression recovery across replicate number and sequencing depth](images/de_replicates_img.png){width=75%}
-
-Generally, for the human and mouse genomes, the recommendation is 30-40 million reads per sample for polyA library preps to capture both highly expressed (abundant) and more lowly expressed (rarer) transcripts, assuming that ~25,000 protein-coding genes would be measured. However, as the image above shows, sequencing depth has less of an impact than number of replicates in detecting differentially expressed genes (DEGs).
-
-#### [Exercise]: Building a better understanding of differential expression analysis {.unlisted .unnumbered}
-
-1. Post a comment below regarding what key question/misconception regarding designing an RNA-seq experiment we were able to address **OR**
-2. Post a question that that was NOT addressed but that you hope we will address in the later modules **OR**
-3. Add a thumbs up to your favorite comment(s) to upvote it
-
-----
-
-### Raw data as input
+## Read Counts
 
 Another key assumption for DESeq2 is that the analysis will start with [un-normalized counts](http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#why-un-normalized-counts).
 
-To begin our analysis, we'll read in the **raw** count data file, `gene_expected_count.txt` which is similar to what would be generated in the alignment steps yesterday (and what you could receive from AGC). We'll discuss later a few normalizations that can be helpful for us to understand how much a gene is expressed within or between samples, but normalized data **should not** be used as an input for DESeq2.
+To begin our analysis, we'll read in the **raw** count data file, `gene_expected_count.txt` which is similar to what would be generated in the alignment steps (and what you would receive from AGC). We'll discuss later a few normalizations that can be helpful for us to understand how much a gene is expressed within or between samples, but normalized data **should not** be used as an input for DESeq2.
 
 ```{r DataTable, eval=TRUE, echo=FALSE}
 ## need to include paths relative to site build locations but keep code block hidden
@@ -235,47 +231,33 @@ count_table = read.table("../data/gene_expected_count.txt", header = TRUE, row.n
 ```{r DataTable2, eval=FALSE}
 count_table = read.table("data/gene_expected_count.txt", header = TRUE, row.names = 1)
 ```
+
 ```{r DataTableCheck, eval=TRUE}
 head(count_table, n=2) # look at the top of the table
 ```
 
 Now that the file is read into R, note that we've created a data frame that includes 'gene ids' in ENSEMBL format as rownames and count data from twelve different samples.
 
-#### [Exercise]: RSEM outputs versus DESeq2 input requirements {.unlisted .unnumbered}
+> # Exercise: RSEM outputs versus DESeq2 input requirements {.unlisted .unnumbered}
+>
+> If we think back to the RSEM outputs, the 'expected_counts' table may include fractional amounts due to how the alignment tool resolves reads mapping to multiple locuses). DESeq2 is expecting the count matrix to consist only of whole numbers. Recent versions of DESeq2 will handle this for us, but previous versions did not.
+>
+> What function, that we saw early on in the Computational Foundations R lessons, could we use to convert fractional values in `count_table` to integers?
 
-If we think back to the RSEM outputs, the 'expected_counts' table may include fractions due to how the alignment tool resolves reads that map to multiple locuses). Since DESeq2 requires whole numbers, if we try to use the RSEM ouputs directly, DESeq2 will give us an error.
+<details>
+<summary>Solution</summary>
 
-First let's check the count table in a different way, to see if our table includes fractions.
-```{r RSEMoutput}
-tail(count_table, n=2)
-```
+We can use the `round()` function:
 
-*[Question]: To resolve this discrepancy between the RSEM outputs and expected input for DESeq2, what could we do?*
-
-To round down all the columns of our `count_table` that include count data (all columns since we set the gene names to be our row names), we can use the `round`()` function.
-```{r RoundRawCounts}
+```{r round count_table}
 count_table = round(count_table)
-tail(count_table, n=2) # now whole numbers
 ```
-
-An important note is that there are several bonus content sections on the instruction pages, like the two below that we will not be covering in this workshop, but that may have useful context or be helpful when you review this material.
-
-<details>
-    <summary>*Click for alternative DESeq2 input options for RSEM outputs*</summary>
-    The package `tximport` is another option[recommended the DESeq2  authors](https://support.bioconductor.org/p/90672/) to read in the RSEM expected_counts, as this  package allows for the average transcript length per gene to be used in the DE analysis and, as [described by the author](https://support.bioconductor.org/p/88763/), the `tximport-to-DESeqDataSet` constructor function round the non-integer data generated by RSEM to whole numbers.
-
 </details>
+<br>
 
-<details>
-    <summary>*Click for comparison of RNA-seq data and microarray data*</summary>
-    With [higher sensitivity, greater flexiblity, and decreasing cost](https://www.illumina.com/science/technology/next-generation-sequencing/microarray-rna-seq-comparison.html), sequencing has largely replaced microarray assays for measuring gene expression. A key difference between the platforms is that microarrays measure intensities and are therefore *continous* data while the count data from sequencing is *discrete*. A more detailed comparison between microarrays and sequencing technologies/analysis is outlined in [the online materials for Penn State's STAT555 course](https://online.stat.psu.edu/stat555/node/30/)
+# Getting help
 
-</details>
-
-
-## Getting help
-
-R/Rstudio has a strong community component so if you are getting an error or wondering how to make a command work or how to perform a specific task, there is likely already a solution out there. Remember that Google is your friend, although it can sometimes be a challenge to figure out *what to search for*. Key parts of a successful search:
+R and RStudio have a strong community component so if you are getting an error or wondering how to make a command work or how to perform a specific task, there is likely already a solution out there. Remember that Google is your friend, although it can sometimes be a challenge to figure out *what to search for*. Key parts of a successful search:
 
 * Package or command run
 * `R` or `Bioconductor`
@@ -291,7 +273,7 @@ Highly recommend using resources like [Bioconductor Support](https://support.bio
 
 I personally use one or more of these resources **every day**.
 
-10x also has a helpful [10 tips for biologists learning  bioinformatics](https://www.10xgenomics.com/resources/analysis-guides/10-tips-for-biologists-learning-bioinformatics) included in their resources.
+10x Genomics has a helpful [10 tips for biologists learning  bioinformatics](https://www.10xgenomics.com/resources/analysis-guides/10-tips-for-biologists-learning-bioinformatics) included in their resources.
 
 # Summary
 
@@ -299,11 +281,27 @@ In this section, we:
 
 * Set up our compute environment
 * Learned about DESeq2
-* Loaded our raw count tables (input file 1)
+* Read a raw count table and saved it as a data frame
 
 Now that we have our count data processed, we can move on to "unblinding" our data, as the sample names are unique identifiers generated by a sequencing center and not very informative as far as our experimental conditions.
 
 ---
+
+# Optional content
+
+An important note is that there are several bonus content sections on the instruction pages, like the two below that we will not be covering in this workshop, but that may have useful context or be helpful when you review this material.
+
+<details>
+    <summary>*Click for alternative DESeq2 input options for RSEM outputs*</summary>
+    The package `tximport` is another option[recommended the DESeq2  authors](https://support.bioconductor.org/p/90672/) to read in the RSEM expected_counts, as this  package allows for the average transcript length per gene to be used in the DE analysis and, as [described by the author](https://support.bioconductor.org/p/88763/), the `tximport-to-DESeqDataSet` constructor function round the non-integer data generated by RSEM to whole numbers.
+</details>
+<br>
+<details>
+    <summary>*Click for comparison of RNA-seq data and microarray data*</summary>
+    With [higher sensitivity, greater flexiblity, and decreasing cost](https://www.illumina.com/science/technology/next-generation-sequencing/microarray-rna-seq-comparison.html), sequencing has largely replaced microarray assays for measuring gene expression. A key difference between the platforms is that microarrays measure intensities and are therefore *continous* data while the count data from sequencing is *discrete*. A more detailed comparison between microarrays and sequencing technologies/analysis is outlined in [the online materials for Penn State's STAT555 course](https://online.stat.psu.edu/stat555/node/30/)
+
+</details>
+<br>
 
 # Sources
 
@@ -321,10 +319,10 @@ Training resources used to develop materials:
 ```{r WriteOut.RData, eval=TRUE, echo=FALSE, message=FALSE}
 #Hidden code block to write out data for knitting
 
-dir.create("rdata", showWarnings=FALSE)
-save.image(file = "rdata/RunningData.RData")
-#How to load for next segment
-#load("rdata/RunningData.RData")
+# dir.create("rdata", showWarnings=FALSE)
+# save.image(file = "rdata/RunningData.RData")
+# How to load for next segment
+# load("rdata/RunningData.RData")
 ```
 
 ---

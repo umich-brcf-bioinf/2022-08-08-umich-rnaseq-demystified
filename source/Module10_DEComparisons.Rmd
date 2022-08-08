@@ -1,5 +1,5 @@
 ---
-title: "Module 10: DE Results"
+title: "Module 10: Differential Expression Results"
 author: "UM Bioinformatics Core"
 date: "`r Sys.Date()`"
 output:
@@ -43,30 +43,28 @@ knitr_fig_path("10-")
 library(DESeq2)
 library(tidyr)
 library(dplyr)
-load("rdata/RunningData.RData")
+# load("rdata/RunningData.RData")
 ```
 
-# Differential Expression Workflow
+# Differential Expression Workflow {.unlisted .unnumbered}
 
-Here we will finally test for differential expression between our comparisons of interest.
+Now we test for differential expression between our groups of interest and return a table of results.
 
 ![](./images/wayfinder/wayfinder-10.png){width=75%}
 
 ---
 
-# Generating DE results
+> # Question {.unlisted .unnumbered}
+> Before we start, what do you think is the most challenging part of a differential expression analysis? Post in the thread on Slack.
 
-*[Question]: Before we start, what do you think is the most challenging part of a differential expression analysis? (Post in thread below or raise zoom 'hand' to answer)*
+# Generating DE results
 
 Now that we have reviewed the plots by sample and determined that our data passed our quality control checks, specifically that the patterns we observe are likely due to our experimental treatments over technical or other confounding factors, we can focus on differential expression testing.
 
 This illustration from the HCB training materials illustrates the basis of the differential expression procedure, where our goal is to compare the distribution of an expressed gene across samples in each treatment groups.
-![](./images/de_theory_corrected.png)
-*Image credit: Paul Pavlidis, UBC*
+![*Image credit: Paul Pavlidis, UBC*](./images/de_theory_corrected.png)
 
-Only where the distributions of each group are sufficiently separated will a gene be considered differentially expressed.
-
-This is where having sufficient replicates to overcome within group variance is important, as the more replicates we have in each group the better we can determine the distributions of expression for each group.
+Only where the distributions of each group are sufficiently separated will a gene be considered differentially expressed. This is where having sufficient replicates to overcome within group variance is important, as the more replicates we have in each group the better we can determine the distributions of expression for each group.
 
 ## DESeq2 statistical testing
 
@@ -76,23 +74,9 @@ The first step for any statistical test is to define the *null hypothesis*. In t
 
 To do this, [DESeq2 applies the Wald test](http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#theory-behind-deseq2) to compare between two groups. A Wald test statistic is computed as well as the probability that the observed value or more extreme test statistic would be observed. This probability is called the p-value of the test.
 
-If the p-value is smaller than a pre-defined threshold, we would reject the null hypothesis and state that there is evidence against the null, i.e. the gene is differentially expressed. However, if the p-value is larger than our threshold, we would *fail to reject* the null hypothesis, meaning that we lack evidence that the expression of this gene is different *NOT* that we have evidence that the expression is indeed the same in both groups.
+If the p-value is smaller than a pre-defined threshold, we would reject the null hypothesis and state that there is evidence against the null, i.e. the gene is differentially expressed. However, if the p-value is larger than our threshold, we would *fail to reject* the null hypothesis, meaning that we lack evidence that the expression of this gene is different. Note, this is distinct from the assertion that the expression is the same in both groups.
 
 For a more detailed overview of the statistical comparisons , please refer to [this HBC tutorial](https://hbctraining.github.io/DGE_workshop/lessons/05_DGE_DESeq2_analysis2.html) or the [DESeq2 vignette](http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#theory-behind-deseq2).
-
-## Optional - Dispersion estimates
-
-<details>
-    <summary>*Click for code for customized PCA plot of raw data*</summary>
-    We can visualize the **dispersion estimates** with the `plotDispEsts` function. This plot shows the the DESeq2 normalization results for our data, which centers on shrinking the variance across all genes to better fit the expected spread at a given expression level.
-```{r CheckDispersions, eval=FALSE}
-plotDispEsts(dds)
-```
-    If we ran the command above, we would see the raw data plotted in black, the fitted (or expected) dispersion in red, and the normalized data with scaled variance in blue. Since we have fairly small sample sizes for each condition, we see shrinkage for many genes but a reasonable correlation between the expression level and dispersions.
-    This [HBC tutorial](https://hbctraining.github.io/DGE_workshop/lessons/04_DGE_DESeq2_analysis.html) has a more detailed overview of estimating size factors, estimating gene dispersion, and the shrinkage procedure, as well as examples of concerning dispersion plots that may suggest reassessing quality of the experimental data.
-</details>
-
-<br>
 
 ## Generating results
 
@@ -105,17 +89,10 @@ There is only the one comparison in the results, so we will refer to it in the `
 
 ```{r SetsResult}
 results_plus_vs_minus = results(dds, name = 'condition_plus_vs_minus')
-```
-
-*[Question]: How would we look at our results? (Post in thread below or raise zoom 'hand' to answer)*
-
-In the results table we'll generate, the row name will ve gene symbols and there will be six columns of values that are [described in more detail in an Illumina post](https://support.illumina.com/help/BS_App_RNASeq_DE_OLH_1000000071939/Content/Source/Informatics/Apps/DESeq2ResultFile_swBS.htm#:~:text=baseMean%E2%80%94The%20average%20of%20the,factors%2C%20taken%20over%20all%20samples.&text=log2FoldChange%E2%80%93The%20effect%20size%20estimate,the%20comparison%20and%20control%20groups).
-
-```{r ResultsKD}
 head(results_plus_vs_minus)
 ```
 
-### Results Description
+In the results table, the row names are gene identifiers (in theis case ENSEMBL IDs because that's what the GTF we used in the call to RSEM+STAR used), and the columns have the following definitions:
 
 1. `baseMean` is the average of the normalized count values, divided by size factors and taken over all samples, and can be interpreted as the relative expression level of that gene across all samples.
 2. `log2FoldChange` is the log2 transformed ratio of the expression of the numerator group (first group) over the denominator group (second group after "vs"). Note that in our comparison, the `log2FoldChange` column compares the expression of the numerator group (`plus`) over the denominator group (`minus`). If the value is positive, that means the expression of that gene is greater across the `plus` samples than across the `minus` samples. If the value is negative, that means the expression of that gene is greater across the `minus` samples.
@@ -124,7 +101,8 @@ head(results_plus_vs_minus)
 5. `pvalue` is the *nominal* significance for that gene.
 6. `padj` is the *adjusted p-value* and is what we use for determining significantly differently expressed genes.
 
-*[Question]: Why should we use values from this column instead of the 'pvalue' column? (Post in thread below or raise zoom 'hand' to answer)*
+> # Question {.unlisted .unnumbered}
+> Why should we use values from this column instead of the 'pvalue' column? Post in the Slack thread.
 
 ### Multiple hypothesis testing and FDR correction
 
@@ -147,8 +125,8 @@ The default FDR rate cutoff for DESeq2 is `alpha = 0.05`. By setting the cutoff 
 > As discussed in the [HBC tutorial](https://hbctraining.github.io/DGE_workshop/lessons/05_DGE_DESeq2_analysis2.html) as well as the [DESeq2 vignette](http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#i-want-to-benchmark-deseq2-comparing-to-other-de-tools.), DESeq2 reduces the number of genes that will be tested by removing genes with low number of counts and outlier samples.
 >
 > * If within a row, all samples have zero counts, the baseMean column will be zero, and the log2 fold change estimates, p-value and adjusted p-value will all be set to NA.
-> * If a row contains a sample with an extreme count outlier then the p-value and adjusted p-value will be set to NA. These outlier counts are detected by Cook’s distance.
-> * If a row is filtered by automatic independent filtering, for having a low mean normalized count, then only the adjusted p-value will be set to NA.
+> * If a row contains a sample with an extreme count outlier then the p-value and adjusted p-value will be set to NA. These outlier counts are detected by [Cook’s distance](https://en.wikipedia.org/wiki/Cook%27s_distance).
+> * If a row is filtered by automatic independent filtering, e.g. for having a low mean normalized count, then only the adjusted p-value will be set to NA.
 
 Now that we've generated our differential comparisons and have an understanding of our results, including multiple hypothesis correction, we can proceed with generating summary figures and tables for our differential expression analysis.
 
@@ -177,8 +155,8 @@ Now that we've generated our differential comparisons and have an understanding 
 ![](./images/significant_xkcd.png)
 
 ```{r WriteOut.RData, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
-#Hidden code block to write out data for knitting
-save.image(file = "rdata/RunningData.RData")
+# Hidden code block to write out data for knitting
+# save.image(file = "rdata/RunningData.RData")
 ```
 
 ---

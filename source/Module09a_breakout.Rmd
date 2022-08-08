@@ -42,7 +42,7 @@ library(matrixStats)
 library(ggrepel)
 library(pheatmap)
 library(RColorBrewer)
-load("rdata/RunningData.RData")
+# load("rdata/RunningData.RData")
 ```
 
 Estimated time: **15 Minutes**
@@ -161,5 +161,5 @@ If time permits, discuss with your group how you might save this heatmap. Hint: 
 
 ```{r WriteOut.RData, eval=FALSE, echo=FALSE, message=FALSE, warning=FALSE}
 #Hidden code block to write out data for knitting
-save.image(file = "rdata/RunningData.RData")
+# save.image(file = "rdata/RunningData.RData")
 ```
