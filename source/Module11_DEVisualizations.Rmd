@@ -229,7 +229,7 @@ To start, we will first load the [biomaRt library](https://bioconductor.org/pack
 
 > # Breakout Exercise 2 - Adding gene symbol annotations {.unlisted .unnumbered}
 >
-> Navigate to [this]() page, where we will begin our second breakout exercise together, and then split into smaller groups to finish it.
+> Navigate to [this](Module11a_breakout.html) page, where we will begin our second breakout exercise together, and then split into smaller groups to finish it.
 
 # Outputting results to file
 

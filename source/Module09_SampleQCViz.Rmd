@@ -178,7 +178,7 @@ pca_plot +
 >
 > Plotting the expression values across all samples for the top variable genes in an experiment can help to visualize how samples cluster together by their expression profiles. When combined with phenotypic data, it can help show how samples with different treatments behave relative to one another. Let's work through this exercise in small groups and generate a heatmap of the data we've been working with.
 >
-> [Link to exercise](https://umich-brcf-bioinf.github.io/2022-03-14-umich-rnaseq-demystified/html/Module09a_breakout.html)
+> [Link to exercise](Module09a_breakout.html)
 
 
 # Download plots
