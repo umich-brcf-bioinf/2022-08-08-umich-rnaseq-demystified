@@ -129,7 +129,7 @@ dir.create('outputs/tables')
 > * Cannot include dashes
 > * Cannot have spaces
 > * Should not be identical to a named function
-> * Dots & underscores will work but are better to avoid
+> * Dots and underscores can separate parts of names, alternatively CamelCase accomplishes this
 
 ----
 

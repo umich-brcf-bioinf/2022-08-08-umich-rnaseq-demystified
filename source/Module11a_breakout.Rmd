@@ -134,13 +134,13 @@ head(results_plus_vs_minus_annotated)
 </details>
 <br>
 
-4. Optionally, how could we use some of the `tidyverse` functions we've encountered previously to rename the `external_gene_name` column to `symbol` and to move it into the second column position? Hint: Because of the order of the packages we may have loaded, consider using `dplyr::select()` instead of just the `select()` function. We can discuss why this is the case together.
+4. Optionally, how could we use some of the `tidyverse` functions we've encountered previously to rename the `external_gene_name` column to `symbol` and to move it into the second column position? Hint: Because of the order of the packages we may have loaded, consider using `dplyr::rename()` and `dplyr::select()` instead of just the `select()` function. We can discuss why this is the case together.
 
 <details>
 <summary>Answer</summary>
 ```{r rename_rearrange}
 results_plus_vs_minus_annotated = results_plus_vs_minus_annotated %>%
-    rename('symbol' = 'external_gene_name') %>%
+    dplyr::rename('symbol' = 'external_gene_name') %>%
     dplyr::select(id, symbol, everything())
 results_plus_vs_minus_annotated
 ```
