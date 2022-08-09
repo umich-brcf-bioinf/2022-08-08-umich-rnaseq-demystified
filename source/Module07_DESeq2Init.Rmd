@@ -65,7 +65,6 @@ To create the DESeqDataSet we need two tables:
 1. A count matrix (which we already loaded and saved as the object `count_table`) and
 2. A table that assigns the condition labels for each sample (which we will generate below).
 
-
 # Sample Information
 
 As introduced at the beginning of the workshop, we have downloaded and prepared data from an existing publication [(Zhang et al., 2019)](https://elifesciences.org/articles/46976), wherein one goal is to understand the gene expression differences in wild-type mice that are "iron replete" (we label these "plus") and "iron deficient" (we label these "minus").
@@ -144,13 +143,13 @@ To create the `DESeqDataSet` we will need the `count_table` and the `samplesheet
 
 ## Making model choices
 
-The design formula specified informs many of the DESeq2 functions how to treat the samples in the analysis, specifically which column in the samaple metadata table contains the experimental design.
+The design formula specified informs many of the DESeq2 functions how to treat the samples in the analysis, specifically which column(s) in the sample metadata table are relevant to the experimental design.
 
 In this case, we aren't aware of any [covariates](https://methods-sagepub-com.proxy.lib.umich.edu/reference/encyc-of-research-design/n85.xml) that should be considered in our comparisons. However, if there are additional attributes of the samples that may impact the DE comparisons, like sex, date of collection, or patient of origin, these should be added as [additional columns](https://support.bioconductor.org/p/75309/) in the sample information table and [added to a design formula](https://support.bioconductor.org/p/98700/).
 
-More complex questions, including adding "interaction terms" are helpfully described in [this support thread](https://support.bioconductor.org/p/98628/) as well as in the [DESeq2 vignette](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#interactions).
+More complex questions, including adding "interaction terms" are helpfully described in [this support thread](https://support.bioconductor.org/p/98628/) as well as in the [DESeq2 vignette](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#interactions), which is an excellent document.
 
-The design formula specifies the column(s) in the metadata table and how they should be used in the analysis. For our dataset we only have one column we are interested in, that is `condition`. This column has three factor levels, which tells DESeq2 that for each gene we want to evaluate gene expression change with respect to these different levels.
+The design formula specifies the column(s) in the metadata table and how they should be used in the analysis. For our dataset we only have one column we are interested in, that is `condition`. This column has two factor levels, which tells DESeq2 that for each gene we want to evaluate gene expression change with respect to these different levels.
 
 ```{r DESeq2Object}
 ## Create DESeq object, line by line
@@ -197,7 +196,7 @@ Notice the `dds` object has less elements after filtering. There were quite a nu
 
     Let's try add some additional meta-data information where we have counfounding batch effects and create another DESeq2 object.
 
-```{r Confounders, eval=FALSE}
+```{r Confounders}
 samplesheet_batch = samplesheet
 samplesheet_batch$batch = factor(c(rep(c("Day1"), 2),
                        rep(c("Day2"), 2),

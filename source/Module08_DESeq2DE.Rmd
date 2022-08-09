@@ -76,7 +76,7 @@ For data exploration and visualizations, it is helpful to generate an object of 
 
 The rlog transformation produces log2 scaled data that has also been normalized to overall library size as well as variance across genes at different mean expression levels. For larger numbers of samples, there is an alternative transformation method, [vst](http://www.bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#count-data-transformations) that can be used instead for count normalizations.
 
-The command to generate the normalized count object has a few parts, including `dds` as an input and providing a value to the option `blind`.
+The command to generate the normalized count object has a few parts, including `dds` as an input and providing a value to the option `blind`. For our purposes, we set `blind = TRUE` because we want to compare samples in downstream QC plots in an unbiased manner.
 
 ```{r CountNorm}
 rld = rlog(dds, blind = TRUE)
@@ -84,7 +84,7 @@ rld = rlog(dds, blind = TRUE)
 
 Note: We might see a message that our data did not fit the default 'parametric' dispersion model so a local regression was substituted. If we had more time, we might look at a dispersion plot with the `plotDispEsts(dds)` function, but as [this bioconductor thread](https://support.bioconductor.org/p/107937/) discusses, other visualizations of our data might be more helpful and/or easier to interpret.
 
-Next, we'll look at the results of the transformation.
+Next, we'll look at the results of the transformation by extracting the values with the `assay()` function.
 
 ```{r CountNormCheck}
 head(assay(rld), 2)
@@ -103,6 +103,14 @@ dds
 
 Notice that there is now more information in the `DESeqDataSet` object than there was prior to our normalization. There is information about the model fit and about the library size normalization. DESeq2 will use this information when we perform the test for differential expression.
 
+The `DESeq()` function is actually doing three things automatically for us. It calculates:
+
+1. The size factors to normalize for library size with `estimateSizeFactors(dds)`,
+2. Dispersion estimates to shrink the dispersions with `estimateDispersions(dds)`, and
+3. The Wald test statistics with `nbinomWaldTest(dds)`.
+
+The `resultsNames()` function returns the names of hte estimaed effects of the model.
+
 ```{r FitModelStandardCheck1, eval=TRUE}
 resultsNames(dds)
 ```
@@ -118,7 +126,7 @@ The results include the single comparison representing the two levels of `condit
 
 If you executed the commands in the additional content section from Module 07, you can fit a separate DESeq2 model for the batch example.
 
-```{r FitModelCovariate, eval= FALSE, message=FALSE}
+```{r FitModelCovariate}
 dds_batch = DESeq(dds_batch)
 resultsNames(dds_batch)
 ```

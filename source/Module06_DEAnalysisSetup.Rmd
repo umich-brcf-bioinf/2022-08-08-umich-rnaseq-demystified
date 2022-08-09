@@ -57,11 +57,7 @@ Today we will proceed through key steps in a differential expression analysis, s
 
 ## Log on to RStudio Server
 
-Open a web browser and enter the following URL.
-
-```
-http://bfx-workshop01.med.umich.edu
-```
+Open a web browser to the following URL: [http://bfx-workshop01.med.umich.edu](http://bfx-workshop01.med.umich.edu)
 
 You should now be looking at a page that will allow you to login to the RStudio server:
 

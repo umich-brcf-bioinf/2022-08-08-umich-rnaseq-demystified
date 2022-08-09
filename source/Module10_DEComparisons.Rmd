@@ -101,6 +101,22 @@ In the results table, the row names are gene identifiers (in theis case ENSEMBL 
 5. `pvalue` is the *nominal* significance for that gene.
 6. `padj` is the *adjusted p-value* and is what we use for determining significantly differently expressed genes.
 
+> # Note: `results()` defaults {.unlisted .unnumbered}
+> If no arguments are passed to `results()`, then the log2 fold changes and Wald test p-value will be for the **last variable** in the design formula, and if this is a factor, the comparison will be the **last level** over the **reference level**. If you specify `name`, as we did above, then the behavior is given by the name used from `resultsNames()`.
+
+There are multiple ways to specify the test to be done using the `results()` function. It is especially helpful to know this when fitting more complex models and testing more complex contrasts. To demonstrate this, consider this description from the help for `results()`:
+
+> `contrast`: a character vector with exactly three elements: the name of a factor in the design formula, the name of the numerator level for the fold change, and the name of the denominator level for the fold change
+
+So an alternative way to test the same contrast as above (i.e. `plus` / `minus`) is:
+
+```{r SetsResultsAlt}
+alt_results_plus_vs_minus = results(dds, contrast = c('condition', 'plus', 'minus'))
+head(alt_results_plus_vs_minus)
+```
+
+This way of calling `results()` is especially helpful when the levels of the column of interest contain more than two levels because you can specify exactly which levels to test with little confusion.
+
 > # Question {.unlisted .unnumbered}
 > Why should we use values from this column instead of the 'pvalue' column? Post in the Slack thread.
 
