@@ -45,7 +45,7 @@ connect to enable gene expression analysis from bulk RNA-Seq data.
 ## Housekeeping
 
 - Please take our optional <a class="external" href="https://forms.gle/MicfgHWzBkZyNiy97" target="_blank">post-workshop survey</a> (5-10 minutes)
-  - 10/22 10-12 ET: "Office hours"
+  - 8/22 10-12 ET: "Office hours"
 
 - We will email you a link to the final session recordings by next week.
 
@@ -59,7 +59,7 @@ for 90 days.
 ## Looking ahead
 
 #### Workshop environment
-- BASH/RStudio workshop compute environment will be available until next 10/24.
+- BASH/RStudio workshop compute environment will be available until 8/24.
   - _Please save all your R scripts now_ so that we can "right-size" the compute environment immediately following today's workshop session.
 - You can download files from the workshop environment from your terminal/command line window as below. 
   (You will need to substitute your actual workshop username and type workshop password when prompted.)
