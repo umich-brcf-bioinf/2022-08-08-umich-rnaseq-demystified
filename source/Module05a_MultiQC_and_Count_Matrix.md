@@ -154,7 +154,7 @@ multiqc --outdir out_multiqc_all  .
 
 Before starting our breakout exercise, we should make sure that we are on the same page. Follow the link below:
 
-[Link to report transfer breakout exercise](Module05a_breakout03_ex.html)
+[Link to report transfer breakout exercise and solution](Module05a_breakout03_sol.html)
 
 
 <br>
